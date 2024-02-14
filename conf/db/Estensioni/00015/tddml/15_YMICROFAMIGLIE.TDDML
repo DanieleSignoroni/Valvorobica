@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- YMICROFAMIGLIE (YMICROF): MicroFamiglia; -->
+  <CreateTable schema="THIPPERS" name="YMICROFAMIGLIE" shortname="YMICROF">
+    <Column name="ID_AZIENDA" shortname="ID_AZIENDA" type="char" length="3" nullable="no"/>
+    <Column name="ID_MICROFAMIGLIA" shortname="ID_MICROFA" type="char" length="10" nullable="no"/>
+    <Column name="CERTIFICATI_DA_PORTALE" shortname="CERTIFICAT" type="char" length="1" nullable="no" default="N"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="YMICROFAMIGLIE_I01" tabschema="THIPPERS" tabname="YMICROFAMIGLIE" shortname="YMICRO_I01" unique="yes">
+    <IndexCol name="ID_AZIENDA" order="Asc"/>
+    <IndexCol name="ID_MICROFAMIGLIA" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="YMICROFAMIGLIE">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_MICROFAMIGLIA"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="YMICROFAMIGLIE" text="MicroFamiglia">
+      <CommentColumn name="ID_AZIENDA" text="Azienda"/>
+      <CommentColumn name="ID_MICROFAMIGLIA" text="Codice"/>
+      <CommentColumn name="CERTIFICATI_DA_PORTALE" text="Certificati da portale"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="YMICROFAMIGLIE_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="YMICROFAMIGLIE"/>
+</TDDML>

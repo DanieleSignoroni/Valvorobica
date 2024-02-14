@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <AlterTable schema="THIPPERS" name="YLOTTI">
+    <AddColumn>
+      <Column name="CERTIFICATI_DA_PORTALE" shortname="CERT_PORTALE" type="char" length="1" nullable="no" default="N"/>
+    </AddColumn>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="YLOTTI" text="Lotti acquisto">
+      <CommentColumn name="CERTIFICATI_DA_PORTALE" text="Certificati da portale"/>
+    </CommentTable>
+  </Comment>
+</TDDML>
