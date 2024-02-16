@@ -232,7 +232,7 @@ try {
 
 		var formData = new FormData(form);
 		$.ajax({
-			url : $('#urlWS').val() + '/valvorobica/portale/upload',
+			url : $('#urlWS').val() + '/portale/upload',
 			type : 'POST',
 			data : formData,
 			contentType : false,
@@ -244,7 +244,7 @@ try {
 				if(xhr.status != 200){
 					openModal('txtWarning',
 							$('#modalWarningClick', parent.document)[0],
-							error.responseText);
+							xhr.responseText);
 				}else if(xhr.status == 200){
 					var btn = form.querySelector('[name=showDocDgtOgg]');
 					var token = document.getElementById('token').value;

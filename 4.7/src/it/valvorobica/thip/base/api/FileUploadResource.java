@@ -73,7 +73,22 @@ import it.thera.thip.base.generale.PersDatiGen;
 import it.thera.thip.magazzino.generalemag.web.LottoDataCollector;
 import it.valvorobica.thip.base.documentoDgt.YDocumentoDigitale;
 
-@Path("valvorobica/portale/upload")
+/**
+ * <h1>Softre Solutions</h1>
+ * <br>
+ * @author Daniele Signoroni 14/02/2024
+ * <br><br>
+ * <b>XXXXX	DSSOF3	14/02/2024</b>
+ * <p>Prima stesura.<br>
+ * Permette la creazione di un documento digitale con allegato.<br>
+ * L'utente deve passare file, lotto, articolo, azienda e tipo certificato.<br>
+ * Se il file passato e' in PDF viene convertito in JPEG.<br>
+ * Tutto questo poi sara' utilizzato nella stampa dei certificati, questo il perche' della conversione.<br>
+ * La conversione viene fatta tramite classi di un jar esterno, ApachePDFBOX.<br>
+ * </p>
+ */
+
+@Path("portale/upload")
 @PermitAll
 public class FileUploadResource extends BaseResource{
 
