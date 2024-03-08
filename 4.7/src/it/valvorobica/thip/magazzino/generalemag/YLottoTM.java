@@ -5,10 +5,11 @@ import it.thera.thip.magazzino.generalemag.*;
 import com.thera.thermfw.base.*;
 
 /**
- * 
- * @author daniele.signoroni	
- *	70649	DSSOF3	05/09/2022	Entità generata da Alex.
- *	70858	AGSOF3	12/01/2023	aggiunta sigla	
+ * <h1>Softre Solutions</h1>
+ * @author Daniele Signoroni 05/09/2022
+ * <br></br>	
+ *	<b>70649	DSSOF3	05/09/2022</b>	<p>Entità generata da Alex.</p>
+ *	<b>70858	AGSOF3	12/01/2023</b>	<p>aggiunta sigla</p>
  *	<b>71406	DSSOF3	31/01/2024</b>
  *  <p>
  *  Aggiunta colonne:<br>
@@ -16,6 +17,14 @@ import com.thera.thermfw.base.*;
  *  	<li>{@link #NUMERO_BOLLA_DOGANALE}</li>
  *  	<li>{@link #DATA_BOLLA_DOGANALE}</li>
  *  	<li>{@link #DOGANA}</li>
+ *  </ul>
+ *  </p>
+ *	<b>71448	DSSOF3	28/02/2024</b>
+ *  <p>
+ *  Aggiunta colonne:<br>
+ *  <ul>
+ *  	<li>{@link #PRODUTTORE}</li>
+ *  	<li>{@link #CITTA_DI_PRODUZIONE}</li>
  *  </ul>
  *  </p>
  */
@@ -35,6 +44,14 @@ public class YLottoTM extends LottoTM {
 	public static final String DOGANA = "DOGANA";
 
 	//Fine
+
+	//Inizio 71448
+
+	public static final String PRODUTTORE = "PRODUTTORE";
+
+	public static final String CITTA_DI_PRODUZIONE = "CITTA_DI_PRODUZIONE";
+
+	//Fine 71448
 	
 	public static final String CERTIFICATI_DA_PORTALE = "CERTIFICATI_DA_PORTALE";
 
@@ -60,6 +77,10 @@ public class YLottoTM extends LottoTM {
 		addAttributeOnTable("NumeroBollaDoganale", NUMERO_BOLLA_DOGANALE, TABLE_NAME_EXT);
 		addAttributeOnTable("DataBollaDoganale", DATA_BOLLA_DOGANALE, TABLE_NAME_EXT);
 		addAttributeOnTable("Dogana", DOGANA, TABLE_NAME_EXT);
+		//Inizio 71448
+		addAttributeOnTable("Produttore", PRODUTTORE, TABLE_NAME_EXT);
+		addAttributeOnTable("CittaDiProduzione", CITTA_DI_PRODUZIONE, TABLE_NAME_EXT);
+		
 		addAttributeOnTable("CertificatiDaPortale", CERTIFICATI_DA_PORTALE, TABLE_NAME_EXT);
 	}
 

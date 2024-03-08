@@ -17,8 +17,8 @@
 				</tr>
 			</table>
 		</tab>
-		<!-- 71418 Sistemare i tab, metterli qui insieme altrimenti uno dei due 
-			non viene display.to -->
+		<!-- 71418	Sistemare i tab, metterli qui insieme altrimenti uno dei due non viene display.to -->
+		<!-- 71448	Aggiungere campi Produttore,CittaDiProduzione -->
 		<tab name="datiAggiuntivi"
 			resourceFile="it.valvorobica.thip.magazzino.generalemag.resources.YLotto"
 			resourceID="tab2">
@@ -47,6 +47,22 @@
 					</td>
 					<td valign="top">
 						<textinput name="Dogana" classAD="Dogana" />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<label classHdr="YLotto" classAD="Produttore"></label>
+					</td>
+					<td valign="top">
+						<textinput name="Produttore" classAD="Produttore" />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<label classHdr="YLotto" classAD="CittaDiProduzione"></label>
+					</td>
+					<td valign="top">
+						<textinput name="CittaDiProduzione" classAD="CittaDiProduzione" />
 					</td>
 				</tr>
 				<tr>

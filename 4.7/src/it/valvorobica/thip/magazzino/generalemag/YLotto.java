@@ -9,9 +9,10 @@ import it.thera.thip.magazzino.generalemag.*;
 import it.thera.thip.base.azienda.Azienda;
 
 /**
- * 
- * @author daniele.signoroni	
- *	70649	DSSOF3	05/09/2022	Entità generata da Alex.
+ * <h1>Softre Solutions</h1>
+ * @author Daniele Signoroni 05/09/2022
+ * <br></br>	
+ *	<b>70649	DSSOF3	05/09/2022</b>	<p>Entità generata da Alex.</p>
  *	<b>71406	DSSOF3	31/01/2024</b>
  *  <p>
  *  Aggiunta campi:<br>
@@ -21,6 +22,14 @@ import it.thera.thip.base.azienda.Azienda;
  *  	<li>{@link #iDogana}</li>
  *  </ul>
  *  </p>
+ *	<b>71448	DSSOF3	28/02/2024</b>
+ *  <p>
+ *  Aggiunta campi:<br>
+ *  <ul>
+ *  	<li>{@link #iProduttore}</li>
+ *  	<li>{@link #iCittaDiProduzione}</li>
+ *  </ul>
+ *  </p>
  */
 
 public class YLotto extends Lotto {
@@ -28,17 +37,21 @@ public class YLotto extends Lotto {
 	protected Proxy iRelnazione = new Proxy(it.thera.thip.base.partner.NazionePrimrose.class);
 
 	protected String iIdSigla;
-	
+
 	//Inizio
-	
+
 	protected String iNumeroBollaDoganale;
-	
+
 	protected Date iDataBollaDoganale;
-	
+
 	protected String iDogana;
 	
-	protected boolean iCertificatiDaPortale = false;
+	protected String iProduttore;
 	
+	protected String iCittaDiProduzione;
+	
+	protected boolean iCertificatiDaPortale = false;
+
 	public YLotto() {
 		setCodiceAzienda(Azienda.getAziendaCorrente());
 	}
@@ -84,9 +97,9 @@ public class YLotto extends Lotto {
 	public void setIdSigla(String iIdSigla) {
 		this.iIdSigla = iIdSigla;
 	}
-	
+
 	//Inizio
-	
+
 	public String getNumeroBollaDoganale() {
 		return iNumeroBollaDoganale;
 	}
@@ -109,6 +122,22 @@ public class YLotto extends Lotto {
 
 	public void setDogana(String iDogana) {
 		this.iDogana = iDogana;
+	}
+
+	public String getProduttore() {
+		return iProduttore;
+	}
+
+	public void setProduttore(String iProduttore) {
+		this.iProduttore = iProduttore;
+	}
+
+	public String getCittaDiProduzione() {
+		return iCittaDiProduzione;
+	}
+
+	public void setCittaDiProduzione(String iCittaDiProduzione) {
+		this.iCittaDiProduzione = iCittaDiProduzione;
 	}
 	
 	public boolean isCertificatiDaPortale() {
