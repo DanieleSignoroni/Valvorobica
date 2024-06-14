@@ -39,12 +39,12 @@ public class YMatricolaValvo extends YMatricolaValvoPO {
 	}
 
 	@Override
-	public boolean retrieve(int lockType) throws SQLException {
-		boolean retrieve = super.retrieve(lockType);
-		if(retrieve) {
+	public boolean initializeOwnedObjects(boolean retFather) {
+		retFather = super.initializeOwnedObjects(retFather);
+		if(retFather) {
 			setMatchArticolo(recuperaMatchArticoloDaMatricola(getIdAzienda(),getIdMatricola()));
 		}
-		return retrieve;
+		return retFather;
 	}
 
 	public static YMatchMatricolaArticolo recuperaMatchArticoloDaMatricola(String idAzienda,String idMatricola) {

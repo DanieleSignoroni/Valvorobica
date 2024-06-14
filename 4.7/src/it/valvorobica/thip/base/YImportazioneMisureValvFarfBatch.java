@@ -3,7 +3,9 @@ package it.valvorobica.thip.base;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.batch.BatchRunnable;
+import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.KeyHelper;
 import com.thera.thermfw.persist.Proxy;
 import com.thera.thermfw.security.Authorizable;
@@ -153,13 +156,13 @@ public class YImportazioneMisureValvFarfBatch extends BatchRunnable implements A
 		return objRFornitore;
 	}
 	// Fine Matricola A
-	
+
 	/**
 	 * Holda la lista delle matricole del range scelto dall'utente a video.<br>
 	 */
 	@SuppressWarnings("rawtypes")
 	private Vector listaMatricole = null; 
-	
+
 	@Override
 	protected boolean run() {
 		listaMatricole = YMatricolaValvo.recuperaMatricoleByRange(getIdAzienda(), getIdMatricolaDA(), getIdMatricolaA());
@@ -167,6 +170,7 @@ public class YImportazioneMisureValvFarfBatch extends BatchRunnable implements A
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void processaFile() {
 		List<DataRow> disc = null;
 		List<DataRow> shaft = null;
@@ -187,79 +191,123 @@ public class YImportazioneMisureValvFarfBatch extends BatchRunnable implements A
 		}
 		for(int i = 0; i < listaMatricole.size(); i++) {
 			YMatricolaValvo matricola = (YMatricolaValvo) listaMatricole.get(i);
-			
+			DataRow bodyRow = getDataRowFromId("HEAT NO.", matricola.getBody(), body);
+			if(matricola.getMatchArticolo() == null) {
+				//non ho un match quindi non posso processare
+			}else {
+				try {
+					YMisureValFarfNew misura = YMisureValFarfNew.misuraValvolaFarfallaDaRow(getIdFornitore(),
+							matricola.getMatchArticolo(), matricola, bodyRow);
+					DataRow discRow = null;
+					if(matricola.getMatchArticolo().getIdArticolo().contains("X")) //se termina con la X allora inox
+						discRow = getDataRowFromId("HEAT NO.", matricola.getDisc(), discInox);
+					else
+						discRow = getDataRowFromId("HEAT NO.", matricola.getDisc(), disc);
+					YMisureValFarfComp discComp = YMisureValFarfComp.misuraValvolaFarfallaCompDaRow(misura, discRow, "001");
+					DataRow shaftRow = getDataRowFromId("HEAT NO.", matricola.getShaft(), shaft);
+					YMisureValFarfComp discShaft = YMisureValFarfComp.misuraValvolaFarfallaCompDaRow(misura, shaftRow, "002");
+					misura.getYMisureValvFarfComp().add(discComp);
+					misura.getYMisureValvFarfComp().add(discShaft);
+					int rc = misura.save();
+					if(rc > 0) {
+						ConnectionManager.commit();
+					}else {
+						ConnectionManager.rollback();
+					}
+				}catch (NumberFormatException e) {
+					//errore di formattazione di un numero
+					e.printStackTrace(Trace.excStream);
+				} catch (SQLException e) {
+					e.printStackTrace(Trace.excStream);
+				}
+			}
+
 		}
 	}
-	
+
+	public DataRow getDataRowFromId(String headerName ,String bodyId, List<DataRow> rows) {
+		for (Iterator<DataRow> iterator = rows.iterator(); iterator.hasNext();) {
+			DataRow dataRow = (DataRow) iterator.next();
+			for (Map.Entry<String, String> entry : dataRow.data.entrySet()) {
+				String key = entry.getKey();
+				String val = entry.getValue();
+				if(key.endsWith(headerName) && val.equals(bodyId)) {
+					return dataRow;
+				}
+			}
+		}
+		return null;
+	}
+
 	public List<DataRow> leggiSheet(Workbook workbook,Sheet sheet){
 		int lastRowNum = sheet.getLastRowNum();
 		if (lastRowNum < 4) {
 			System.out.println("The sheet does not contain enough rows.");
 			return null;
 		}
-		 List<String> headers = new ArrayList<>();
-         for (int colNum = 0; colNum < sheet.getRow(0).getLastCellNum(); colNum++) {
-             StringBuilder header = new StringBuilder();
-             for (int rowNum = 0; rowNum < 4; rowNum++) {
-                 Row headerRow = sheet.getRow(rowNum);
-                 Cell headerCell = headerRow.getCell(colNum);
-                 if (headerCell != null) {
-                     header.append(headerCell.getStringCellValue()).append(" ");
-                 }
-             }
-             headers.add(header.toString().trim());
-         }
+		List<String> headers = new ArrayList<>();
+		for (int colNum = 0; colNum < sheet.getRow(0).getLastCellNum(); colNum++) {
+			StringBuilder header = new StringBuilder();
+			for (int rowNum = 0; rowNum < 4; rowNum++) {
+				Row headerRow = sheet.getRow(rowNum);
+				Cell headerCell = headerRow.getCell(colNum);
+				if (headerCell != null) {
+					header.append(headerCell.getStringCellValue()).append(" ");
+				}
+			}
+			headers.add(header.toString().trim());
+		}
 
-         // Read the data rows
-         List<DataRow> dataRows = new ArrayList<>();
-         for (int rowNum = 4; rowNum <= sheet.getLastRowNum(); rowNum++) {
-             Row row = sheet.getRow(rowNum);
-             if (row == null) continue;
+		// Read the data rows
+		List<DataRow> dataRows = new ArrayList<>();
+		for (int rowNum = 4; rowNum <= sheet.getLastRowNum(); rowNum++) {
+			Row row = sheet.getRow(rowNum);
+			if (row == null) continue;
 
-             Map<String, String> dataMap = new LinkedHashMap<>();
-             for (int colNum = 0; colNum < headers.size(); colNum++) {
-                 Cell cell = row.getCell(colNum);
-                 String value = "";
-                 if (cell != null) {
-                     switch (cell.getCellTypeEnum()) {
-                         case STRING:
-                             value = cell.getStringCellValue();
-                             break;
-                         case NUMERIC:
-                             if (DateUtil.isCellDateFormatted(cell)) {
-                                 value = cell.getDateCellValue().toString();
-                             } else {
-                                 value = Double.toString(cell.getNumericCellValue());
-                             }
-                             break;
-                         case BOOLEAN:
-                             value = Boolean.toString(cell.getBooleanCellValue());
-                             break;
-                         case FORMULA:
-                             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-                             CellValue cellValue = evaluator.evaluate(cell);
-                             switch (cellValue.getCellTypeEnum()) {
-                                 case STRING:
-                                     value = cellValue.getStringValue();
-                                     break;
-                                 case NUMERIC:
-                                     value = Double.toString(cellValue.getNumberValue());
-                                     break;
-                                 case BOOLEAN:
-                                     value = Boolean.toString(cellValue.getBooleanValue());
-                                     break;
-							default:
-								break;
-                             }
-                             break;
-                         default:
-                             value = "Unknown Cell Type";
-                     }
-                 }
-                 dataMap.put(headers.get(colNum), value);
-             }
-             dataRows.add(new DataRow(dataMap));
-         }
+			Map<String, String> dataMap = new LinkedHashMap<>();
+			for (int colNum = 0; colNum < headers.size(); colNum++) {
+				Cell cell = row.getCell(colNum);
+				String value = "";
+				if (cell != null) {
+					switch (cell.getCellTypeEnum()) {
+					case STRING:
+						value = cell.getStringCellValue();
+						break;
+					case NUMERIC:
+						if (DateUtil.isCellDateFormatted(cell)) {
+							value = cell.getDateCellValue().toString();
+						} else {
+							value = Double.toString(cell.getNumericCellValue());
+						}
+						break;
+					case BOOLEAN:
+						value = Boolean.toString(cell.getBooleanCellValue());
+						break;
+					case FORMULA:
+						FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+						CellValue cellValue = evaluator.evaluate(cell);
+						switch (cellValue.getCellTypeEnum()) {
+						case STRING:
+							value = cellValue.getStringValue();
+							break;
+						case NUMERIC:
+							value = Double.toString(cellValue.getNumberValue());
+							break;
+						case BOOLEAN:
+							value = Boolean.toString(cellValue.getBooleanValue());
+							break;
+						default:
+							break;
+						}
+						break;
+					default:
+						value = "Unknown Cell Type";
+					}
+				}
+				dataMap.put(headers.get(colNum), value);
+			}
+			dataRows.add(new DataRow(dataMap));
+		}
 		return dataRows;
 	}
 
@@ -267,28 +315,39 @@ public class YImportazioneMisureValvFarfBatch extends BatchRunnable implements A
 	protected String getClassAdCollectionName() {
 		return "YImportMisureVF";
 	}
-	
+
 	public class DataRow {
-	    private Map<String, String> data;
+		public Map<String, String> data;
 
-	    public DataRow(Map<String, String> data) {
-	        this.data = data;
-	    }
+		public DataRow(Map<String, String> data) {
+			this.data = data;
+		}
 
-	    public String getValue(String header) {
-	        return data.get(header);
-	    }
+		public String getValue(String header) {
+			return data.get(header);
+		}
 
-	    public void setValue(String header, String value) {
-	        data.put(header, value);
-	    }
+		public void setValue(String header, String value) {
+			data.put(header, value);
+		}
 
-	    @Override
-	    public String toString() {
-	        return "DataRow{" +
-	                "data=" + data +
-	                '}';
-	    }
+		public String getValueAtPosition(int position) {
+			if (position < 0 || position >= data.size()) {
+				return null;
+			}
+			return data.entrySet().stream()
+					.skip(position)
+					.findFirst()
+					.map(Map.Entry::getValue)
+					.orElse(null);
+		}
+
+		@Override
+		public String toString() {
+			return "DataRow{" +
+					"data=" + data +
+					'}';
+		}
 	}
 
 }

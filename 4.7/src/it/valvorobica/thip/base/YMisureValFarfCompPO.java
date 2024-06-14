@@ -753,7 +753,7 @@ public abstract class YMisureValFarfCompPO extends PersistentObject
 		String idMatricola = getIdMatricola();
 		String idTpComp = getIdTpComp();
 		String colataComp = getColataComp();// 71034
-		Object[] keyParts = { idAzienda, idFornitore, idArticolo, idLotto, idTpComp, colataComp, idMatricola };
+		Object[] keyParts = { idAzienda, idFornitore, idArticolo, idLotto, idMatricola,idTpComp, colataComp };
 		return KeyHelper.buildObjectKey(keyParts);
 	}
 
