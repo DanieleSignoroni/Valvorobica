@@ -141,7 +141,7 @@ public abstract class YMisureValFarfNewPO extends EntitaAzienda
 	protected Proxy iMatricola = new Proxy(YMatricolaValvo.class);
 
 	protected OneToMany iYMisureValvFarfComp = new OneToMany(it.valvorobica.thip.base.YMisureValFarfComp.class, this,
-			15, false);
+			21, false);
 
 	@SuppressWarnings("rawtypes")
 	public static Vector retrieveList(String where, String orderBy, boolean optimistic)

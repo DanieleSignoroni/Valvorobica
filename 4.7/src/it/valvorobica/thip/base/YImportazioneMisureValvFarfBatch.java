@@ -167,15 +167,17 @@ public class YImportazioneMisureValvFarfBatch extends BatchRunnable implements A
 	protected boolean run() {
 		listaMatricole = YMatricolaValvo.recuperaMatricoleByRange(getIdAzienda(), getIdMatricolaDA(), getIdMatricolaA());
 		processaFile();
-		return false;
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void processaFile() {
+		output.println("** INIZIO L'IMPORTAZIONE DELLE VALVOLE FARFALLA NEW **");
 		List<DataRow> disc = null;
 		List<DataRow> shaft = null;
 		List<DataRow> discInox = null;
 		List<DataRow> body = null;
+		output.println("--> Leggo il file e estrapolo {DISC,SHAFT,BODY,DISC INOX} ...");
 		try (FileInputStream fileInputStream = new FileInputStream(getTemporaryFileName());
 				Workbook workbook = WorkbookFactory.create(fileInputStream)) {
 			disc = leggiSheet(workbook, workbook.getSheet("DISC"));
@@ -189,51 +191,73 @@ public class YImportazioneMisureValvFarfBatch extends BatchRunnable implements A
 		} catch (InvalidFormatException e1) {
 			e1.printStackTrace(Trace.excStream);
 		}
+		output.println("--> Inizio fase di processo matricola...");
 		for(int i = 0; i < listaMatricole.size(); i++) {
+			output.println();
 			YMatricolaValvo matricola = (YMatricolaValvo) listaMatricole.get(i);
+			output.println("  --Inizio processo Matricola: "+matricola.getKey());
 			DataRow bodyRow = getDataRowFromId("HEAT NO.", matricola.getBody(), body);
 			if(matricola.getMatchArticolo() == null) {
-				//non ho un match quindi non posso processare
+				output.println("  ##Per la matricola non esiste un match, la matricola viene saltata");
 			}else {
+				YMisureValFarfNew misura = null;
 				try {
-					YMisureValFarfNew misura = YMisureValFarfNew.misuraValvolaFarfallaDaRow(getIdFornitore(),
+					misura = YMisureValFarfNew.misuraValvolaFarfallaDaRow(getIdFornitore(),
 							matricola.getMatchArticolo(), matricola, bodyRow);
-					DataRow discRow = null;
-					if(matricola.getMatchArticolo().getIdArticolo().contains("X")) //se termina con la X allora inox
-						discRow = getDataRowFromId("HEAT NO.", matricola.getDisc(), discInox);
-					else
-						discRow = getDataRowFromId("HEAT NO.", matricola.getDisc(), disc);
-					YMisureValFarfComp discComp = YMisureValFarfComp.misuraValvolaFarfallaCompDaRow(misura, discRow, "001");
-					DataRow shaftRow = getDataRowFromId("HEAT NO.", matricola.getShaft(), shaft);
-					YMisureValFarfComp discShaft = YMisureValFarfComp.misuraValvolaFarfallaCompDaRow(misura, shaftRow, "002");
-					misura.getYMisureValvFarfComp().add(discComp);
-					misura.getYMisureValvFarfComp().add(discShaft);
+					try {
+						if(misura.retrieve())
+							continue;
+					} catch (SQLException e) {
+						e.printStackTrace(Trace.excStream);
+					}
+				}catch (NumberFormatException e) {
+					output.println("  ##Errore nella formattazione di un numero nel foglio 'BODY',reason:"+e.getMessage());
+					continue;
+				}
+				DataRow discRow = null;
+				if(matricola.getMatchArticolo().getIdArticolo().contains("X")) //se termina con la X allora inox
+					discRow = getDataRowFromId("HEAT NO.", matricola.getDisc(), discInox);
+				else
+					discRow = getDataRowFromId("HEAT NO.", matricola.getDisc(), disc);
+				YMisureValFarfComp discComp = null;
+				try {
+					discComp = YMisureValFarfComp.misuraValvolaFarfallaCompDaRow(misura, discRow, "001");
+				}catch (NumberFormatException e) {
+					String foglio = matricola.getMatchArticolo().getIdArticolo().contains("X") ? "DISC INOX" : "DISC";
+					output.println("  ##Errore nella formattazione di un numero nel foglio '"+foglio+"',reason:"+e.getMessage());
+					continue;
+				}
+				DataRow shaftRow = getDataRowFromId("HEAT NO.", matricola.getShaft(), shaft);
+				YMisureValFarfComp discShaft  = null;
+				try {
+					discShaft = YMisureValFarfComp.misuraValvolaFarfallaCompDaRow(misura, shaftRow, "002");
+				}catch (NumberFormatException e) {
+					output.println("  ##Errore nella formattazione di un numero nel foglio 'SHAFT',reason:"+e.getMessage());
+					continue;
+				}
+				misura.getYMisureValvFarfComp().add(discComp);
+				misura.getYMisureValvFarfComp().add(discShaft);
+				try {
 					int rc = misura.save();
 					if(rc > 0) {
+						output.println("  -Creata correttamente la valvola farfalla:"+misura.getKey());
 						ConnectionManager.commit();
 					}else {
 						ConnectionManager.rollback();
 					}
-				}catch (NumberFormatException e) {
-					//errore di formattazione di un numero
-					e.printStackTrace(Trace.excStream);
 				} catch (SQLException e) {
+					output.println("  ##Errore nel salvataggio della misura farf, reason:"+e.getMessage());
 					e.printStackTrace(Trace.excStream);
 				}
 			}
-
+			output.println("Termine processo Matricola: "+matricola.getKey()+" --  ");
 		}
 	}
 
-	public DataRow getDataRowFromId(String headerName ,String bodyId, List<DataRow> rows) {
-		for (Iterator<DataRow> iterator = rows.iterator(); iterator.hasNext();) {
-			DataRow dataRow = (DataRow) iterator.next();
-			for (Map.Entry<String, String> entry : dataRow.data.entrySet()) {
-				String key = entry.getKey();
-				String val = entry.getValue();
-				if(key.endsWith(headerName) && val.equals(bodyId)) {
-					return dataRow;
-				}
+	private DataRow getDataRowFromId(String header, String id, List<DataRow> rows) {
+		for (DataRow row : rows) {
+			if (id.equals(row.getValue(header))) {
+				return row;
 			}
 		}
 		return null;
