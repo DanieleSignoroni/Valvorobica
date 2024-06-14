@@ -1,0 +1,3 @@
+<BR>Il seguente entità <B>(YMatchMatricola)</B> è stato salvato
+<BR>Il voce di menu <B>null/YMatchMatricola</B> è stato salvato per l'uttente <B>ADMIN_001</B>
+<BR><B>Generazione entità e voci di menù è completata con successo</B><BR>

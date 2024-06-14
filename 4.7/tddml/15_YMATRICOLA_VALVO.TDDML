@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- YMATRICOLA_VALVO (YMATRIC): Matricole - Valvo; -->
+  <CreateTable schema="THIPPERS" name="YMATRICOLA_VALVO" shortname="YMATRIC">
+    <Column name="ID_AZIENDA" shortname="ID_AZIENDA" type="char" length="3" nullable="no"/>
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="ID_MATRICOLA" shortname="ID_MATRICO" type="varchar" length="35" nullable="no"/>
+    <Column name="BODY" shortname="BODY" type="char" length="20" nullable="yes"/>
+    <Column name="DISC" shortname="DISC" type="char" length="20" nullable="yes"/>
+    <Column name="SHAFT" shortname="SHAFT" type="char" length="20" nullable="yes"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="YMATRICOLA_VAL_I01" tabschema="THIPPERS" tabname="YMATRICOLA_VALVO" shortname="YMATRI_I01" unique="yes">
+    <IndexCol name="ID_AZIENDA" order="Asc"/>
+    <IndexCol name="ID_MATRICOLA" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="YMATRICOLA_VALVO">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_MATRICOLA"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="YMATRICOLA_VALVO" text="Matricole - Valvo">
+      <CommentColumn name="ID_AZIENDA" text="Azienda"/>
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+      <CommentColumn name="ID_MATRICOLA" text="Matricola"/>
+      <CommentColumn name="BODY" text="Body"/>
+      <CommentColumn name="DISC" text="Disc"/>
+      <CommentColumn name="SHAFT" text="Shaft"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="YMATRICOLA_VAL_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="YMATRICOLA_VALVO"/>
+</TDDML>

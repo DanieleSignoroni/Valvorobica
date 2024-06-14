@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- YMISURE_VAL_FARF_NEW (YMISUR1) -->
+  <AlterTable schema="THIPPERS" name="YMISURE_VAL_FARF_NEW">
+    <AddConstraint>
+      <Constraint name="Azienda_478895225" refschema="THIP" reftable="AZIENDE_ESTESE" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+      </Constraint>
+      <Constraint name="RelFornitore_16044" refschema="THIP" reftable="FORNITORI_ACQ" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_FORNITORE"/>
+      </Constraint>
+      <Constraint name="RelArticolo_185984" refschema="THIP" reftable="ARTICOLI" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_ARTICOLO"/>
+      </Constraint>
+      <Constraint name="RelNormativa_15547" refschema="SOFTRE" reftable="Y_NORMATIVE" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="R_NORMATIVA"/>
+      </Constraint>
+      <Constraint name="RelProvenienza_635" refschema="SOFTRE" reftable="Y_PROVENIENZE" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="R_PROVENIENZA"/>
+      </Constraint>
+      <Constraint name="Lotto_1228637172" refschema="THIP" reftable="LOTTI" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_ARTICOLO"/>
+        <ColumnRef name="ID_LOTTO"/>
+      </Constraint>
+	  <Constraint name="Matricola_1228637172" refschema="THIPPERS" reftable="YMATRICOLA_VALVO" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_MATRICOLA"/>
+      </Constraint>
+    </AddConstraint>
+  </AlterTable>
+  <!-- YMISURE_VAL_FARF_COMP (YMISUR2) -->
+  <AlterTable schema="THIPPERS" name="YMISURE_VAL_FARF_COMP">
+    <AddConstraint>
+      <Constraint name="RelTipoComponente_" refschema="THIPPERS" reftable="YTP_COMP_VALV_FARF" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_TP_COMP"/>
+      </Constraint>
+      <Constraint name="RelNormativa_64163" refschema="SOFTRE" reftable="Y_NORMATIVE" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="R_NORMATIVA"/>
+      </Constraint>
+      <Constraint name="YMisureValvFarfCom" refschema="THIPPERS" reftable="YMISURE_VAL_FARF_NEW" schema="THIPPERS" ondelete="Cascade">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_FORNITORE"/>
+        <ColumnRef name="ID_ARTICOLO"/>
+        <ColumnRef name="ID_LOTTO"/>
+		<ColumnRef name="ID_MATRICOLA"/>
+      </Constraint>
+	  <Constraint name="YMatricola" refschema="THIPPERS" reftable="YMATRICOLA_VALVO" schema="THIPPERS" ondelete="Cascade">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_MATRICOLA"/>
+      </Constraint>
+    </AddConstraint>
+  </AlterTable>
+</TDDML>

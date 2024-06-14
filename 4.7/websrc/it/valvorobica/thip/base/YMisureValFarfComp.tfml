@@ -1,0 +1,70 @@
+<tfml>
+  <generator type="indipendentRowForm"/>
+  <form classHdr="YMisureValFarfComp"
+    name="YMisureValFarfCompForm"
+    locktype="nolock"
+    errorList="yes" menubar="yes" toolbar="yes" submitReset="none"
+    header="com.thera.thermfw.common.Header.jsp"
+    footer="com.thera.thermfw.common.Footer.jsp">
+    <menubar  name="myMenuBar">
+      <import file="com/thera/thermfw/common/defObjMenu.tfml"/>
+    </menubar>
+    <toolbar name="myToolBar" imgwidth="16" imgheight="16">
+      <import file="com/thera/thermfw/common/defObjMenu.tfml"/>
+    </toolbar>
+    <textinput name="IdFornitore" classAD="IdFornitore"/>
+    <textinput name="IdArticolo" classAD="IdArticolo"/>
+    <textinput name="IdLotto" classAD="IdLotto"/>
+    <textinput name="IdMatricola" classAD="IdMatricola"/>
+    <tabbed name="mytabbed" height="100%" width="100%">
+      <tab name="tab1" resourceFile="it.valvorobica.thip.base.resources.YMisureValFarfComp" resourceID="tab1">
+        <multisearchform name="RelTipoComponente" classRD="RelTipoComponente"/>
+        <textinput name="ColataComp" classAD="ColataComp"/>
+        <multisearchform name="RelNormativa" classRD="RelNormativa"/>
+        <textinput name="PercC" classAD="PercC"/>
+        <textinput name="PercMn" classAD="PercMn"/>
+        <textinput name="PercSi" classAD="PercSi"/>
+        <textinput name="PercP" classAD="PercP"/>
+        <textinput name="PercS" classAD="PercS"/>
+        <textinput name="PercNi" classAD="PercNi"/>
+        <textinput name="PercCr" classAD="PercCr"/>
+        <textinput name="PercMo" classAD="PercMo"/>
+        <textinput name="PercTi" classAD="PercTi"/>
+        <textinput name="PercAl" classAD="PercAl"/>
+        <textinput name="PercV" classAD="PercV"/>
+        <textinput name="PercCu" classAD="PercCu"/>
+        <textinput name="PercN" classAD="PercN"/>
+        <textinput name="PercNb" classAD="PercNb"/>
+        <textinput name="PercPb" classAD="PercPb"/>
+        <textinput name="PercFe" classAD="PercFe"/>
+        <textinput name="PercCe" classAD="PercCe"/>
+        <textinput name="PercRe" classAD="PercRe"/>
+        <textinput name="PercMg" classAD="PercMg"/>
+        <textinput name="PercSn" classAD="PercSn"/>
+        <textinput name="PercB" classAD="PercB"/>
+        <textinput name="PercZn" classAD="PercZn"/>
+        <textinput name="RotturaMpa" classAD="RotturaMpa"/>
+        <textinput name="SnervMpa" classAD="SnervMpa"/>
+        <textinput name="PercAllung" classAD="PercAllung"/>
+        <textinput name="PercContraz" classAD="PercContraz"/>
+        <combobox name="SampleDirT" classAD="SampleDirT"/>
+        <combobox name="SampleDimR" classAD="SampleDimR"/>
+        <combobox name="TrattamentoT" classAD="TrattamentoT"/>
+        <textinput name="TempTt" classAD="TempTt"/>
+        <combobox name="SampleDirR" classAD="SampleDirR"/>
+        <combobox name="SampleDimT" classAD="SampleDimT"/>
+        <textinput name="TempRe" classAD="TempRe"/>
+        <textinput name="Test1" classAD="Test1"/>
+        <textinput name="Test2" classAD="Test2"/>
+        <textinput name="Test3" classAD="Test3"/>
+        <combobox name="Nace" classAD="Nace"/>
+        <textinput name="DurezzaHb" classAD="DurezzaHb"/>
+        <textinput name="Mill" classAD="Mill"/>
+        <textinput name="Additional" classAD="Additional"/>
+        <textinput name="Testreport" classAD="Testreport"/>
+        <textinput name="LottoProd" classAD="LottoProd"/>
+      </tab>
+    </tabbed>
+  </form>
+</tfml>
+

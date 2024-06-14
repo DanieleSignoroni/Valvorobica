@@ -1,0 +1,3 @@
+<B>2024-06-14 10:00:49</B>
+<BR>Il descrittore di classe <B>YMatchMatricolaArticolo</B> è stato generato correttamente
+<BR><B>La generazione descrittori di classe è completata con successo</B><BR>
