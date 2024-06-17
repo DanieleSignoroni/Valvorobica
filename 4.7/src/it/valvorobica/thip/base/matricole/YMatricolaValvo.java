@@ -13,6 +13,18 @@ import com.thera.thermfw.persist.Database;
 import com.thera.thermfw.persist.KeyHelper;
 import com.thera.thermfw.persist.PersistentObject;
 
+/**
+ * Anagrafica 'Matricola' personalizzata di Valvorobica.<br>
+ * <h1>Softre Solutions</h1>
+ * <br>
+ * @author Daniele Signoroni 17/06/2024
+ * <br><br>
+ * <b>71XXX	DSSOF3	17/06/2024</b>
+ * <p>Prima stesura.<br>
+ *  
+ * </p>
+ */
+
 public class YMatricolaValvo extends YMatricolaValvoPO {
 
 	public static final String STMT_MATCH_ART_MATRICOLA = "SELECT "
@@ -38,6 +50,15 @@ public class YMatricolaValvo extends YMatricolaValvoPO {
 		return null;
 	}
 
+	/**
+	 * @author Daniele Signoroni 17/06/2024
+	 * <p>
+	 * Prima stesura.<br>
+	 * Per evitare di cercare il match ogni volta, lo cerco quando inizializzo l'oggetto YMatricolaValvo.<br>
+	 * </p>
+	 * @param retFather
+	 * @return
+	 */
 	@Override
 	public boolean initializeOwnedObjects(boolean retFather) {
 		retFather = super.initializeOwnedObjects(retFather);
@@ -47,6 +68,19 @@ public class YMatricolaValvo extends YMatricolaValvoPO {
 		return retFather;
 	}
 
+	/**
+	 * Recupera il match tra 'Articolo' e 'Matricola'.<br>
+	 * Questo risiede nella tabella {@value YMatchMatricolaArticoloTM#TABLE_NAME}.<br>
+	 * In quella tabella ho un range di 'Matricole' e per questo range ho l'articolo.<br>
+	 * @author Daniele Signoroni 17/06/2024
+	 * <p>
+	 * Prima stesura.<br>
+	 *
+	 * </p>
+	 * @param idAzienda
+	 * @param idMatricola
+	 * @return
+	 */
 	public static YMatchMatricolaArticolo recuperaMatchArticoloDaMatricola(String idAzienda,String idMatricola) {
 		ResultSet rs = null;
 		try{

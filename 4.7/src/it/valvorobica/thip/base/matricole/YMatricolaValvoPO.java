@@ -18,6 +18,17 @@ import com.thera.thermfw.security.Conflictable;
 import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.cs.EntitaAzienda;
 
+/**
+ * <h1>Softre Solutions</h1>
+ * <br>
+ * @author Daniele Signoroni 17/06/2024
+ * <br><br>
+ * <b>71XXX	DSSOF3	17/06/2024</b>
+ * <p>Prima stesura.<br>
+ *  
+ * </p>
+ */
+
 public abstract class YMatricolaValvoPO extends EntitaAzienda
 		implements BusinessObject, Authorizable, Deletable, Conflictable {
 

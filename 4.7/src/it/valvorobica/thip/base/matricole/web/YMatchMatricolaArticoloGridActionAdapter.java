@@ -21,11 +21,11 @@ import com.thera.thermfw.web.servlet.GridActionAdapter;
  * </p>
  */
 
-public class YMatricolaValvoGridActionAdapter extends GridActionAdapter {
-
+public class YMatchMatricolaArticoloGridActionAdapter extends GridActionAdapter {
+	
 	protected static final String IMPORTA = "IMPORTA";
 	protected static String IMPORTA_IMG = "it/valvorobica/thip/base/matricole/img/import.png";
-	protected static String IMPORTA_RES = "it/valvorobica/thip/base/matricole/resources/YMatricolaValvo";
+	protected static String IMPORTA_RES = "it/valvorobica/thip/base/matricole/resources/YMatchMatricolaArticolo";
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class YMatricolaValvoGridActionAdapter extends GridActionAdapter {
 	protected void otherActions(ClassADCollection cadc, ServletEnvironment se) throws ServletException, IOException {
 		String action = getStringParameter(se.getRequest(), ACTION);
 		if (action.equals(IMPORTA)) {
-			se.sendRequest(getServletContext(), "it/valvorobica/thip/base/matricole/YCaricamentoMatricole.jsp", false);
+			se.sendRequest(getServletContext(), "it/valvorobica/thip/base/matricole/YCaricamentoMatch.jsp", false);
 		} else {
 			super.otherActions(cadc, se);
 		}

@@ -25,7 +25,7 @@ public class YMisureValFarfNew extends YMisureValFarfNewPO {
 
 	public static YMisureValFarfNew misuraValvolaFarfallaDaRow(String idFornitore,
 			YMatchMatricolaArticolo match,
-			YMatricolaValvo matricola, DataRow row) throws NumberFormatException {
+			YMatricolaValvo matricola, DataRow row) throws ExcelFieldFormatException {
 		YMisureValFarfNew misura = (YMisureValFarfNew) Factory.createObject(YMisureValFarfNew.class);
 		misura.setIdAzienda(Azienda.getAziendaCorrente());
 		misura.setIdFornitore(idFornitore);
@@ -33,19 +33,35 @@ public class YMisureValFarfNew extends YMisureValFarfNewPO {
 		misura.setIdLotto(match.getIdLotto());
 		misura.setIdMatricola(matricola.getIdMatricola());
 		misura.setManStamp(row.getValueAtPosition(2));
-		misura.setPercC(new BigDecimal((row.getValueAtPosition(3))));
-		misura.setPercMn(new BigDecimal((row.getValueAtPosition(4))));
-		misura.setPercSi(new BigDecimal((row.getValueAtPosition(5))));
-		misura.setPercP(new BigDecimal((row.getValueAtPosition(6))));
-		misura.setPercS(new BigDecimal((row.getValueAtPosition(7))));
-		misura.setRotturaMpa(new Integer((row.getValueAtPosition(8))));
+		misura.setPercC(convertToBigDecimal(row.getValueAtPosition(3),"Percentuale C"));
+		misura.setPercMn(convertToBigDecimal(row.getValueAtPosition(4),"Percentuale MN"));
+		misura.setPercSi(convertToBigDecimal(row.getValueAtPosition(5),"Percentuale SI"));
+		misura.setPercP(convertToBigDecimal(row.getValueAtPosition(6),"Percentuale P"));
+		misura.setPercS(convertToBigDecimal(row.getValueAtPosition(7),"Percentuale S"));
+		misura.setRotturaMpa(convertToInteger(row.getValueAtPosition(8),"Rottura MPA"));
 		String snervMpa = row.getValueAtPosition(9);
 		if(snervMpa.contains(".")) {
 			snervMpa = snervMpa.substring(0, snervMpa.indexOf("."));
 		}
-		misura.setPercAllung(new BigDecimal((row.getValueAtPosition(10))));
+		misura.setPercAllung(convertToBigDecimal(row.getValueAtPosition(10),"Percentuale Allungamento"));
 		misura.setDurezzaHb(((row.getValueAtPosition(11))));
 		return misura;
+	}
+	
+	public static BigDecimal convertToBigDecimal(String value, String fieldName) throws ExcelFieldFormatException {
+	    try {
+	        return new BigDecimal(value);
+	    } catch (NumberFormatException e) {
+	        throw new ExcelFieldFormatException(fieldName, value, "Errore di formattazione");
+	    }
+	}
+
+	public static Integer convertToInteger(String value, String fieldName) throws ExcelFieldFormatException {
+	    try {
+	        return Integer.valueOf(value);
+	    } catch (NumberFormatException e) {
+	        throw new ExcelFieldFormatException(fieldName, value, "Errore di formattazione");
+	    }
 	}
 
 }

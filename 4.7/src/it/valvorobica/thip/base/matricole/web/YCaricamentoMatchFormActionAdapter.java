@@ -14,6 +14,7 @@ import com.thera.thermfw.web.ServletEnvironment;
 import com.thera.thermfw.web.WebToolBar;
 import com.thera.thermfw.web.servlet.FormActionAdapter;
 
+import it.valvorobica.thip.base.matricole.YCaricamentoMatchMatricoleArticolo;
 import it.valvorobica.thip.base.matricole.YCaricamentoMatricole;
 
 /**
@@ -27,7 +28,7 @@ import it.valvorobica.thip.base.matricole.YCaricamentoMatricole;
  * </p>
  */
 
-public class YCaricamentoMatricoleFormActionAdapter extends FormActionAdapter {
+public class YCaricamentoMatchFormActionAdapter extends FormActionAdapter {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,22 +47,29 @@ public class YCaricamentoMatricoleFormActionAdapter extends FormActionAdapter {
 		MultipartFile multiPartFile = null;
 		if (YCaricamentoMatricole.checkFile(se, mh)) {
 			multiPartFile = (MultipartFile) mh.getMultipartFiles().get(0);
-			File file = YCaricamentoMatricole.getDirectoryTemporanea(se, multiPartFile);
-			if (file.getName().endsWith(".xlsx") || file.getName().endsWith(".xls")) {
-				int num_importati = 0;
-				try {
-					num_importati = YCaricamentoMatricole.caricamentoMatricoleExcel(file);
-					out.println("parent.window.alert('Importate correttamente : " + num_importati + " matricole');");
-				} catch (SQLException e) {
-					out.println("parent.window.alert('Errore nell'importazione!, controllare il file');");
-					e.printStackTrace(Trace.excStream);
+			String idLotto = mh.getMultipartRequest().getParameter("IdLotto");
+			if(idLotto != null) {
+				File file = YCaricamentoMatricole.getDirectoryTemporanea(se, multiPartFile);
+				if (file.getName().endsWith(".xlsx") || file.getName().endsWith(".xls")) {
+					int num_importati = 0;
+					try {
+						YCaricamentoMatchMatricoleArticolo.caricamentoMatchMatricoleArticoloExcel(file,idLotto);
+						out.println("parent.window.alert('Importate correttamente : " + num_importati + " matricole');");
+						out.println("parent.window.close();");
+					} catch (SQLException e) {
+						e.printStackTrace(Trace.excStream);
+					}
+				} else {
+					out.println(
+							"parent.window.alert('Attenzione e' stato droppato un file che non ha estensione \n, ne xlsx ne xls!);");
 				}
-				out.println("parent.window.close();");
-			} else {
-				out.println(
-						"parent.window.alert('Attenzione e' stato droppato un file che non ha estensione \n, ne xlsx ne xls!);");
+			}else {
+				out.println("parent.window.alert('Il lotto e' obbligatorio!');");
 			}
+		}else {
+			out.println("parent.window.alert('File obbligatorio!');");
 		}
+		out.println("parent.window.close();");
 		out.println("</script>");
 	}
 

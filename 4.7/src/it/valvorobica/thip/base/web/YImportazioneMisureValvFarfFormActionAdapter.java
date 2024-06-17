@@ -20,6 +20,16 @@ import com.thera.thermfw.web.ServletEnvironment;
 import com.thera.thermfw.web.WebElement;
 import com.thera.thermfw.web.WebToolBar;
 
+/**
+ * <h1>Softre Solutions</h1>
+ * <br>
+ * @author Daniele Signoroni 17/06/2024
+ * <br><br>
+ * <b>71XXX	DSSOF3	17/06/2024</b>
+ * <p>Prima stesura.<br>
+ * </p>
+ */
+
 public class YImportazioneMisureValvFarfFormActionAdapter extends BatchFormActionAdapter {
 
 	private static final long serialVersionUID = 1L;

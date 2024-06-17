@@ -10,6 +10,17 @@ import com.thera.thermfw.web.WebToolBar;
 import com.thera.thermfw.web.WebToolBarButton;
 import com.thera.thermfw.web.servlet.GridActionAdapter;
 
+/**
+ * <h1>Softre Solutions</h1>
+ * <br>
+ * @author Daniele Signoroni 17/06/2024
+ * <br><br>
+ * <b>71XXX	DSSOF3	17/06/2024</b>
+ * <p>Prima stesura.<br>
+ *  
+ * </p>
+ */
+
 public class YMisureValFarfNewGridActionAdapter extends GridActionAdapter {
 
 	private static final long serialVersionUID = 1L;

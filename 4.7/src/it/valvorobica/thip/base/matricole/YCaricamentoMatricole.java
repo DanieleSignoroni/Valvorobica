@@ -23,6 +23,21 @@ import com.thera.thermfw.web.ServletEnvironment;
 
 import it.thera.thip.base.azienda.Azienda;
 
+/**
+ * Risiedono alcune utilities per il manage di file.<br>
+ * Come {@link #getDirectoryTemporanea(ServletEnvironment, MultipartFile)} per avere una tmp dir con il file passatomi sulla request.<br>
+ * {@link #checkFile(ServletEnvironment, MultipartHandler)} per controllare se la multi part request ha un file.<br></br>
+ * 
+ * In seguito risiede il metodo per il caricamento delle matricole tramite file excel.<br>
+ * <h1>Softre Solutions</h1>
+ * <br>
+ * @author Daniele Signoroni 17/06/2024
+ * <br><br>
+ * <b>71XXX	DSSOF3	17/06/2024</b>
+ * <p>Prima stesura.<br>
+ * </p>
+ */
+
 public class YCaricamentoMatricole {
 
 	public static boolean checkFile(ServletEnvironment se, MultipartHandler mh) {
@@ -56,7 +71,7 @@ public class YCaricamentoMatricole {
 			myWorkBook = new HSSFWorkbook(fileInputStream);
 			HSSFSheet mySheet = myWorkBook.getSheetAt(0);
 			Iterator<Row> iterRigheExcel = mySheet.iterator();
-			IteratorUtils.skippingIterator(iterRigheExcel, 1);
+			IteratorUtils.skippingIterator(iterRigheExcel, 1); //salto gli headers
 			while (iterRigheExcel.hasNext()) {
 				Row row = iterRigheExcel.next();
 				Iterator<Cell> iterCelle = row.cellIterator();
@@ -71,15 +86,34 @@ public class YCaricamentoMatricole {
 					} else {
 						body = list.get(1).getStringCellValue().trim();
 					}
+					if(body.contains(".")) {
+						body = body.substring(0, body.indexOf("."));
+					}
 					if (list.get(2).getCellTypeEnum() == CellType.NUMERIC) {
 						disc = String.valueOf(list.get(2).getNumericCellValue()).trim();
 					} else {
 						disc = list.get(2).getStringCellValue().trim();
 					}
+					if(disc.contains(".")) {
+						disc = disc.substring(0, disc.indexOf("."));
+					}
 					if (list.get(3).getCellTypeEnum() == CellType.NUMERIC) {
 						shaft = String.valueOf(list.get(3).getNumericCellValue()).trim();
 					} else {
 						shaft = list.get(3).getStringCellValue().trim();
+					}
+					if(shaft.contains(".")) {
+						shaft = shaft.substring(0, shaft.indexOf("."));
+					}
+					 //non avranno mai punti ma excel lo elabora come num
+					if(shaft.contains(".")) {
+						shaft = shaft.replace(".","");
+					}
+					if(disc.contains(".")) {
+						disc = disc.replace(".","");
+					}
+					if(shaft.contains(".")) {
+						shaft = shaft.replace(".","");
 					}
 					YMatricolaValvo matricola = (YMatricolaValvo) Factory.createObject(YMatricolaValvo.class);
 					matricola.setIdAzienda(Azienda.getAziendaCorrente());
