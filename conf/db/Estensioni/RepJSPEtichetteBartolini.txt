@@ -1,0 +1,3 @@
+<B>2024-08-05 16:32:51</B>
+<BR>Il file <B>EtichetteBartolini.jsp</B> è stato generato correttamente nel cartela <B>W:\PthDev\Projects\Panthera\Valvorobica\conf\db\Estensioni\00017\websrc\it\valvorobica\thip\base\vendite\documentoVE</B><BR>Il file <B>EtichetteBartolini.jsp</B> è stato copiato nel classpath
+<BR><B>Generazione JSP è completata con successo</B><BR>

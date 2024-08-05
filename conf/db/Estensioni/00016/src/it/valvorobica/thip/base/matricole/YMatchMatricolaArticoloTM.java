@@ -6,12 +6,12 @@
  * YMatchMatricolaArticoloTM
  *
  * <br></br><b>Copyright (C) : Thera SpA</b>
- * @author Wizard 14/06/2024 at 10:00:47
+ * @author Wizard 17/06/2024 at 16:45:44
  */
 /*
  * Revisions:
  * Date          Owner      Description
- * 14/06/2024    Wizard     Codice generato da Wizard
+ * 17/06/2024    Wizard     Codice generato da Wizard
  *
  */
 package it.valvorobica.thip.base.matricole;
@@ -98,7 +98,7 @@ public class YMatchMatricolaArticoloTM extends TableManager {
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    CodeGen     Codice generato da CodeGenerator
+   * 17/06/2024    CodeGen     Codice generato da CodeGenerator
    *
    */
   public synchronized static TableManager getInstance() throws SQLException {
@@ -115,7 +115,7 @@ public class YMatchMatricolaArticoloTM extends TableManager {
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    CodeGen     Codice generato da CodeGenerator
+   * 17/06/2024    CodeGen     Codice generato da CodeGenerator
    *
    */
   public YMatchMatricolaArticoloTM() throws SQLException {
@@ -129,7 +129,7 @@ public class YMatchMatricolaArticoloTM extends TableManager {
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    CodeGen     Codice generato da CodeGenerator
+   * 17/06/2024    CodeGen     Codice generato da CodeGenerator
    *
    */
   protected void initialize() throws SQLException {
@@ -145,7 +145,7 @@ public class YMatchMatricolaArticoloTM extends TableManager {
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   protected void initializeRelation() throws SQLException {
@@ -157,7 +157,7 @@ public class YMatchMatricolaArticoloTM extends TableManager {
     addAttribute("IdLotto", ID_LOTTO);
     
     addComponent("DatiComuniEstesi", DatiComuniEstesiTTM.class);
-    setKeys(ID_AZIENDA + "," + ID_ARTICOLO + "," + ID_MATRICOLA_DA + "," + ID_MATRICOLA_A);
+    setKeys(ID_AZIENDA + "," + ID_ARTICOLO + "," + ID_MATRICOLA_DA + "," + ID_MATRICOLA_A + "," + ID_LOTTO);
 
     setTimestampColumn("TIMESTAMP_AGG");
     ((it.thera.thip.cs.DatiComuniEstesiTTM)getTransientTableManager("DatiComuniEstesi")).setExcludedColums();
@@ -170,7 +170,7 @@ public class YMatchMatricolaArticoloTM extends TableManager {
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   private void init() throws SQLException {

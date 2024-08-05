@@ -15,6 +15,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Tomcat9.0_8086"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SQLServer"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="K:/Thip/thip_jars/pdfbox-app-2.0.31.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Thip extra jars"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/PTH_5.0.0"/>
 	<classpathentry kind="output" path="lib"/>

@@ -1,0 +1,3 @@
+<B>2024-08-05 16:32:48</B>
+<BR>Il descrittore di classe <B>EtichetteBartolini</B> è stato generato correttamente
+<BR><B>La generazione descrittori di classe è completata con successo</B><BR>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- ETICHETTE_BARTOLINI (ETICHET) -->
+  <AlterTable schema="THIPPERS" name="ETICHETTE_BARTOLINI">
+    <AddConstraint>
+      <Constraint name="Azienda_1063583994" refschema="THIP" reftable="AZIENDE_ESTESE" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+      </Constraint>
+      <Constraint name="DdtVenditaTes_1245" refschema="THIP" reftable="DDT_TES" schema="THIPPERS" ondelete="Cascade">
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="ID_ANNO_DDT"/>
+        <ColumnRef name="ID_NUMERO_DDT"/>
+        <ColumnRef name="TIPO_DDT"/>
+      </Constraint>
+    </AddConstraint>
+  </AlterTable>
+</TDDML>

@@ -6,12 +6,12 @@
  * null
  *
  * <br></br><b>Copyright (C) : Thera s.p.a.</b>
- * @author Wizard 14/06/2024 at 10:00:47
+ * @author Wizard 17/06/2024 at 16:45:44
  */
 /*
  * Revisions:
  * Date          Owner      Description
- * 14/06/2024    Wizard     Codice generato da Wizard
+ * 17/06/2024    Wizard     Codice generato da Wizard
  *
  */
 package it.valvorobica.thip.base.matricole;
@@ -33,7 +33,7 @@ public class YMatchMatricolaArticolo extends YMatchMatricolaArticoloPO {
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public ErrorMessage checkDelete() {

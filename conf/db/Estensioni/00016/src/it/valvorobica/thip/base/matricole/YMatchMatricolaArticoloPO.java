@@ -6,12 +6,12 @@
  * null
  *
  * <br></br><b>Copyright (C) : Thera SpA</b>
- * @author Wizard 14/06/2024 at 10:00:47
+ * @author Wizard 17/06/2024 at 16:45:44
  */
 /*
  * Revisions:
  * Date          Owner      Description
- * 14/06/2024    Wizard     Codice generato da Wizard
+ * 17/06/2024    Wizard     Codice generato da Wizard
  *
  */
 package it.valvorobica.thip.base.matricole;
@@ -69,7 +69,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    CodeGen     Codice generato da CodeGenerator
+   * 17/06/2024    CodeGen     Codice generato da CodeGenerator
    *
    */
   public static Vector retrieveList(String where, String orderBy, boolean optimistic) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -88,7 +88,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    CodeGen     Codice generato da CodeGenerator
+   * 17/06/2024    CodeGen     Codice generato da CodeGenerator
    *
    */
   public static YMatchMatricolaArticolo elementWithKey(String key, int lockType) throws SQLException {
@@ -101,7 +101,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public YMatchMatricolaArticoloPO() {
@@ -115,7 +115,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setArticolo(Articolo articolo) {
@@ -141,7 +141,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public Articolo getArticolo() {
@@ -155,7 +155,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setArticoloKey(String key) {
@@ -175,7 +175,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getArticoloKey() {
@@ -189,7 +189,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setMatricolainizio(YMatricolaValvo matricolainizio) {
@@ -210,7 +210,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public YMatricolaValvo getMatricolainizio() {
@@ -224,7 +224,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setMatricolainizioKey(String key) {
@@ -242,7 +242,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getMatricolainizioKey() {
@@ -256,7 +256,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setIdMatricolaDa(String idMatricolaDa) {
@@ -273,7 +273,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getIdMatricolaDa() {
@@ -289,7 +289,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setMatricolafine(YMatricolaValvo matricolafine) {
@@ -310,7 +310,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public YMatricolaValvo getMatricolafine() {
@@ -324,7 +324,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setMatricolafineKey(String key) {
@@ -342,7 +342,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getMatricolafineKey() {
@@ -356,7 +356,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setIdMatricolaA(String idMatricolaA) {
@@ -373,7 +373,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getIdMatricolaA() {
@@ -389,11 +389,10 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setLotto(Lotto lotto) {
-    String oldObjectKey = getKey();
     String idAzienda = getIdAzienda();
     if (lotto != null) {
       idAzienda = KeyHelper.getTokenObjectKey(lotto.getKey(), 1);
@@ -406,9 +405,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
     setIdArticoloInternal(idArticolo);
     this.iLotto.setObject(lotto);
     setDirty();
-    if (!KeyHelper.areEqual(oldObjectKey, getKey())) {
-      setOnDB(false);
-    }
+    setOnDB(false);
   }
 
   /**
@@ -418,7 +415,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public Lotto getLotto() {
@@ -432,20 +429,17 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setLottoKey(String key) {
-    String oldObjectKey = getKey();
     iLotto.setKey(key);
     String idAzienda = KeyHelper.getTokenObjectKey(key, 1);
     setIdAziendaInternal(idAzienda);
     String idArticolo = KeyHelper.getTokenObjectKey(key, 2);
     setIdArticoloInternal(idArticolo);
     setDirty();
-    if (!KeyHelper.areEqual(oldObjectKey, getKey())) {
-      setOnDB(false);
-    }
+    setOnDB(false);
   }
 
   /**
@@ -455,7 +449,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getLottoKey() {
@@ -469,7 +463,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setIdAzienda(String idAzienda) {
@@ -485,7 +479,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getIdAzienda() {
@@ -500,7 +494,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setIdArticolo(String idArticolo) {
@@ -516,7 +510,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getIdArticolo() {
@@ -532,13 +526,14 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setIdLotto(String idLotto) {
     String key = iLotto.getKey();
     iLotto.setKey(KeyHelper.replaceTokenObjectKey(key , 3, idLotto));
     setDirty();
+    setOnDB(false);
   }
 
   /**
@@ -548,7 +543,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getIdLotto() {
@@ -565,7 +560,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setEqual(Copyable obj) throws CopyException {
@@ -585,7 +580,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public Vector checkAll(BaseComponentsCollection components) {
@@ -601,7 +596,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public void setKey(String key) {
@@ -609,6 +604,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
     setIdArticolo(KeyHelper.getTokenObjectKey(key, 2));
     setIdMatricolaDa(KeyHelper.getTokenObjectKey(key, 3));
     setIdMatricolaA(KeyHelper.getTokenObjectKey(key, 4));
+    setIdLotto(KeyHelper.getTokenObjectKey(key, 5));
   }
 
   /**
@@ -618,7 +614,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String getKey() {
@@ -626,7 +622,8 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
     String idArticolo = getIdArticolo();
     String idMatricolaDa = getIdMatricolaDa();
     String idMatricolaA = getIdMatricolaA();
-    Object[] keyParts = {idAzienda, idArticolo, idMatricolaDa, idMatricolaA};
+    String idLotto = getIdLotto();
+    Object[] keyParts = {idAzienda, idArticolo, idMatricolaDa, idMatricolaA, idLotto};
     return KeyHelper.buildObjectKey(keyParts);
   }
 
@@ -637,7 +634,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public boolean isDeletable() {
@@ -651,7 +648,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   public String toString() {
@@ -666,7 +663,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    CodeGen     Codice generato da CodeGenerator
+   * 17/06/2024    CodeGen     Codice generato da CodeGenerator
    *
    */
   protected TableManager getTableManager() throws SQLException {
@@ -680,7 +677,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   protected void setIdAziendaInternal(String idAzienda) {
@@ -702,7 +699,7 @@ public abstract class YMatchMatricolaArticoloPO extends EntitaAzienda implements
   /*
    * Revisions:
    * Date          Owner      Description
-   * 14/06/2024    Wizard     Codice generato da Wizard
+   * 17/06/2024    Wizard     Codice generato da Wizard
    *
    */
   protected void setIdArticoloInternal(String idArticolo) {

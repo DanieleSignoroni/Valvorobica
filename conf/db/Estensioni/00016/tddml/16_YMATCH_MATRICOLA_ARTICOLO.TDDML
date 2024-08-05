@@ -10,7 +10,7 @@
     <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
     <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
     <Column name="ID_ARTICOLO" shortname="ID_ARTICOL" type="char" length="25" nullable="no"/>
-    <Column name="ID_LOTTO" shortname="ID_LOTTO" type="char" length="15" nullable="yes"/>
+    <Column name="ID_LOTTO" shortname="ID_LOTTO" type="char" length="15" nullable="no"/>
     <Column name="ID_MATRICOLA_DA" shortname="ID_MATRICO" type="varchar" length="35" nullable="no"/>
     <Column name="ID_MATRICOLA_A" shortname="ID_MATRIC0" type="varchar" length="35" nullable="no"/>
   </CreateTable>
@@ -19,6 +19,7 @@
     <IndexCol name="ID_ARTICOLO" order="Asc"/>
     <IndexCol name="ID_MATRICOLA_DA" order="Asc"/>
     <IndexCol name="ID_MATRICOLA_A" order="Asc"/>
+    <IndexCol name="ID_LOTTO" order="Asc"/>
   </CreateIndex>
   <AlterTable schema="THIPPERS" name="YMATCH_MATRICOLA_ARTICOLO">
     <AddPrimaryKey>
@@ -27,6 +28,7 @@
         <ColumnRef name="ID_ARTICOLO"/>
         <ColumnRef name="ID_MATRICOLA_DA"/>
         <ColumnRef name="ID_MATRICOLA_A"/>
+        <ColumnRef name="ID_LOTTO"/>
       </PrimaryKey>
     </AddPrimaryKey>
   </AlterTable>
