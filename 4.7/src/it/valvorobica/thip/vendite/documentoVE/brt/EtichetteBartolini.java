@@ -1,4 +1,4 @@
-package it.valvorobica.thip.base.vendite.documentoVE;
+package it.valvorobica.thip.vendite.documentoVE.brt;
 
 import java.sql.*;
 import com.thera.thermfw.common.*;

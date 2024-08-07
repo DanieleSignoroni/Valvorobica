@@ -1,4 +1,4 @@
-package it.valvorobica.thip.base.vendite.documentoVE.web;
+package it.valvorobica.thip.vendite.documentoVE.brt.web;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import com.thera.thermfw.persist.KeyHelper;
 import com.thera.thermfw.web.WebFormModifier;
 
 import it.thera.thip.base.azienda.Azienda;
-import it.valvorobica.thip.base.vendite.documentoVE.StampaEtichetteBartolini;
+import it.valvorobica.thip.vendite.documentoVE.brt.StampaEtichetteBartolini;
 
 /**
  * <h1>Softre Solutions</h1>

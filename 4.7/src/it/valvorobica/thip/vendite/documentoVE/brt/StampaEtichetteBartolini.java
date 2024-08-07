@@ -1,4 +1,4 @@
-package it.valvorobica.thip.base.vendite.documentoVE;
+package it.valvorobica.thip.vendite.documentoVE.brt;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -20,6 +20,7 @@ import com.thera.thermfw.batch.Printer;
 import com.thera.thermfw.common.BusinessObjectAdapter;
 import com.thera.thermfw.persist.PersistentObject;
 import com.thera.thermfw.persist.Proxy;
+import com.thera.thermfw.security.Authorizable;
 
 import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.cs.SaveConWarning;
@@ -35,7 +36,7 @@ import it.thera.thip.cs.SaveConWarning;
  * </p>
  */
 
-public class StampaEtichetteBartolini extends BusinessObjectAdapter implements SaveConWarning {
+public class StampaEtichetteBartolini extends BusinessObjectAdapter implements SaveConWarning,Authorizable {
 
 	@SuppressWarnings("rawtypes")
 	protected List iWarningList = new ArrayList<>();

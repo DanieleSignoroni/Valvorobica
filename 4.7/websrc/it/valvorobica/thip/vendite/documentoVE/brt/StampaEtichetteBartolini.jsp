@@ -30,12 +30,12 @@
   List errors = new ArrayList(); 
   WebJSTypeList jsList = new WebJSTypeList(); 
   WebForm StampaEtichetteBartoliniForm =  
-     new com.thera.thermfw.web.WebForm(request, response, "StampaEtichetteBartoliniForm", "StampaEtichetteBartolini", null, "it.valvorobica.thip.base.vendite.documentoVE.web.StampaEtichetteBartoliniFormActionAdapter", false, false, true, true, true, true, null, 0, true, null); 
+     new com.thera.thermfw.web.WebForm(request, response, "StampaEtichetteBartoliniForm", "StampaEtichetteBartolini", null, "it.valvorobica.thip.vendite.documentoVE.brt.web.StampaEtichetteBartoliniFormActionAdapter", false, false, true, true, true, true, null, 0, true, null); 
   StampaEtichetteBartoliniForm.setServletEnvironment(se); 
   StampaEtichetteBartoliniForm.setJSTypeList(jsList); 
   StampaEtichetteBartoliniForm.setHeader("it.thera.thip.cs.PantheraHeader.jsp"); 
   StampaEtichetteBartoliniForm.setFooter("com.thera.thermfw.common.Footer.jsp"); 
-  StampaEtichetteBartoliniForm.setWebFormModifierClass("it.valvorobica.thip.base.vendite.documentoVE.web.StampaEtichetteBartoliniFormModifier"); 
+  StampaEtichetteBartoliniForm.setWebFormModifierClass("it.valvorobica.thip.vendite.documentoVE.brt.web.StampaEtichetteBartoliniFormModifier"); 
   StampaEtichetteBartoliniForm.setDeniedAttributeModeStr("hideNone"); 
   int mode = StampaEtichetteBartoliniForm.getMode(); 
   String key = StampaEtichetteBartoliniForm.getKey(); 

@@ -1,14 +1,20 @@
-package it.valvorobica.thip.vendite.documentoVE;
+package it.valvorobica.thip.vendite.documentoVE.brt;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,19 +24,13 @@ import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.batch.BatchRunnable;
 import com.thera.thermfw.batch.Printer;
 import com.thera.thermfw.persist.ConnectionManager;
-import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.persist.Proxy;
 import com.thera.thermfw.security.Authorizable;
 
-import it.thera.thip.api.client.ApiClient;
-import it.thera.thip.api.client.ApiRequest;
-import it.thera.thip.api.client.ApiResponse;
-import it.thera.thip.api.client.ApiRequest.Method;
 import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.base.comuniVenAcq.DdtTes;
 import it.thera.thip.base.comuniVenAcq.DdtTesTM;
 import it.thera.thip.vendite.documentoVE.DdtTestataVendita;
-import it.valvorobica.thip.base.vendite.documentoVE.EtichetteBartolini;
 
 /**
  * <h1>Softre Solutions</h1> <br>
@@ -48,7 +48,7 @@ public class YExpDDTBartolini extends BatchRunnable implements Authorizable {
 
 	public static final char PROCESSATO = 'P';
 
-	private static final String RES = "it.valvorobica.thip.vendite.documentoVE.resources.EstremiBartolini";
+	public static final String RES = "it.valvorobica.thip.vendite.documentoVE.brt.resources.EstremiBartolini";
 
 	protected Date iDateFrom;
 
@@ -113,133 +113,62 @@ public class YExpDDTBartolini extends BatchRunnable implements Authorizable {
 			output.println(" --> Processo DDT {" + ddt.getKey() + "} ");
 
 			if(ddt.getFlagRisUte4() != PROCESSATO) {
-				JSONObject json = recuperaJsonDDT(ddt, estremiBrt);
-
-				ApiClient c = new ApiClient("");
-				ApiRequest r = new ApiRequest(Method.POST, estremiBrt.getURL() + "/shipment");
-				r.setContentType(MediaType.APPLICATION_JSON);
-				r.setBody(json);
-				try {
-					ApiResponse response = c.send(r);
-					if(response.success()) {
-						String body = response.getBodyAsString();
-						JSONObject bodyAsJSON = new JSONObject(body);
-						if(bodyAsJSON.has("createResponse")) {
-							JSONObject createResponse = bodyAsJSON.getJSONObject("createResponse");
-							if(createResponse.has("labels")) {
-								JSONArray labels = createResponse.getJSONObject("labels").getJSONArray("label");
-								for(int i = 0; i < labels.length(); i ++) {
-									JSONObject label = labels.getJSONObject(i);
-									String stream = label.getString("stream");
-									byte[] decodedBytes = Base64.getDecoder().decode(stream);
-									//qui ho la stream con i bordero', quindi li stampo e li salvo a database cosi ho la ri-stampa
-									EtichetteBartolini etichetta = (EtichetteBartolini) Factory.createObject(EtichetteBartolini.class);
-									etichetta.setIdAzienda(Azienda.getAziendaCorrente());
-									etichetta.setAnnoDDT(ddt.getIdAnnoDdt());
-									etichetta.setNumeroDDT(ddt.getIdNumeroDdt());
-									etichetta.setTipoDDT(ddt.getTipoDdt());
-									try {
-										int rc = etichetta.save();
-										if(rc > 0) {
-											rc = etichetta.getEtichettaBase64().setBytes(decodedBytes);
-											if(rc > 0) {
-												ConnectionManager.commit();
-											}else {
-												ConnectionManager.rollback();
-											}
-
-										}
-									} catch (SQLException e) {
-										e.printStackTrace(Trace.excStream);
-									}
-								}
+				JSONObject json = estremiBrt.recuperaJsonDDT(ddt, estremiBrt);
+				JSONObject bodyAsJSON = estremiBrt.sendShipmentBartolini(ddt,json, estremiBrt);
+				if(bodyAsJSON.has("labels")) {
+					JSONArray labels = bodyAsJSON.getJSONArray("labels");
+					for(int i = 0; i < labels.length(); i ++) {
+						JSONObject label = labels.getJSONObject(i);
+						EtichetteBartolini etichetta = (EtichetteBartolini) label.get("etichetta");
+						PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+						PrintService selectedPrintService = null;
+						for (PrintService printService : printServices) {
+							if (printService.getName().equalsIgnoreCase(getIdStampante())) {
+								selectedPrintService = printService;
+								break;
 							}
 						}
-					}else {
-						output.println(" ## Chiamata terminata con code : "+response.getStatus().getStatusCode());
-						output.println(" ** Body richiesto : "+json.toString());
+						if(selectedPrintService != null) {
+							DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+							if(etichetta != null && getIdStampante() != null) {
+								InputStream textStream = null;
+								try {
+									textStream = new ByteArrayInputStream(etichetta.getEtichettaBase64().getBytes());
+								} catch (SQLException e) {
+									e.printStackTrace(Trace.excStream);
+								}
+								DocPrintJob printJob = selectedPrintService.createPrintJob();
+								PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
+								try {
+									printJob.print(new SimpleDoc(textStream, flavor, null), attributes);
+								} catch (PrintException e) {
+									e.printStackTrace(Trace.excStream);
+								};
+							}
+						}
 					}
-				} catch (KeyManagementException | NoSuchAlgorithmException e) {
-					e.printStackTrace(Trace.excStream);
 				}
-
-				//Flaggo il ddt come processato e non lo ri-processero' piu'
-				try {
-					ddt.setFlagRisUte4(PROCESSATO);
-					int rcSave = ddt.save();
-					if(rcSave <= 0) {
-						ConnectionManager.rollback();
-					}else {
-						ConnectionManager.commit();
-					}
-				} catch (SQLException e) {
-					e.printStackTrace(Trace.excStream);
-				}
-
 			}else {
 				output.println(" ## DDT gia' flaggato come processato, non verra' analizzato");
 			}
+			//Flaggo il ddt come processato e non lo ri-processero' piu'
+			try {
+				ddt.setFlagRisUte4(PROCESSATO);
+				int rcSave = ddt.save();
+				if(rcSave <= 0) {
+					ConnectionManager.rollback();
+				}else {
+					ConnectionManager.commit();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+
+
 			output.println();
 		}
 		output.println(" ** Termine... **");
 		return isOk;
-	}
-
-	public JSONObject recuperaJsonDDT(DdtTes ddt, EstremiBartolini estremi) {
-
-		JSONObject createData = new JSONObject();
-
-		createData.put("network", "");
-		createData.put("departureDepot", 173);
-		//		createData.put("senderCustomerCode", 01731626);
-		createData.put("senderCustomerCode", 1020119);
-		if (ddt.getIdModConsegna() != null && ddt.getIdModConsegna().equals("01")) {
-			createData.put("deliveryFreightTypeCode", "DAP");
-		}
-		if (ddt.getIdModConsegna() != null && ddt.getIdModConsegna().equals("02")) {
-			createData.put("deliveryFreightTypeCode", "EXW");
-		}
-		if (ddt.getIdModConsegna() != null && ddt.getIdModConsegna().equals("05")) {
-			createData.put("deliveryFreightTypeCode", "DAP");
-		}
-		createData.put("consigneeCompanyName", ddt.getCliente().getRagioneSociale());
-		createData.put("consigneeAddress", ddt.getIndirizzoDen());
-		createData.put("consigneeCountryAbbreviationISOAlpha2", ddt.getIdNazioneDen());
-		createData.put("consigneeTelephone", ddt.getIndirizzo() != null ? ddt.getIndirizzo().getNumeroTelefono() : "");
-		createData.put("consigneeEMail", ddt.getIndirizzo() != null ? ddt.getIndirizzo().getIndirizzoEmail() : "");
-		createData.put("isAlertRequired", 0);
-		createData.put("insuranceAmount", 0);
-		createData.put("quantityToBeInvoiced", 0.0);
-		createData.put("cashOnDelivery", 0);
-		createData.put("isCODMandatory", "0");
-		createData.put("notes", "DEBORA DAL SANTO");
-		createData.put("declaredParcelValue", 0);
-		createData.put("palletType1Number", 0);
-		createData.put("palletType2Number", 0);
-		createData.put("numericSenderReference", ddt.getBatchJobId());
-		createData.put("alphanumericSenderReference", ddt.getIdNumeroDdt());
-		createData.put("numberOfParcels", ddt.getNumeroColli());
-		createData.put("weightKG", ddt.getPesoLordo());
-		//		createData.put("volumeM3", ddt.getVolume().intValue());
-		createData.put("consigneeZIPCode", ddt.getCapDen());
-		createData.put("consigneeCity", ddt.getLocalitaDen());
-		createData.put("consigneeProvinceAbbreviation", ddt.getIdProvinciaDen());
-		createData.put("pudoId", "");
-
-		JSONObject labelParameters = new JSONObject();
-		labelParameters.put("outputType", "PDF");
-		labelParameters.put("offsetX", 0);
-		labelParameters.put("offsetY", 0);
-		labelParameters.put("isBorderRequired", "1");
-		labelParameters.put("isLogoRequired", "1");
-		labelParameters.put("isBarcodeControlRowRequired", "0");
-
-		JSONObject mainObject = new JSONObject();
-		mainObject.put("account", estremi.getAccount());
-		mainObject.put("createData", createData);
-		mainObject.put("isLabelRequired", 1);
-		mainObject.put("labelParameters", labelParameters);
-		return mainObject;
 	}
 
 	@SuppressWarnings("unchecked")

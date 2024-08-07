@@ -4,8 +4,8 @@
     name="StampaEtichetteBartolini"
     locktype="nolock"
     errorList="yes" menubar="yes" toolbar="yes" submitReset="none"
-    servlet="it.valvorobica.thip.base.vendite.documentoVE.web.StampaEtichetteBartoliniFormActionAdapter"
-    webFormModifierClass="it.valvorobica.thip.base.vendite.documentoVE.web.StampaEtichetteBartoliniFormModifier"
+    servlet="it.valvorobica.thip.vendite.documentoVE.brt.web.StampaEtichetteBartoliniFormActionAdapter"
+    webFormModifierClass="it.valvorobica.thip.vendite.documentoVE.brt.web.StampaEtichetteBartoliniFormModifier"
     onLoadPresent="yes"
     header="com.thera.thermfw.common.Header.jsp"
     footer="com.thera.thermfw.common.Footer.jsp">

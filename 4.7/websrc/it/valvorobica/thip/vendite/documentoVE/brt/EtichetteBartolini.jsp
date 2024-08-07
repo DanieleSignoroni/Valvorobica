@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-                      "file:///W:\PthDev\Projects\Panthera\Valvorobica\WebContent\dtd/xhtml1-transitional.dtd">
+                      "file:///K:/Thip/4.7.0/websrcsvil/dtd/xhtml1-transitional.dtd">
 <html>
 <!-- WIZGEN Therm 2.0.0 as Form - multiBrowserGen = true -->
 <%=WebGenerator.writeRuntimeInfo()%>
@@ -30,7 +30,7 @@
   List errors = new ArrayList(); 
   WebJSTypeList jsList = new WebJSTypeList(); 
   WebForm EtichetteBartoliniForm =  
-     new com.thera.thermfw.web.WebForm(request, response, "EtichetteBartoliniForm", "EtichetteBartolini", null, "com.thera.thermfw.web.servlet.FormActionAdapter", false, false, true, true, true, true, null, 0, true, "it/valvorobica/thip/base/vendite/documentoVE/EtichetteBartolini.js"); 
+     new com.thera.thermfw.web.WebForm(request, response, "EtichetteBartoliniForm", "EtichetteBartolini", null, "com.thera.thermfw.web.servlet.FormActionAdapter", false, false, true, true, true, true, null, 0, true, "it/valvorobica/thip/vendite/documentoVE/brt/EtichetteBartolini.js"); 
   EtichetteBartoliniForm.setServletEnvironment(se); 
   EtichetteBartoliniForm.setJSTypeList(jsList); 
   EtichetteBartoliniForm.setHeader("it.thera.thip.cs.PantheraHeader.jsp"); 

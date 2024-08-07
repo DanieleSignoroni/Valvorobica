@@ -1,4 +1,4 @@
-package it.valvorobica.thip.base.vendite.documentoVE.web;
+package it.valvorobica.thip.vendite.documentoVE.brt.web;
 
 import com.thera.thermfw.web.MDVToolBarButton;
 import com.thera.thermfw.web.WebToolBar;

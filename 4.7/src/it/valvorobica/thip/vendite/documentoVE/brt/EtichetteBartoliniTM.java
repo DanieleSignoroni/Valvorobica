@@ -1,4 +1,4 @@
-package it.valvorobica.thip.base.vendite.documentoVE;
+package it.valvorobica.thip.vendite.documentoVE.brt;
 
 import com.thera.thermfw.persist.*;
 import java.sql.*;
@@ -33,7 +33,7 @@ public class EtichetteBartoliniTM extends TableManager {
 
 	private static TableManager cInstance;
 
-	private static final String CLASS_NAME = it.valvorobica.thip.base.vendite.documentoVE.EtichetteBartolini.class.getName();
+	private static final String CLASS_NAME = it.valvorobica.thip.vendite.documentoVE.brt.EtichetteBartolini.class.getName();
 
 
 	public synchronized static TableManager getInstance() throws SQLException {
