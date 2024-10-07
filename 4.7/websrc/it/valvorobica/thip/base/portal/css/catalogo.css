@@ -1,0 +1,42 @@
+.card-img-overlaysoftre {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	/* padding: 1rem; */
+	border-radius: calc(0.25rem - 1px);
+	text-align:center;
+}
+
+.card-title {
+	background-color: rgb(255, 255, 255, 40%);
+	/* width: fit-content; */
+	/* width: 100%; */
+	/* cursor: pointer; */
+	/* user-select: none; */
+	/* padding: 0.5rem 0.2rem; */
+}
+
+.card {
+	height: 300px;
+}
+
+.card:hover{
+	  transform: scale(1.2); /* Increase size by 20% */
+}
+
+.img-fluid {
+	width: auto;
+	max-height: 100%;
+/* 	margin-top: 1rem; */
+}
+
+.contact-product{
+	margin-top: 2rem;
+	text-align: center;
+}
+
+.contact-product-description{
+	margin-top: 1rem;
+	text-align: center;
+}

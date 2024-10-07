@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- RPT_BORDERO_BRT (RPT_BOR): Report Bordero&apos; - Bartolini; -->
+  <CreateTable schema="THIPPERS" name="RPT_BORDERO_BRT" shortname="RPT_BOR">
+    <Column name="BATCH_JOB_ID" shortname="BATCH_JOB_" type="integer" nullable="no"/>
+    <Column name="RIGA_JOB_ID" shortname="RIGA_JOB_I" type="integer" nullable="no"/>
+    <Column name="REPORT_NR" shortname="REPORT_NR" type="integer" nullable="no"/>
+    <Column name="NUMERIC_SENDER_REF" shortname="NUMERIC_SE" type="varchar" length="50" nullable="yes"/>
+    <Column name="ALPHANUM_SEND_REF" shortname="ALPHANUM_S" type="varchar" length="50" nullable="yes"/>
+    <Column name="CONSIGNEE_COMPANY_NAME" shortname="CONSIGNEE_" type="varchar" length="250" nullable="yes"/>
+    <Column name="CONSIGNEE_ADRESS" shortname="CONSIGNEE0" type="varchar" length="255" nullable="yes"/>
+    <Column name="CONSIGNEE_ZIP_CODE" shortname="CONSIGNEE1" type="char" length="9" nullable="yes"/>
+    <Column name="CONSIGNEE_CITY" shortname="CONSIGNEE2" type="varchar" length="35" nullable="yes"/>
+    <Column name="CONSIGNEE_PROV_ABBREV" shortname="CONSIGNEE3" type="char" length="20" nullable="yes"/>
+    <Column name="CONSIGNEE_CONTRY_ABB" shortname="CONSIGNEE4" type="char" length="20" nullable="yes"/>
+    <Column name="NUMBER_PARCELS" shortname="NUMBER_PAR" type="integer" nullable="yes"/>
+    <Column name="WEIGHT_KG" shortname="WEIGHT_KG" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="CASH_ON_DELIVERY" shortname="CASH_ON_DE" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="COD_CURRENCY" shortname="COD_CURREN" type="char" length="4" nullable="yes"/>
+    <Column name="COD_PAYMENT_TYPE" shortname="COD_PAYMEN" type="char" length="3" nullable="yes"/>
+    <Column name="PARCEL_NUMBER_FROM" shortname="PARCEL_NUM" type="char" length="20" nullable="yes"/>
+    <Column name="PARCEL_NUMBER_TO" shortname="PARCEL_NU0" type="char" length="20" nullable="yes"/>
+    <Column name="TOT_COLLI" shortname="TOT_COLLI" type="integer" nullable="yes"/>
+    <Column name="TOT_PESO" shortname="TOT_PESO" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="TOT_SPEDIZIONI" shortname="TOT_SPEDIZ" type="integer" nullable="yes"/>
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="RPT_BORDERO_BR_I01" tabschema="THIPPERS" tabname="RPT_BORDERO_BRT" shortname="RPT_BO_I01" unique="yes">
+    <IndexCol name="BATCH_JOB_ID" order="Asc"/>
+    <IndexCol name="RIGA_JOB_ID" order="Asc"/>
+    <IndexCol name="REPORT_NR" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="RPT_BORDERO_BRT">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="BATCH_JOB_ID"/>
+        <ColumnRef name="RIGA_JOB_ID"/>
+        <ColumnRef name="REPORT_NR"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="RPT_BORDERO_BRT" text="Report Bordero' - Bartolini">
+      <CommentColumn name="BATCH_JOB_ID" text="BatchJobId"/>
+      <CommentColumn name="RIGA_JOB_ID" text="RigaJobId"/>
+      <CommentColumn name="REPORT_NR" text="ReportNr"/>
+      <CommentColumn name="NUMERIC_SENDER_REF" text="Numeric sender reference"/>
+      <CommentColumn name="ALPHANUM_SEND_REF" text="Aplhanumeric sender reference"/>
+      <CommentColumn name="CONSIGNEE_COMPANY_NAME" text="Consignee company name"/>
+      <CommentColumn name="CONSIGNEE_ADRESS" text="Consignee adress"/>
+      <CommentColumn name="CONSIGNEE_ZIP_CODE" text="Consignee zip code"/>
+      <CommentColumn name="CONSIGNEE_CITY" text="Consignee city"/>
+      <CommentColumn name="CONSIGNEE_PROV_ABBREV" text="Consignee provice abbreviation"/>
+      <CommentColumn name="CONSIGNEE_CONTRY_ABB" text="Consignee country abbreviation ISOAplha 2"/>
+      <CommentColumn name="NUMBER_PARCELS" text="Number of parcels"/>
+      <CommentColumn name="WEIGHT_KG" text="Weight KG"/>
+      <CommentColumn name="CASH_ON_DELIVERY" text="Cash on delivery"/>
+      <CommentColumn name="COD_CURRENCY" text="Cod currency"/>
+      <CommentColumn name="COD_PAYMENT_TYPE" text="Cod payment type"/>
+      <CommentColumn name="PARCEL_NUMBER_FROM" text="Parcel number from"/>
+      <CommentColumn name="PARCEL_NUMBER_TO" text="Parcel number to"/>
+      <CommentColumn name="TOT_COLLI" text="Totale colli"/>
+      <CommentColumn name="TOT_PESO" text="Totale peso"/>
+      <CommentColumn name="TOT_SPEDIZIONI" text="Totale spedizioni"/>
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="RPT_BORDERO_BR_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="RPT_BORDERO_BRT"/>
+</TDDML>

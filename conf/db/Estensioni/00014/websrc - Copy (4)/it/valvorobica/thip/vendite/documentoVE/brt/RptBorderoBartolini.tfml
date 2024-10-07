@@ -1,0 +1,24 @@
+<tfml>
+  <generator type="form"/>
+  <form classHdr="RptBorderoBartolini"
+    name="RptBorderoBartoliniForm"
+    locktype="nolock"
+    errorList="yes" menubar="yes" toolbar="yes" submitReset="none"
+    jsLibraryName="it/valvorobica/thip/vendite/documentoVE/brt/RptBorderoBartolini.js"
+    onLoadPresent="yes"
+    header="com.thera.thermfw.common.Header.jsp"
+    footer="com.thera.thermfw.common.Footer.jsp">
+    <menubar  name="myMenuBar">
+      <import file="it/thera/thip/cs/defObjMenu.tfml"/>
+    </menubar>
+    <toolbar name="myToolBar" imgwidth="16" imgheight="16">
+      <import file="it/thera/thip/cs/defObjMenu.tfml"/>
+    </toolbar>
+    <textinput name="BatchJobId" classAD="BatchJobId"/>
+    <textinput name="RigaJobId" classAD="RigaJobId"/>
+    <textinput name="ReportNr" classAD="ReportNr"/>
+    <tabbed name="mytabbed" height="100%" width="100%">
+    </tabbed>
+  </form>
+</tfml>
+
