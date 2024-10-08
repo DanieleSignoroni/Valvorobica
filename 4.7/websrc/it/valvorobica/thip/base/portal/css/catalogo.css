@@ -1,34 +1,39 @@
-.card-img-overlaysoftre {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	/* padding: 1rem; */
-	border-radius: calc(0.25rem - 1px);
-	text-align:center;
+.card {
+  height: 300px;
+  position: relative;
+  transition: transform 0.3s ease; /* Smooth scaling */
+}
+
+.card:hover {
+  transform: scale(1.1);
+}
+
+.card-img-overlaysoftre { /* consider renaming this to card-img-overlay */
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: calc(0.25rem - 1px);
+  text-align: center;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .card-title {
-	background-color: rgb(255, 255, 255, 40%);
-	/* width: fit-content; */
-	/* width: 100%; */
-	/* cursor: pointer; */
-	/* user-select: none; */
-	/* padding: 0.5rem 0.2rem; */
+  background-color: rgba(255, 255, 255, 0.4); /* Increase opacity if needed */
 }
 
-.card {
-	height: 300px;
+.card-img {
+  cursor: pointer;
 }
 
-.card:hover{
-	  transform: scale(1.2); /* Increase size by 20% */
+.card-info {
+  margin-top: 0.25rem;
 }
 
 .img-fluid {
-	width: auto;
-	max-height: 100%;
-/* 	margin-top: 1rem; */
+  width: auto;
+  max-height: 100%;
 }
 
 .contact-product{
@@ -39,4 +44,34 @@
 .contact-product-description{
 	margin-top: 1rem;
 	text-align: center;
+}
+
+.modal-description-body{
+	max-height: 400px;
+	overflow-y: scroll;
+}
+
+/* For larger screens */
+@media (min-width: 576px) {
+    .modal-description {
+        max-width: 80%; /* Set a maximum width of 80% for small devices */
+    }
+}
+
+@media (min-width: 768px) {
+    .modal-description {
+        max-width: 70%; /* Set a maximum width of 70% for medium devices */
+    }
+}
+
+@media (min-width: 992px) {
+    .modal-description {
+        max-width: 60%; /* Set a maximum width of 60% for large devices */
+    }
+}
+
+@media (min-width: 1200px) {
+    .modal-description {
+        max-width: 50%; /* Set a maximum width of 50% for extra-large devices */
+    }
 }

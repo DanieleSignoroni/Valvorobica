@@ -54,7 +54,6 @@ public class YImgCatalogoPortaleFormModifier extends WebFormModifier {
 				out.println("<script>");
 				out.println("document.getElementById('imgSuDB').parentNode.parentNode.style.display = 'none';");
 				out.println("</script>");
-
 			}
 		} else {
 			out.println("<script>");
