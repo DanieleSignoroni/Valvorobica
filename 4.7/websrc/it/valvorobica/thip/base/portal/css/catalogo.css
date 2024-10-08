@@ -31,6 +31,15 @@
   margin-top: 0.25rem;
 }
 
+.card-info {
+    display: none; /* Initially hide the icon */
+}
+
+.card:hover .card-info {
+    display: revert; /* Show the icon when the card is hovered */
+    cursor: pointer;
+}
+
 .img-fluid {
   width: auto;
   max-height: 100%;

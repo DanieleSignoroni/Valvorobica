@@ -149,7 +149,7 @@ if (userPortalSession.getJsonCatalogo() == null) {
 	        '<img onclick="toggleChildren(this)" class="img-fluid card-img" src="' + item.img + '">' +
 	        '<div class="card-img-overlaysoftre">' +
 	          '<h5 class="card-title">' + item.text + '</h5>' +
-	          '<i class="fa-solid fa-circle-info card-info"></i>' +
+	          '<i class="fa-solid fa-circle-info card-info" title="Informazioni"></i>' +
 	        '</div>' +
 	      '</div>';
 

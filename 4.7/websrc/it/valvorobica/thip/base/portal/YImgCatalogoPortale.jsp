@@ -249,6 +249,9 @@
 								</tr>
 								</table>
 							</td>
+    		                <td colspan="2" valign="top">
+	        		            <button id="btnHTML" name="btnHTML" onclick="apriRFTtoHTML()" type="button">Crea codice HTML</button>
+                    		</td>
 							</tr>
 							</table>
 					<% mytabbed.endTab(); %> 

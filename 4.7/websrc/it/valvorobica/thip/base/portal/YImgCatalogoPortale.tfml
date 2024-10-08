@@ -24,6 +24,7 @@
         <textarea name="UrlImg" classAD="UrlImg"/>
         <textinput name="Colonne" classAD="Colonne"/>
         <textarea name="Descrizione" classAD="Descrizione"/>
+        <button name="btnHTML" script="apriRFTtoHTML()" />
       </tab>
     </tabbed>
   </form>

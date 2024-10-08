@@ -125,3 +125,8 @@ function selectByDescription(description) {
 		}
 	}
 }
+
+function apriRFTtoHTML(){
+	var url = "	https://onlinehtmleditor.dev/";
+	window.open(url,"width:"+window.screen.width+",height:"+window.screen.height,"HTML")
+}
