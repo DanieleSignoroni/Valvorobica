@@ -30,7 +30,15 @@ Object[] info = SessionEnvironment.getDBInfoFromIniFile();
 String dbName = (String) info[0];
 String newsHtml = null;
 BigDecimal total = BigDecimal.ZERO;
+
 JSONObject deliveryMethods = null;
+JSONObject shipmentMethods = null;
+JSONObject shippers = null;
+JSONObject shipmentDefaultMethod = null;
+JSONObject defaultShipper = null;
+JSONObject deafultDeliveryMethod = null;
+
+String salesConditionsPDFKey = null;
 try {
 	if (!Security.isCurrentDatabaseSetted()) {
 		Security.setCurrentDatabase(dbName, null);
@@ -48,6 +56,13 @@ try {
 	items = (ArrayList<YCarrello.ItemCarrello>) values.get("items");
 	total = (BigDecimal) values.get("total");
 	deliveryMethods = (JSONObject) values.get("deliveryMethods");
+	salesConditionsPDFKey = (String) values.get("salesConditionsPDFKey");
+	deliveryMethods = (JSONObject) values.get("deliveryMethods");
+	shipmentMethods = (JSONObject) values.get("shipmentMethods");
+	shippers = (JSONObject) values.get("shippers");
+	shipmentDefaultMethod = (JSONObject) values.get("shipmentDefaultMethod");
+	defaultShipper = (JSONObject) values.get("defaultShipper");
+	deafultDeliveryMethod = (JSONObject) values.get("deafultDeliveryMethod");
 } catch (Throwable t) {
 	t.printStackTrace(Trace.excStream);
 } finally {
@@ -66,6 +81,7 @@ try {
 <%=com.thera.thermfw.web.WebJSTypeList.getImportForCSS("it/valvorobica/thip/base/portal/css/frames.css", request)%>
 <%=WebJSTypeList.getImportForCSS("it/valvorobica/thip/base/portal/css/cart.css", request)%>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <%=WebJSTypeList.getImportForCSS("it/valvorobica/thip/assets/DataTables/datatables.css", request)%>
 <%=WebJSTypeList.getImportForCSS("it/valvorobica/thip/assets/DataTables/Select/css/select.dataTables.css", request)%>
 <%=WebJSTypeList.getImportForCSS("it/valvorobica/thip/assets/DataTables/Buttons/css/buttons.dataTables.css", request)%>
@@ -79,7 +95,6 @@ try {
 <%=com.thera.thermfw.web.WebJSTypeList.getImportForJSLibrary("it/valvorobica/thip/assets/DataTables/Buttons/js/dataTables.buttons.js", request)%>
 </head>
 <body class="noscrollbar" onload="rimuoviSpinner()">
-	<form>
 			<input type="hidden" name="urlWS" id="urlWS" value=""> <input
 			type="hidden" name="webAppPath" id="webAppPath"
 			value="<%=webAppPath%>">
@@ -168,24 +183,39 @@ try {
 		</div>
 		<div id="modalWarningCheckOut" class="modal fade">
 			<div class="modal-dialog modal-confirm">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Attenzione!</h4>
+				<form id="checkoutForm">
+					<div class="modal-content">
+						<div class="text-end">
+							<span class="danger">Condizioni di vendita</span>
+							<i class="fa-regular fa-file-lines fa-2x" style="cursor:pointer;" onclick="parent.download('<%=userPortalSession.getTokecUID()%>','<%=salesConditionsPDFKey %>')"></i>
+						</div>
+						<div class="modal-header">
+							<h4 class="modal-title">Attenzione!</h4>
+						</div>
+						<div class="modal-body">
+							<p id="warningTxt" class="text-center"></p>
+							<div class="row">
+								<div class="col">
+									<label class="form-label">Modalità di consegna</label>
+									<select class="form-select mb-2" id="deliveryMethod" required disabled></select>
+								</div>
+								<div class="col">
+									<label class="form-label">Modalità di spedizione</label>
+									<select class="form-select mb-2" id="shipmentMethod" required></select>
+								</div>
+							</div>
+							<label class="form-label">Vettore</label>
+							<select class="form-select mb-2" id="shipper" required></select>
+							<input id="vsNr" class="form-control mt-2" placeholder="Vs. Numero" required></input>
+							<textarea id="note" class="form-control mt-2" placeholder="Note"></textarea>
+						</div>
+						<div class="modal-footer" style="flex-wrap:unset;">
+							<button type="submit" class="btn btn-block" id="warningCheckOut">Conferma ordine</button>
+								<button type="button" class="btn btn-block" onclick="annullaCheckoutOrder()"
+								data-dismiss="modal">Annulla</button>
+						</div>
 					</div>
-					<div class="modal-body">
-						<p id="warningTxt" class="text-center"></p>
-						<label class="form-label">Modalità di consegna</label>
-						<select class="form-select" id="deliveryMethod"></select>
-						<input id="vsNr" class="form-control mt-2" placeholder="Vs. Numero"></input>
-						<textarea id="note" class="form-control mt-2" placeholder="Note"></textarea>
-					</div>
-					<div class="modal-footer" style="flex-wrap:unset;">
-						<button type="button" class="btn btn-block" id="warningCheckOut"
-							data-dismiss="modal">SI</button>
-							<button type="button" class="btn btn-block" onclick="$('#modalWarningCheckOut').modal('toggle');"
-							data-dismiss="modal">NO</button>
-					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 		<div style="display: none" class="text-center">
@@ -208,304 +238,382 @@ try {
 				</div>
 			</div>
 		</div>
-	</form>
 
 	<script>
 	var deliveryMethods = <%=deliveryMethods%>;
-	<%
-		%>
-		var cart = $('#cart',parent.document);
-		cart.addClass('shake').attr('data-totalitems', <%=YUserPortalSession.getNumeroItemsCarrelloUtente(userPortalSession.getIdAzienda(), userPortalSession.getIdUtente())%>);
-		setTimeout(function(){
-	        cart.removeClass('shake');
-	      },1000)			
-		<%
-	%>
-		$(document).ready(function() {
-			table = new DataTable('#table', {
-				 dom: 'Blfrtip',
-			        buttons: [
-			        	{
-			            	className: 'btn btn-secondary btn-sm',
-			                text: 'Procedi',
-			                action: function () {
-			                	if(table.rows('.selected').data().length == 0){
-			                		var txt = "Per procedere selezionare almeno un prodotto";
-			        				$('#txtWarning',parent.document)[0].innerHTML = txt;
-			        				$('#modalWarningClick',parent.document)[0].click();
-			                	}else{
-			                		confirmCheckOutOrder();
-			                	}
-			                }
-			            },
-			            {
-			            	className: 'btn btn-secondary btn-sm',
-			                text: 'Selez. Tutto',
-			                action: function () {
-			                	if(table.rows('.selected').data().length == 0){
-			                		table.rows().select();
-			                	}else{
-			                		table.rows().deselect();
-			                	}
-			                }
-			            },
-			            {
-			            	className: 'btn btn-danger btn-sm',
-			                text: 'Rimuovi',
-			                action: function ( e, dt, node, config ) {
-			                	confirmDelete();
-			                }
-			            	
-			            }
-			        ], 
-			        initComplete: function() { 
-			            var btns = $('.dt-button');
-			            btns.removeClass('dt-button');
-			          },
-				select: {
-					 style: 'multi',
-			        selector: 'td:first-child'
-			    },
-				columnDefs : [{
-					            orderable: false,
-					            className: 'select-checkbox',
-					            targets: 0
-					        },
-							{
-								targets : -1,
-								render : function(data,type, row, meta) {
-									return "<a class='btn btn-success btn-sm mr-2' onclick='modifyRow(this)'>Modifica</a>";
-								}
-							}
-					],
-				});
-			compilaURLWS();
-			populateDeliveryMethods();
+	var shipmentMethods = <%=shipmentMethods%>;
+	var shippers = <%=shippers%>;
+	var shipmentDefaultMethod = <%=shipmentDefaultMethod%>;
+	var defaultShipper = <%=defaultShipper%>;
+	var deafultDeliveryMethod = <%=deafultDeliveryMethod%>;
+	
+	var cart = $('#cart', parent.document);
+	
+	cart.addClass('shake').attr('data-totalitems', <%=YUserPortalSession.getNumeroItemsCarrelloUtente(userPortalSession.getIdAzienda(), userPortalSession.getIdUtente()) %>);
+	setTimeout(function() {
+		cart.removeClass('shake');
+	}, 1000)
+	
+	const checkoutForm = document.getElementById('checkoutForm');
+	
+	checkoutForm.addEventListener('submit', function(event) {
+		event.preventDefault();
+
+		if (checkoutForm.checkValidity() === false) {
+			checkoutForm.classList.add('was-validated');
+		} else {
+			checkOutOrder();
+		}
+	});
+	
+	$(document).ready(function() {
+		table = new DataTable('#table', {
+			dom: 'Blfrtip',
+			buttons: [
+				{
+					className: 'btn btn-secondary btn-sm',
+					text: 'Procedi',
+					action: function() {
+						if (table.rows('.selected').data().length == 0) {
+							var txt = "Per procedere selezionare almeno un prodotto";
+							$('#txtWarning', parent.document)[0].innerHTML = txt;
+							$('#modalWarningClick', parent.document)[0].click();
+						} else {
+							confirmCheckOutOrder();
+						}
+					}
+				},
+				{
+					className: 'btn btn-secondary btn-sm',
+					text: 'Selez. Tutto',
+					action: function() {
+						if (table.rows('.selected').data().length == 0) {
+							table.rows().select();
+						} else {
+							table.rows().deselect();
+						}
+					}
+				},
+				{
+					className: 'btn btn-danger btn-sm',
+					text: 'Rimuovi',
+					action: function(e, dt, node, config) {
+						if (table.rows('.selected').data().length == 0) {
+							var txt = "Per procedere selezionare almeno un prodotto";
+							$('#txtWarning', parent.document)[0].innerHTML = txt;
+							$('#modalWarningClick', parent.document)[0].click();
+						} else {
+							confirmDelete();
+						}
+					}
+
+				}
+			],
+			initComplete: function() {
+				var btns = $('.dt-button');
+				btns.removeClass('dt-button');
+			},
+			select: {
+				style: 'multi',
+				selector: 'td:first-child'
+			},
+			columnDefs: [{
+				orderable: false,
+				className: 'select-checkbox',
+				targets: 0
+			},
+			{
+				targets: -1,
+				render: function(data, type, row, meta) {
+					return "<a class='btn btn-success btn-sm mr-2' onclick='modifyRow(this)'>Modifica</a>";
+				}
+			}
+			],
 		});
+		compilaURLWS();
+		populateDeliveryMethods();
+		populateShipmentMethods();
+		populateShippers();
+	});
+	
+	function populateShippers(){
+		var select = document.getElementById('shipper');
+		var data = JSON.stringify(shippers);
+		data = JSON.parse(data);
 		
-		 function populateDeliveryMethods() {
-		        var select = document.getElementById('deliveryMethod');
-				var data =JSON.stringify(deliveryMethods);
-				data = JSON.parse(data);
-		        // Clear existing options (if needed)
-		        select.innerHTML = '';
+		select.innerHTML = '';
+		
+		var defaultOption = document.createElement('option');
+		defaultOption.value = ''; 
+		defaultOption.textContent = 'Seleziona un vettore'; 
+		defaultOption.disabled = true; 
+		defaultOption.selected = true; 
+		select.appendChild(defaultOption);
 
-		        // Create and append options
-		        data.deliveryMethods.forEach(function(method) {
-		            var option = document.createElement('option');
-		            option.value = method.Id; // Set the value to the Id
-		            option.textContent = method.Description; // Set the display text
-		            select.appendChild(option); // Append the option to the select
-		        });
-		    }
+		data.shippers.forEach(function(method) {
+			var option = document.createElement('option');
+			option.value = method.Id; 
+			option.textContent = method.Description; 
+			select.appendChild(option); 
+		});
+	}
 
-		function modifyRow(btn) {
-			btn.parentElement.parentNode.querySelector('[name=quantita]').removeAttribute('readonly');
+	function populateShipmentMethods(){
+		var select = document.getElementById('shipmentMethod');
+		var data = JSON.stringify(shipmentMethods);
+		data = JSON.parse(data);
+		
+		select.innerHTML = '';
+		
+		var defaultOption = document.createElement('option');
+		defaultOption.value = ''; 
+		defaultOption.textContent = 'Seleziona una modalità di spedizione'; 
+		defaultOption.disabled = true; 
+		defaultOption.selected = true; 
+		select.appendChild(defaultOption);
+
+		data.shipmentMethods.forEach(function(method) {
+			var option = document.createElement('option');
+			option.value = method.Id; 
+			option.textContent = method.Description; 
+			select.appendChild(option); 
+		});
+	}
+	
+	function populateDeliveryMethods() {
+		var select = document.getElementById('deliveryMethod');
+		var data = JSON.stringify(deafultDeliveryMethod);
+		data = JSON.parse(data);
+		
+		select.innerHTML = '';
+		
+		var defaultOption = document.createElement('option');
+		defaultOption.value = data.Id; 
+		defaultOption.textContent = data.Description; 
+		defaultOption.disabled = true; 
+		defaultOption.selected = true; 
+		select.appendChild(defaultOption);
+
+		// 		data.deliveryMethods.forEach(function(method) {
+		// 			var option = document.createElement('option');
+		// 			option.value = method.Id; 
+		// 			option.textContent = method.Description; 
+		// 			select.appendChild(option); 
+		// 		});
+	}
+
+	function modifyRow(btn) {
+		btn.parentElement.parentNode.querySelector('[name=quantita]').removeAttribute('readonly');
+	}
+
+	function ricalcolaTotale(input) {
+		var key = [];
+		key = input.parentElement.parentNode.querySelector('[name=key]').value.split('\x16');
+		if (parseFloat(input.value) > parseFloat(input.parentNode.previousElementSibling.innerHTML)) {
+			var txt = "Non e' possibile ordinare piu di quanto disponibile \n Sistemare le quantita'";
+			openModal('txtWarning', $('#modalWarningClick', parent.document)[0], txt);
+			input.value = '';
+			return;
 		}
-		
-		function ricalcolaTotale(input){
-			var key = [];
-			key = input.parentElement.parentNode.querySelector('[name=key]').value.split('\x16');
-			if(parseFloat(input.value) > parseFloat(input.parentNode.previousElementSibling.innerHTML)){
-				var txt = "Non e' possibile ordinare piu di quanto disponibile \n Sistemare le quantita'";
-				openModal('txtWarning',$('#modalWarningClick',parent.document)[0],txt);
-				input.value = '';
-				return;
-			}
-			if(parseFloat(input.value) <= 0){
-				var txt = "Inserire una quantita positiva, o rimuovere l'articolo";
-				openModal('txtWarning',$('#modalWarningClick',parent.document)[0],txt);
-				return;
-			}
-			parent.mostraSpinner();
-			var idArticolo = input.parentElement.parentNode.querySelector('[name=articolo]').value;
-			input.value = parseFloat(input.value).toFixed(4);
-			getPrezzo($('#urlWS').val(),idArticolo,input.value).done(function(response) {
-				  var responseBody = response;
-				  input.parentNode.nextElementSibling.innerHTML = parseFloat(response['prezzo']).toFixed(4);
-				  //parent.rimuoviSpinner();
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					jqXHR.responseJSON.errors.forEach(function(obj) {
-						if(obj[0].includes('token expired')){
-							parent.document.getElementById('tokenExpiredClick').click();
-						}
-					});
-				    //parent.rimuoviSpinner();
-				});
-			var queryUpdate = "UPDATE THIPPERS.YCARRELLO_PORTALE SET QUANTITA = '"+input.value+"' WHERE ID_AZIENDA = '"+key[0]+"' AND R_UTENTE_PORTALE = '"+key[1]+"' AND PROGRESSIVO = '"+key[2]+"' ";
-			var url = $('#urlWS').val();
-			url += '?id=GSQ&tokenUID='+$('#token').val();
-			url += '&company=<%=userPortalSession.getIdAzienda()%>';
-			url += '&query='+queryUpdate;
-			$.ajax({
-				  url: url, 
-				  method: 'POST', 
-				  dataType: 'json', 
-				  data : '',
-				  contentType: 'application/json; charset=utf-8',
-				  success: function(response) {
-					 window.location.reload();
-				  },
-				  error: function(xhr, status, error) {
-					xhr.responseJSON.errors.forEach(function(obj) {
-						if(obj[0].includes('token expired')){
-							parent.document.getElementById('tokenExpiredClick').click();
-						}else{
-							openModal('txtWarning', $('#modalWarningClick',
-									parent.parent.document)[0], obj[0]);
-						}
-					});
-				    parent.rimuoviSpinner();
-				  }
-				});
-			var tot = 0;
-			var total = $('#total');
-			table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
-				var trNode = table.row(rowIdx).node();
-				var prezzo = 0;
-				if(trNode.querySelector('[name=prezzo]') != null)
-         			prezzo = trNode.querySelector('[name=prezzo]').value;
-         		var qta = trNode.querySelector('[name=quantita]').value;
-         		var mlt = parseFloat(prezzo) * parseFloat(qta);
-         		tot = tot+mlt;
+		if (parseFloat(input.value) <= 0) {
+			var txt = "Inserire una quantita positiva, o rimuovere l'articolo";
+			openModal('txtWarning', $('#modalWarningClick', parent.document)[0], txt);
+			return;
+		}
+		parent.mostraSpinner();
+		var idArticolo = input.parentElement.parentNode.querySelector('[name=articolo]').value;
+		input.value = parseFloat(input.value).toFixed(4);
+		getPrezzo($('#urlWS').val(), idArticolo, input.value).done(function(response) {
+			var responseBody = response;
+			input.parentNode.nextElementSibling.innerHTML = parseFloat(response['prezzo']).toFixed(4);
+			//parent.rimuoviSpinner();
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			jqXHR.responseJSON.errors.forEach(function(obj) {
+				if (obj[0].includes('token expired')) {
+					parent.document.getElementById('tokenExpiredClick').click();
+				}
 			});
-			total[0].innerHTML = tot.toFixed(4);
-		}
-		
-		function toggle(){
-			$('#modalRemoveItem').modal('toggle');
-		}
-		
-		function confirmCheckOutOrder(){
-			if(table.rows('.selected').data().length > 0){ //solo se ne ho selezionata almeno 1
-				var txt = "Vuoi procedere alla creazione dell'ordine? ";
-				$('#warningTxt')[0].innerHTML = txt;
-				$('#warningCheckOutClick')[0].click();
-				$('#warningCheckOut').attr('onClick','checkOutOrder()');
+			//parent.rimuoviSpinner();
+		});
+		var queryUpdate = "UPDATE THIPPERS.YCARRELLO_PORTALE SET QUANTITA = '" + input.value + "' WHERE ID_AZIENDA = '" + key[0] + "' AND R_UTENTE_PORTALE = '" + key[1] + "' AND PROGRESSIVO = '" + key[2] + "' ";
+		var url = $('#urlWS').val();
+		url += '?id=GSQ&tokenUID=' + $('#token').val();
+		url += '&company=<%=userPortalSession.getIdAzienda()%>';
+		url += '&query=' + queryUpdate;
+		$.ajax({
+			url: url,
+			method: 'POST',
+			dataType: 'json',
+			data: '',
+			contentType: 'application/json; charset=utf-8',
+			success: function(response) {
+				window.location.reload();
+			},
+			error: function(xhr, status, error) {
+				xhr.responseJSON.errors.forEach(function(obj) {
+					if (obj[0].includes('token expired')) {
+						parent.document.getElementById('tokenExpiredClick').click();
+					} else {
+						openModal('txtWarning', $('#modalWarningClick',
+							parent.parent.document)[0], obj[0]);
+					}
+				});
+				parent.rimuoviSpinner();
 			}
-		}
-		
-		function checkOutOrder(){
-			parent.mostraSpinner();
-			//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
-         	var keys = [];
-			var ret = false;
-         	table.rows('.selected').every( function ( rowIdx, tableLoop, rowLoop ) {
-         		var trNode = table.row(rowIdx).node();
-         		var key = trNode.querySelector('[name=key]').value;
-         		var qta = trNode.querySelector('[name=quantita]');
-         		if(parseFloat(qta.value) > parseFloat(qta.parentNode.previousElementSibling.innerHTML)){
-    				var txt = "Non e' possibile ordinare piu di quanto disponibile";
-    				openModal('txtWarning',$('#modalWarningClick',parent.document)[0],txt);
-    				ret = true;
-    			}
-         		keys.push({
-         		    'id': rowIdx,
-         		    'key': key,
-         		    'quantita' : qta.value
-         		});
-         	});
-         	if(ret){
-         		parent.rimuoviSpinner();
-         		return;
-         	}
-         	var note = $('#note').val();
-         	var vsNr = $('#vsNr').val();
-         	//Chiamata al WebService
-			$.ajax({
-				  url: $('#urlWS').val()+'?id=YCKOC&tokenUID='+$('#token').val(), 
-				  method: 'POST', 
-				  dataType: 'json', 
-				  data : "{note:'"+note+"',vsNumero:'"+vsNr+"',company: '<%=userPortalSession.getIdAzienda()%>', codCliente : '<%=userPortalSession.getIdCliente()%>',items : '"+JSON.stringify(keys)+"'}",
-				  contentType: 'application/json; charset=utf-8',
-				  success: function(response) {
-					  $('#successTxt')[0].innerHTML = "Grazie per aver effettuato l'ordine, a breve sarà visualizzabile nella voce 'Ordini'";
-					  $('#successCheckOutClick')[0].click();
-					  parent.rimuoviSpinner();
-				  },
-				  error: function(xhr, status, error) {
-					xhr.responseJSON.errors.forEach(function(obj) {
-						if(obj[0].includes('token expired')){
-							parent.document.getElementById('tokenExpiredClick').click();
-						}else{
-							openModal('txtWarning', $('#modalWarningClick',
-									parent.parent.document)[0], obj[0]);
-						}
-					});
-				    parent.rimuoviSpinner();
-				  }
-				});
-		}
-		
-		function removeItems(){
-			parent.mostraSpinner();
-			//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
-			 if(table.rows('.selected').data().length > 0){
-          	   var keys = [];
-          	   table.rows('.selected').every( function ( rowIdx, tableLoop, rowLoop ) {
-          		    var trNode = table.row(rowIdx).node();
-          		    var key = trNode.querySelector('[name=key]').value;
-          		    keys.push({
-          		    	'id': rowIdx,
-          		    	'value': key
-          		    });
-          		});
-            }
-			//Chiamta al WebService
-			$.ajax({
-				  url: $('#urlWS').val()+'?id=YREMC&tokenUID='+$('#token').val(), 
-				  method: 'POST', 
-				  dataType: 'json', 
-				  data : "{keys : '"+JSON.stringify(keys)+"'}",
-				  contentType: 'application/json; charset=utf-8',
-				  success: function(response) {
-					  if(response.errors.length > 0){
-						  parent.rimuoviSpinner();
-					  }else{
-						  window.location.reload();
-					  }
-				  },
-				  error: function(xhr, status, error) {
-					xhr.responseJSON.errors.forEach(function(obj) {
-						try{
-						if(obj[0].includes('token expired')){
-							parent.document.getElementById('tokenExpiredClick').click();
-						}
-						}catch(e){
-							window.location.reload();
-						}
-					});
-				    parent.rimuoviSpinner();
-				  }
-				});
-		}
-		
-		function getPrezzo(url,articolo,qta){
-			return $.ajax({
-				  url: encodeURI(url+'?id=RPEC&token=<%=userPortalSession.getTokecUID()%>&company=<%=userPortalSession.getIdAzienda()%>&tipoUMVendita=V&codCliente=<%=userPortalSession.getIdCliente()%>&codArticolo='+articolo+'&qtaRichiesta='+qta), // Replace with the actual URL
-				  method: 'GET',
-				  dataType: 'json'
-				});
-		}
+		});
+		var tot = 0;
+		var total = $('#total');
+		table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+			var trNode = table.row(rowIdx).node();
+			var prezzo = 0;
+			if (trNode.querySelector('[name=prezzo]') != null)
+				prezzo = trNode.querySelector('[name=prezzo]').value;
+			var qta = trNode.querySelector('[name=quantita]').value;
+			var mlt = parseFloat(prezzo) * parseFloat(qta);
+			tot = tot + mlt;
+		});
+		total[0].innerHTML = tot.toFixed(4);
+	}
 
-		function confirmDelete(btn) {
-			if(table.rows('.selected').data().length > 0){ //solo se ne ho selezionata almeno 1
-				var txt = "Sei sicuro di rimuovere gli articoli selezionati dal carrello? ";
-				$('#removeItemBtn').attr('onClick','removeItems()');
-				openModal('removeItemTxt',$('#removeItemClick')[0],txt);
+	function toggle() {
+		$('#modalRemoveItem').modal('toggle');
+	}
+
+	function confirmCheckOutOrder() {
+		if (table.rows('.selected').data().length > 0) { //solo se ne ho selezionata almeno 1
+			var txt = "Vuoi procedere alla creazione dell'ordine? ";
+			$('#warningTxt')[0].innerHTML = txt;
+			$('#warningCheckOutClick')[0].click();
+			//$('#warningCheckOut').attr('onClick', 'checkOutOrder()');
+		}
+	}
+	
+	function annullaCheckoutOrder(){
+		$('#modalWarningCheckOut').modal('toggle');
+		table.rows().deselect();
+	}
+
+	function checkOutOrder() {
+		parent.mostraSpinner();
+		//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
+		var keys = [];
+		var ret = false;
+		table.rows('.selected').every(function(rowIdx, tableLoop, rowLoop) {
+			var trNode = table.row(rowIdx).node();
+			var key = trNode.querySelector('[name=key]').value;
+			var qta = trNode.querySelector('[name=quantita]');
+			if (parseFloat(qta.value) > parseFloat(qta.parentNode.previousElementSibling.innerHTML)) {
+				var txt = "Non e' possibile ordinare piu di quanto disponibile";
+				openModal('txtWarning', $('#modalWarningClick', parent.document)[0], txt);
+				ret = true;
 			}
+			keys.push({
+				'id': rowIdx,
+				'key': key,
+				'quantita': qta.value
+			});
+		});
+		if (ret) {
+			parent.rimuoviSpinner();
+			return;
 		}
-		
-		function compilaURLWS() {
-			var ris;
-			var url = window.location.href;
-			var wbAppPth = parent.document.getElementById('webAppPath').value;
-			var cut = url.indexOf(wbAppPth);
-			ris = url.substring(0, cut);
-			ris += wbAppPth;
-			ris += "/ws";
-			document.getElementById('urlWS').value = ris;
+		var note = $('#note').val();
+		var vsNr = $('#vsNr').val();
+		//Chiamata al WebService
+		$.ajax({
+			url: $('#urlWS').val() + '?id=YCKOC&tokenUID=' + $('#token').val(),
+			method: 'POST',
+			dataType: 'json',
+			data: "{note:'" + note + "',vsNumero:'" + vsNr + "',company: '<%=userPortalSession.getIdAzienda()%>', codCliente : '<%=userPortalSession.getIdCliente()%>',items : '" + JSON.stringify(keys) + "'}",
+			contentType: 'application/json; charset=utf-8',
+			success: function(response) {
+				$('#successTxt')[0].innerHTML = "Grazie per aver effettuato l'ordine, a breve sarà visualizzabile nella voce 'Ordini'";
+				$('#successCheckOutClick')[0].click();
+				parent.rimuoviSpinner();
+			},
+			error: function(xhr, status, error) {
+				xhr.responseJSON.errors.forEach(function(obj) {
+					if (obj[0].includes('token expired')) {
+						parent.document.getElementById('tokenExpiredClick').click();
+					} else {
+						openModal('txtWarning', $('#modalWarningClick',
+							parent.parent.document)[0], obj[0]);
+					}
+				});
+				parent.rimuoviSpinner();
+			}
+		});
+	}
+
+	function removeItems() {
+		parent.mostraSpinner();
+		//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
+		if (table.rows('.selected').data().length > 0) {
+			var keys = [];
+			table.rows('.selected').every(function(rowIdx, tableLoop, rowLoop) {
+				var trNode = table.row(rowIdx).node();
+				var key = trNode.querySelector('[name=key]').value;
+				keys.push({
+					'id': rowIdx,
+					'value': key
+				});
+			});
 		}
+		//Chiamta al WebService
+		$.ajax({
+			url: $('#urlWS').val() + '?id=YREMC&tokenUID=' + $('#token').val(),
+			method: 'POST',
+			dataType: 'json',
+			data: "{keys : '" + JSON.stringify(keys) + "'}",
+			contentType: 'application/json; charset=utf-8',
+			success: function(response) {
+				if (response.errors.length > 0) {
+					parent.rimuoviSpinner();
+				} else {
+					window.location.reload();
+				}
+			},
+			error: function(xhr, status, error) {
+				xhr.responseJSON.errors.forEach(function(obj) {
+					try {
+						if (obj[0].includes('token expired')) {
+							parent.document.getElementById('tokenExpiredClick').click();
+						}
+					} catch (e) {
+						window.location.reload();
+					}
+				});
+				parent.rimuoviSpinner();
+			}
+		});
+	}
+
+	function getPrezzo(url, articolo, qta) {
+		return $.ajax({
+			url: encodeURI(url + '?id=RPEC&token=<%=userPortalSession.getTokecUID()%>&company=<%=userPortalSession.getIdAzienda()%>&tipoUMVendita=V&codCliente=<%=userPortalSession.getIdCliente()%>&codArticolo=' + articolo + '&qtaRichiesta=' + qta), // Replace with the actual URL
+			method: 'GET',
+			dataType: 'json'
+		});
+	}
+
+	function confirmDelete(btn) {
+		if (table.rows('.selected').data().length > 0) { //solo se ne ho selezionata almeno 1
+			var txt = "Sei sicuro di rimuovere gli articoli selezionati dal carrello? ";
+			$('#removeItemBtn').attr('onClick', 'removeItems()');
+			openModal('removeItemTxt', $('#removeItemClick')[0], txt);
+		}
+	}
+
+	function compilaURLWS() {
+		var ris;
+		var url = window.location.href;
+		var wbAppPth = parent.document.getElementById('webAppPath').value;
+		var cut = url.indexOf(wbAppPth);
+		ris = url.substring(0, cut);
+		ris += wbAppPth;
+		ris += "/ws";
+		document.getElementById('urlWS').value = ris;
+	}
 	</script>
 
 </body>

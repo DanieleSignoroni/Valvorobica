@@ -317,9 +317,9 @@ if (userPortalSession.getJsonCatalogo() == null) {
 						if (giacenza > 0 && prezzo > 0) {
 							markup += "<td style='text-align:center;cursor:pointer;'><i onclick='addToCart(this)' title='Aggiungi al carrello' class='fa fa-regular fa-plus fa-2x'></i></td>";
 						} else if (giacenza == 0) {
-							markup += "<td style='text-align:center;'><span onclick='contactUdsModal(this)'>Contattaci</span></td>";
+							markup += "<td style='text-align:center;cursor:pointer;'><span onclick='contactUdsModal(this)'>Contattaci</span></td>";
 						} else if (prezzo == 0) {
-							markup += "<td style='text-align:center;'><span onclick='contactUdsModal(this)'>Contattaci</span></td>";
+							markup += "<td style='text-align:center;cursor:pointer;'><span onclick='contactUdsModal(this)'>Contattaci</span></td>";
 						}
 						tableBody = $("table tbody");
 						tableBody.append(markup);

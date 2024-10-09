@@ -2,6 +2,7 @@ package it.valvorobica.thip.base.generale.ws;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,20 +14,28 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.thera.thermfw.base.Trace;
+import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.ConnectionDescriptor;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.persist.KeyHelper;
+import com.thera.thermfw.persist.PersistentObject;
 import com.thera.thermfw.security.Security;
 import com.thera.thermfw.web.SessionEnvironment;
 
 import it.thera.thip.base.articolo.ArticoloTM;
+import it.thera.thip.base.cliente.ClienteVendita;
 import it.thera.thip.base.cliente.ModalitaConsegna;
 import it.thera.thip.base.cliente.ModalitaConsegnaTM;
+import it.thera.thip.base.cliente.ModalitaSpedizione;
+import it.thera.thip.base.cliente.ModalitaSpedizioneTM;
+import it.thera.thip.base.fornitore.FornitoreAcquistoTM;
+import it.thera.thip.base.partner.AnagraficoDiBasePrimroseTM;
 import it.thera.thip.cs.DatiComuniEstesi;
 import it.thera.thip.vendite.generaleVE.ws.RicercaPrezzoEcomm;
 import it.thera.thip.ws.GenericQuery;
 import it.valvorobica.thip.base.portal.YCarrelloPortaleTM;
+import it.valvorobica.thip.base.portal.YUserPortalSession;
 
 /**
  * <h1>Softre Solutions</h1>
@@ -105,9 +114,9 @@ public class YCarrello extends YPortalGenRequestJSON {
 				item.setUmDefVen(umDefVen);
 				items.add(item);
 				String key = KeyHelper.buildObjectKey(new String[]{
-					getUserPortalSession().getIdAzienda(),
-					getUserPortalSession().getIdUtente(),
-					idProgressivo
+						getUserPortalSession().getIdAzienda(),
+						getUserPortalSession().getIdUtente(),
+						idProgressivo
 				});
 				BigDecimal disp = new BigDecimal(valuesRecords.get(8).toString().trim());
 				item.setDisponibilita(disp.setScale(2,RoundingMode.DOWN).toString());
@@ -143,12 +152,123 @@ public class YCarrello extends YPortalGenRequestJSON {
 				Security.closeDefaultConnection();
 			}
 		}
+
 		m.put("total",totale);
 		m.put("items", items);
-		m.put("deliveryMethods", deliveryMethodsList());
+
+		YUserPortalSession user = getUserPortalSession();
+		JSONObject deliveryMethods = user.getDeliveryMethods();
+
+		if (deliveryMethods == null) {
+			deliveryMethods = deliveryMethodsList();
+			user.setDeliveryMethods(deliveryMethods);
+		}
+		m.put("deliveryMethods", deliveryMethods);
+
+		JSONObject shipmentMethods = user.getShipmentMethods();
+		if (shipmentMethods == null) {
+			shipmentMethods = shipmentMethodsList();
+			user.setShipmentMethods(shipmentMethods);
+		}
+		m.put("shipmentMethods", shipmentMethods);
+
+		JSONObject shippers = user.getShippers();
+		if(shippers == null) {
+			shippers = shippers();
+			user.setShippers(shippers);
+		}
+		m.put("shippers", shippers);
+
+		m.put("salesConditionsPDFKey", getChiaveDocumentoDigitaleCondizioniVendita());
+
+		try {
+			ClienteVendita cliente = user.getCliente();
+			if(cliente == null) {
+				cliente = (ClienteVendita) ClienteVendita.elementWithKey(ClienteVendita.class,
+						KeyHelper.buildObjectKey(new String[] {getUserPortalSession().getIdAzienda(),getUserPortalSession().getIdCliente()}), PersistentObject.NO_LOCK);
+				user.setCliente(cliente);
+			}
+
+			JSONObject shipmentMethod = user.getShipmentDefaultMethod();
+
+			if(cliente.getModalitaSpedizione() != null && shipmentMethod == null) {
+				shipmentMethod = new JSONObject();
+				ModalitaSpedizione mod = (ModalitaSpedizione) cliente.getModalitaSpedizione();
+				if(!mod.getDescrizione().getDescrizione().equals(".")) {
+					shipmentMethod.put("Id", mod.getIdModSpedizione());
+					shipmentMethod.put("Description", mod.getDescrizione().getDescrizione());
+				}
+				user.setShipmentDefaultMethod(shipmentMethod);
+			}
+
+			m.put("shipmentDefaultMethod", shipmentMethod);
+
+			JSONObject defaultShipper = user.getDefaultShipper();
+
+			if(cliente.getVettore1() != null && defaultShipper == null) {
+				defaultShipper = new JSONObject();
+				defaultShipper.put("Id", cliente.getVettore1().getIdFornitore());
+				defaultShipper.put("Description", cliente.getVettore1().getRagioneSociale());
+			}
+
+			m.put("deafaultShipper", defaultShipper);
+			
+			JSONObject deafultDeliveryMethod = user.getDefaultDeliveryMethod();
+			
+			if(cliente.getModalitaConsegna() != null && deafultDeliveryMethod == null) {
+				deafultDeliveryMethod = new JSONObject();
+				
+				deafultDeliveryMethod.put("Id", cliente.getModalitaConsegna().getIdModConsegna());
+				deafultDeliveryMethod.put("Description", cliente.getModalitaConsegna().getDescrizione());
+			}
+			
+			m.put("deafultDeliveryMethod", deafultDeliveryMethod);
+			
+		} catch (SQLException e) {
+			e.printStackTrace(Trace.excStream);
+		}
 		return m;
 	}
-	
+
+	protected JSONObject shippers() {
+		JSONObject response = new JSONObject();
+		String where = " SELECT F."+FornitoreAcquistoTM.ID_FORNITORE+",A."+AnagraficoDiBasePrimroseTM.RAGIONE_SOCIALE+" FROM "+FornitoreAcquistoTM.TABLE_NAME+" F "
+				+ "INNER JOIN "+AnagraficoDiBasePrimroseTM.TABLE_NAME+" A "
+				+ " ON F."+FornitoreAcquistoTM.R_ANAGRAFICO+" = A."+AnagraficoDiBasePrimroseTM.ID_ANAGRAFICO+" "
+				+ "WHERE F."+FornitoreAcquistoTM.ID_AZIENDA+" = '"+getUserPortalSession().getIdAzienda()+"' "
+				+ "AND F."+FornitoreAcquistoTM.STATO+" = '"+DatiComuniEstesi.VALIDO+"' ";
+		ResultSet rs = null;
+		CachedStatement cs = null;
+		try {
+			cs = new CachedStatement(where);
+			rs = cs.executeQuery();
+			JSONArray arr = new JSONArray();
+			while(rs.next()) {
+
+				JSONObject json = new JSONObject();
+				json.put("Id", rs.getString(FornitoreAcquistoTM.ID_FORNITORE));
+				json.put("Description", rs.getString(AnagraficoDiBasePrimroseTM.RAGIONE_SOCIALE));
+
+				arr.put(json);
+			}
+			response.put("shippers", arr);
+		} catch (SQLException e) {
+			e.printStackTrace(Trace.excStream);
+		}finally {
+			try {
+				rs.close();
+				cs.free();
+			} catch (SQLException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+		}
+		return response;
+	}
+
+	public String getChiaveDocumentoDigitaleCondizioniVendita() {
+		return null;
+	}
+
 	@SuppressWarnings("rawtypes")
 	public JSONObject deliveryMethodsList() {
 		JSONObject response = new JSONObject();
@@ -159,14 +279,42 @@ public class YCarrello extends YPortalGenRequestJSON {
 			JSONArray arr = new JSONArray();
 			while(iter.hasNext()) {
 				ModalitaConsegna mod = (ModalitaConsegna) iter.next();
-				
-				JSONObject json = new JSONObject();
-				json.put("Id", mod.getIdModConsegna());
-				json.put("Description", mod.getDescrizione().getDescrizione());
-				
-				arr.put(json);
+
+				if(!mod.getDescrizione().getDescrizione().equals(".")) {
+					JSONObject json = new JSONObject();
+					json.put("Id", mod.getIdModConsegna());
+					json.put("Description", mod.getDescrizione().getDescrizione());
+
+					arr.put(json);
+				}
 			}
 			response.put("deliveryMethods", arr);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
+			e.printStackTrace(Trace.excStream);
+		}
+		return response;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public JSONObject shipmentMethodsList() {
+		JSONObject response = new JSONObject();
+		String where = " "+ModalitaSpedizioneTM.ID_AZIENDA+" = '"+getUserPortalSession().getIdAzienda()+"' AND "+ModalitaSpedizioneTM.STATO+" = '"+DatiComuniEstesi.VALIDO+"' ";
+		try {
+			Vector list = ModalitaSpedizione.retrieveList(ModalitaSpedizione.class, where, "", false);
+			Iterator iter = list.iterator();
+			JSONArray arr = new JSONArray();
+			while(iter.hasNext()) {
+				ModalitaSpedizione mod = (ModalitaSpedizione) iter.next();
+
+				if(!mod.getDescrizione().getDescrizione().equals(".")) {
+					JSONObject json = new JSONObject();
+					json.put("Id", mod.getIdModSpedizione());
+					json.put("Description", mod.getDescrizione().getDescrizione());
+
+					arr.put(json);
+				}
+			}
+			response.put("shipmentMethods", arr);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
 			e.printStackTrace(Trace.excStream);
 		}
@@ -182,15 +330,15 @@ public class YCarrello extends YPortalGenRequestJSON {
 		protected String quantita;
 
 		protected String idCliente;
-		
+
 		protected String descrExtArticolo;
-		
+
 		protected String umDefVen;
-		
+
 		protected String key;
-		
+
 		protected String prezzo;
-		
+
 		protected String disponibilita;
 
 		public String getIdProgressivo() {
@@ -264,7 +412,7 @@ public class YCarrello extends YPortalGenRequestJSON {
 		public void setDisponibilita(String disponibilita) {
 			this.disponibilita = disponibilita;
 		}
-		
-		
+
+
 	}
 }

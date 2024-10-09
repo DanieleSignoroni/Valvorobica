@@ -128,7 +128,7 @@ public class YCatalogoPortaleDettaglio extends YPortalGenRequestJSON {
 						continue;
 					}
 					//sottrarre ordinata nel carrello temporanea
-					//disponibilita = disponibilita.subtract(getOrdinatoCarrello(getUserPortalSession().getIdUtente(), art.getIdArticolo()));
+					disponibilita = disponibilita.subtract(getOrdinatoCarrello(getUserPortalSession().getIdUtente(), art.getIdArticolo()));
 					disponibilita = disponibilita.setScale(2, RoundingMode.DOWN); //aggiungere
 					jsonDettaglio.addProperty("Giacenza", Integer.valueOf(disponibilita.toBigInteger().toString()));
 					CondizioniDiVendita condVen = recuperaCondizioniDiVendita(art, cliente);
