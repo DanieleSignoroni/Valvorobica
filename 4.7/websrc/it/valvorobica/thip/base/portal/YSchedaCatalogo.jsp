@@ -143,19 +143,17 @@ if (userPortalSession.getJsonCatalogo() == null) {
 	    var card = document.createElement('div');
 	    card.className = 'col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4';
 
-	    // Create card content using string concatenation
 	    var cardContent = 
 	      '<div class="card" id="' + item.text + '">' +
 	        '<img onclick="toggleChildren(this)" class="img-fluid card-img" src="' + item.img + '">' +
-	        '<div class="card-img-overlaysoftre">' +
-	          '<h5 class="card-title">' + item.text + '</h5>' +
-	          '<i class="fa-solid fa-circle-info card-info" title="Informazioni"></i>' +
+	        '<div class="row card-img-overlaysoftre">' +
+	          '<h5>' + item.text + '</h5>' +
+	       	  '<span class="card-info" title="Informazioni">Informazioni aggiuntive</span>' +
 	        '</div>' +
 	      '</div>';
 
 	    card.innerHTML = cardContent;
 
-	    // Bind the click event for the info icon
 	    var infoIcon = card.querySelector('.card-info');
 	    infoIcon.addEventListener('click', function() {
 	        openDetailDescription(item); // Pass the item object directly

@@ -197,17 +197,18 @@ try {
 							<div class="row">
 								<div class="col">
 									<label class="form-label">Modalità di consegna</label>
-									<select class="form-select mb-2" id="deliveryMethod" required disabled></select>
+									<select class="form-select mb-2" name="deliveryMethod" id="deliveryMethod" required disabled></select>
+									<input type="hidden" name="IdModalitaConsegna" id="IdModalitaConsegnaHiddenInputValue">
 								</div>
 								<div class="col">
 									<label class="form-label">Modalità di spedizione</label>
-									<select class="form-select mb-2" id="shipmentMethod" required></select>
+									<select class="form-select mb-2" name="IdModalitaSpedizione" id="shipmentMethod" required></select>
 								</div>
 							</div>
 							<label class="form-label">Vettore</label>
-							<select class="form-select mb-2" id="shipper" required></select>
-							<input id="vsNr" class="form-control mt-2" placeholder="Vs. Numero" required></input>
-							<textarea id="note" class="form-control mt-2" placeholder="Note"></textarea>
+							<select class="form-select mb-2" name="IdVettore1" id="shipper" required></select>
+							<input name="vsNr" id="vsNr" class="form-control mt-2" placeholder="Vs. Numero" required></input>
+							<textarea name="note" id="note" class="form-control mt-2" placeholder="Note"></textarea>
 						</div>
 						<div class="modal-footer" style="flex-wrap:unset;">
 							<button type="submit" class="btn btn-block" id="warningCheckOut">Conferma ordine</button>
@@ -275,7 +276,7 @@ try {
 					text: 'Procedi',
 					action: function() {
 						if (table.rows('.selected').data().length == 0) {
-							var txt = "Per procedere selezionare almeno un prodotto";
+							let txt = "Per procedere selezionare almeno un prodotto";
 							$('#txtWarning', parent.document)[0].innerHTML = txt;
 							$('#modalWarningClick', parent.document)[0].click();
 						} else {
@@ -299,7 +300,7 @@ try {
 					text: 'Rimuovi',
 					action: function(e, dt, node, config) {
 						if (table.rows('.selected').data().length == 0) {
-							var txt = "Per procedere selezionare almeno un prodotto";
+							let txt = "Per procedere selezionare almeno un prodotto";
 							$('#txtWarning', parent.document)[0].innerHTML = txt;
 							$('#modalWarningClick', parent.document)[0].click();
 						} else {
@@ -310,7 +311,7 @@ try {
 				}
 			],
 			initComplete: function() {
-				var btns = $('.dt-button');
+				let btns = $('.dt-button');
 				btns.removeClass('dt-button');
 			},
 			select: {
@@ -337,13 +338,13 @@ try {
 	});
 	
 	function populateShippers(){
-		var select = document.getElementById('shipper');
-		var data = JSON.stringify(shippers);
+		let select = document.getElementById('shipper');
+		let data = JSON.stringify(shippers);
 		data = JSON.parse(data);
 		
 		select.innerHTML = '';
 		
-		var defaultOption = document.createElement('option');
+		let defaultOption = document.createElement('option');
 		defaultOption.value = ''; 
 		defaultOption.textContent = 'Seleziona un vettore'; 
 		defaultOption.disabled = true; 
@@ -351,7 +352,7 @@ try {
 		select.appendChild(defaultOption);
 
 		data.shippers.forEach(function(method) {
-			var option = document.createElement('option');
+			let option = document.createElement('option');
 			option.value = method.Id; 
 			option.textContent = method.Description; 
 			select.appendChild(option); 
@@ -359,13 +360,13 @@ try {
 	}
 
 	function populateShipmentMethods(){
-		var select = document.getElementById('shipmentMethod');
-		var data = JSON.stringify(shipmentMethods);
+		let select = document.getElementById('shipmentMethod');
+		let data = JSON.stringify(shipmentMethods);
 		data = JSON.parse(data);
 		
 		select.innerHTML = '';
 		
-		var defaultOption = document.createElement('option');
+		let defaultOption = document.createElement('option');
 		defaultOption.value = ''; 
 		defaultOption.textContent = 'Seleziona una modalità di spedizione'; 
 		defaultOption.disabled = true; 
@@ -373,7 +374,7 @@ try {
 		select.appendChild(defaultOption);
 
 		data.shipmentMethods.forEach(function(method) {
-			var option = document.createElement('option');
+			let option = document.createElement('option');
 			option.value = method.Id; 
 			option.textContent = method.Description; 
 			select.appendChild(option); 
@@ -381,21 +382,23 @@ try {
 	}
 	
 	function populateDeliveryMethods() {
-		var select = document.getElementById('deliveryMethod');
-		var data = JSON.stringify(deafultDeliveryMethod);
+		let select = document.getElementById('deliveryMethod');
+		let data = JSON.stringify(deafultDeliveryMethod);
 		data = JSON.parse(data);
 		
 		select.innerHTML = '';
 		
-		var defaultOption = document.createElement('option');
+		let defaultOption = document.createElement('option');
 		defaultOption.value = data.Id; 
 		defaultOption.textContent = data.Description; 
 		defaultOption.disabled = true; 
 		defaultOption.selected = true; 
 		select.appendChild(defaultOption);
+		
+		$('#IdModalitaConsegnaHiddenInputValue').val(data.Id);
 
 		// 		data.deliveryMethods.forEach(function(method) {
-		// 			var option = document.createElement('option');
+		// 			let option = document.createElement('option');
 		// 			option.value = method.Id; 
 		// 			option.textContent = method.Description; 
 		// 			select.appendChild(option); 
@@ -407,24 +410,24 @@ try {
 	}
 
 	function ricalcolaTotale(input) {
-		var key = [];
+		let key = [];
 		key = input.parentElement.parentNode.querySelector('[name=key]').value.split('\x16');
 		if (parseFloat(input.value) > parseFloat(input.parentNode.previousElementSibling.innerHTML)) {
-			var txt = "Non e' possibile ordinare piu di quanto disponibile \n Sistemare le quantita'";
+			let txt = "Non e' possibile ordinare piu di quanto disponibile \n Sistemare le quantita'";
 			openModal('txtWarning', $('#modalWarningClick', parent.document)[0], txt);
 			input.value = '';
 			return;
 		}
 		if (parseFloat(input.value) <= 0) {
-			var txt = "Inserire una quantita positiva, o rimuovere l'articolo";
+			let txt = "Inserire una quantita positiva, o rimuovere l'articolo";
 			openModal('txtWarning', $('#modalWarningClick', parent.document)[0], txt);
 			return;
 		}
 		parent.mostraSpinner();
-		var idArticolo = input.parentElement.parentNode.querySelector('[name=articolo]').value;
+		let idArticolo = input.parentElement.parentNode.querySelector('[name=articolo]').value;
 		input.value = parseFloat(input.value).toFixed(4);
 		getPrezzo($('#urlWS').val(), idArticolo, input.value).done(function(response) {
-			var responseBody = response;
+			let responseBody = response;
 			input.parentNode.nextElementSibling.innerHTML = parseFloat(response['prezzo']).toFixed(4);
 			//parent.rimuoviSpinner();
 		}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -435,8 +438,8 @@ try {
 			});
 			//parent.rimuoviSpinner();
 		});
-		var queryUpdate = "UPDATE THIPPERS.YCARRELLO_PORTALE SET QUANTITA = '" + input.value + "' WHERE ID_AZIENDA = '" + key[0] + "' AND R_UTENTE_PORTALE = '" + key[1] + "' AND PROGRESSIVO = '" + key[2] + "' ";
-		var url = $('#urlWS').val();
+		let queryUpdate = "UPDATE THIPPERS.YCARRELLO_PORTALE SET QUANTITA = '" + input.value + "' WHERE ID_AZIENDA = '" + key[0] + "' AND R_UTENTE_PORTALE = '" + key[1] + "' AND PROGRESSIVO = '" + key[2] + "' ";
+		let url = $('#urlWS').val();
 		url += '?id=GSQ&tokenUID=' + $('#token').val();
 		url += '&company=<%=userPortalSession.getIdAzienda()%>';
 		url += '&query=' + queryUpdate;
@@ -461,15 +464,15 @@ try {
 				parent.rimuoviSpinner();
 			}
 		});
-		var tot = 0;
-		var total = $('#total');
+		let tot = 0;
+		let total = $('#total');
 		table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-			var trNode = table.row(rowIdx).node();
-			var prezzo = 0;
+			let trNode = table.row(rowIdx).node();
+			let prezzo = 0;
 			if (trNode.querySelector('[name=prezzo]') != null)
 				prezzo = trNode.querySelector('[name=prezzo]').value;
-			var qta = trNode.querySelector('[name=quantita]').value;
-			var mlt = parseFloat(prezzo) * parseFloat(qta);
+			let qta = trNode.querySelector('[name=quantita]').value;
+			let mlt = parseFloat(prezzo) * parseFloat(qta);
 			tot = tot + mlt;
 		});
 		total[0].innerHTML = tot.toFixed(4);
@@ -481,7 +484,7 @@ try {
 
 	function confirmCheckOutOrder() {
 		if (table.rows('.selected').data().length > 0) { //solo se ne ho selezionata almeno 1
-			var txt = "Vuoi procedere alla creazione dell'ordine? ";
+			let txt = "Vuoi procedere alla creazione dell'ordine? ";
 			$('#warningTxt')[0].innerHTML = txt;
 			$('#warningCheckOutClick')[0].click();
 			//$('#warningCheckOut').attr('onClick', 'checkOutOrder()');
@@ -496,14 +499,14 @@ try {
 	function checkOutOrder() {
 		parent.mostraSpinner();
 		//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
-		var keys = [];
-		var ret = false;
+		let keys = [];
+		let ret = false;
 		table.rows('.selected').every(function(rowIdx, tableLoop, rowLoop) {
-			var trNode = table.row(rowIdx).node();
-			var key = trNode.querySelector('[name=key]').value;
-			var qta = trNode.querySelector('[name=quantita]');
+			let trNode = table.row(rowIdx).node();
+			let key = trNode.querySelector('[name=key]').value;
+			let qta = trNode.querySelector('[name=quantita]');
 			if (parseFloat(qta.value) > parseFloat(qta.parentNode.previousElementSibling.innerHTML)) {
-				var txt = "Non e' possibile ordinare piu di quanto disponibile";
+				let txt = "Non e' possibile ordinare piu di quanto disponibile";
 				openModal('txtWarning', $('#modalWarningClick', parent.document)[0], txt);
 				ret = true;
 			}
@@ -517,14 +520,16 @@ try {
 			parent.rimuoviSpinner();
 			return;
 		}
-		var note = $('#note').val();
-		var vsNr = $('#vsNr').val();
+		let formData = {};
+		$('#checkoutForm').serializeArray().forEach(function(field) {
+		    formData[field.name] = field.value;
+		});
 		//Chiamata al WebService
 		$.ajax({
 			url: $('#urlWS').val() + '?id=YCKOC&tokenUID=' + $('#token').val(),
 			method: 'POST',
 			dataType: 'json',
-			data: "{note:'" + note + "',vsNumero:'" + vsNr + "',company: '<%=userPortalSession.getIdAzienda()%>', codCliente : '<%=userPortalSession.getIdCliente()%>',items : '" + JSON.stringify(keys) + "'}",
+			data : "{items : '" + JSON.stringify(keys) + "', formData : '"+JSON.stringify(formData)+"'}",
 			contentType: 'application/json; charset=utf-8',
 			success: function(response) {
 				$('#successTxt')[0].innerHTML = "Grazie per aver effettuato l'ordine, a breve sarà visualizzabile nella voce 'Ordini'";
@@ -548,11 +553,11 @@ try {
 	function removeItems() {
 		parent.mostraSpinner();
 		//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
+		let keys = [];
 		if (table.rows('.selected').data().length > 0) {
-			var keys = [];
 			table.rows('.selected').every(function(rowIdx, tableLoop, rowLoop) {
-				var trNode = table.row(rowIdx).node();
-				var key = trNode.querySelector('[name=key]').value;
+				let trNode = table.row(rowIdx).node();
+				let key = trNode.querySelector('[name=key]').value;
 				keys.push({
 					'id': rowIdx,
 					'value': key
@@ -598,17 +603,17 @@ try {
 
 	function confirmDelete(btn) {
 		if (table.rows('.selected').data().length > 0) { //solo se ne ho selezionata almeno 1
-			var txt = "Sei sicuro di rimuovere gli articoli selezionati dal carrello? ";
+			let txt = "Sei sicuro di rimuovere gli articoli selezionati dal carrello? ";
 			$('#removeItemBtn').attr('onClick', 'removeItems()');
 			openModal('removeItemTxt', $('#removeItemClick')[0], txt);
 		}
 	}
 
 	function compilaURLWS() {
-		var ris;
-		var url = window.location.href;
-		var wbAppPth = parent.document.getElementById('webAppPath').value;
-		var cut = url.indexOf(wbAppPth);
+		let ris;
+		let url = window.location.href;
+		let wbAppPth = parent.document.getElementById('webAppPath').value;
+		let cut = url.indexOf(wbAppPth);
 		ris = url.substring(0, cut);
 		ris += wbAppPth;
 		ris += "/ws";

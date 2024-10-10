@@ -1,86 +1,94 @@
 .card {
-  height: 300px;
-  position: relative;
-  transition: transform 0.5s ease; /* Smooth scaling */
-  border: 1px solid grey;
+	height: 320px;
+	position: relative;
+	transition: transform 0.5s ease;
+	border: 1px solid grey;
 }
 
 .card:hover {
-  transform: scale(1.1);
+	transform: scale(1.1);
+	transform-origin: center;
 }
 
-.card-img-overlaysoftre { /* consider renaming this to card-img-overlay */
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  border-radius: calc(0.25rem - 1px);
-  text-align: center;
-  display: flex;
-  justify-content: space-evenly;
+.card .row {
+    margin: 0; /* Width della row uguale alla width dalla card */ 
 }
 
-.card-title {
-  background-color: rgba(255, 255, 255, 0.4); /* Increase opacity if needed */
+.card-img-overlaysoftre {
+	/* consider renaming this to card-img-overlay */
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	border-radius: calc(0.25rem - 1px);
+	text-align: center;
+	display: flex;
+	justify-content: space-evenly;
 }
 
 .card-img {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .card-info {
-  margin-top: 0.25rem;
-}
-
-.card-info {
+    opacity: 0; 
+    visibility: hidden; 
+    margin-top: 0.25rem;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    text-decoration: underline;
 }
 
 .card:hover .card-info {
-    display: revert; /* Show the icon when the card is hovered */
+    opacity: 1;
+    visibility: visible;
     cursor: pointer;
 }
 
 .img-fluid {
-  width: auto;
-  max-height: 100%;
+	width: auto;
+	max-height: 250px;
 }
 
-.contact-product{
+.contact-product {
 	margin-top: 2rem;
 	text-align: center;
 }
 
-.contact-product-description{
+.contact-product-description {
 	margin-top: 1rem;
 	text-align: center;
 }
 
-.modal-description-body{
+.modal-description-body {
 	max-height: 400px;
 	overflow-y: scroll;
 }
 
 /* For larger screens */
 @media (min-width: 576px) {
-    .modal-description {
-        max-width: 80%; /* Set a maximum width of 80% for small devices */
-    }
+	.modal-description {
+		max-width: 80%;
+		/* Set a maximum width of 80% for small devices */
+	}
 }
 
 @media (min-width: 768px) {
-    .modal-description {
-        max-width: 70%; /* Set a maximum width of 70% for medium devices */
-    }
+	.modal-description {
+		max-width: 70%;
+		/* Set a maximum width of 70% for medium devices */
+	}
 }
 
 @media (min-width: 992px) {
-    .modal-description {
-        max-width: 60%; /* Set a maximum width of 60% for large devices */
-    }
+	.modal-description {
+		max-width: 60%;
+		/* Set a maximum width of 60% for large devices */
+	}
 }
 
 @media (min-width: 1200px) {
-    .modal-description {
-        max-width: 50%; /* Set a maximum width of 50% for extra-large devices */
-    }
+	.modal-description {
+		max-width: 50%;
+		/* Set a maximum width of 50% for extra-large devices */
+	}
 }
