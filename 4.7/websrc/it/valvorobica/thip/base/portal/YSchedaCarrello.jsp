@@ -38,6 +38,8 @@ JSONObject shipmentDefaultMethod = null;
 JSONObject defaultShipper = null;
 JSONObject deafultDeliveryMethod = null;
 
+JSONObject datiDestinazione = null;
+
 String salesConditionsPDFKey = null;
 try {
 	if (!Security.isCurrentDatabaseSetted()) {
@@ -63,6 +65,7 @@ try {
 	shipmentDefaultMethod = (JSONObject) values.get("shipmentDefaultMethod");
 	defaultShipper = (JSONObject) values.get("defaultShipper");
 	deafultDeliveryMethod = (JSONObject) values.get("deafultDeliveryMethod");
+	datiDestinazione = (JSONObject) values.get("shipmentData");
 } catch (Throwable t) {
 	t.printStackTrace(Trace.excStream);
 } finally {
@@ -185,15 +188,15 @@ try {
 			<div class="modal-dialog modal-confirm">
 				<form id="checkoutForm">
 					<div class="modal-content">
-						<div class="text-end">
-							<span class="danger">Condizioni di vendita</span>
-							<i class="fa-regular fa-file-lines fa-2x" style="cursor:pointer;" onclick="parent.download('<%=userPortalSession.getTokecUID()%>','<%=salesConditionsPDFKey %>')"></i>
-						</div>
-						<div class="modal-header">
-							<h4 class="modal-title">Attenzione!</h4>
+						<div class="row alert alert-danger" style="margin:0;">
+							<div class="col-10">
+								<span>Attenzione, confermare i dati per l'ordine</span>
+							</div>
+							<div class="col">
+							<i title="Condizioni di vendita" class="fa-regular fa-file-lines fa-2x" style="cursor:pointer;" onclick="parent.download('<%=userPortalSession.getTokecUID()%>','<%=salesConditionsPDFKey %>')"></i>
+							</div>
 						</div>
 						<div class="modal-body">
-							<p id="warningTxt" class="text-center"></p>
 							<div class="row">
 								<div class="col">
 									<label class="form-label">Modalità di consegna</label>
@@ -202,13 +205,35 @@ try {
 								</div>
 								<div class="col">
 									<label class="form-label">Modalità di spedizione</label>
-									<select class="form-select mb-2" name="IdModalitaSpedizione" id="shipmentMethod" required></select>
+									<select class="form-select mb-2" name="IdModalitaSpedizione" id="shipmentMethod" required disabled></select>
+									<input type="hidden" name="IdModalitaSpedizione" id="IdModalitaSpedizioneHiddenInputValue">
+								</div>
+								<div class="col">
+									<label class="form-label">Vettore</label>
+									<select class="form-select mb-2" name="IdVettore1" id="shipper" required></select>
 								</div>
 							</div>
-							<label class="form-label">Vettore</label>
-							<select class="form-select mb-2" name="IdVettore1" id="shipper" required></select>
+							<div class="row">
+								<div class="col">
+									<label class="form-label">Indirizzo</label>
+									<input class="form-control" type="text" name="Indirizzo" id="Indirizzo" required>
+								</div>
+								<div class="col">
+									<label class="form-label">CAP</label>
+									<input class="form-control" type="text" name="CAP" id="CAP" required>
+								</div>
+								<div class="col">
+									<label class="form-label">Localita</label>
+									<input class="form-control" type="text" name="Localita" id="Localita" required>
+								</div>
+								<div class="col">
+									<label class="form-label">Provincia</label>
+									<input class="form-control" type="text" name="Provincia" id="Provincia" required>
+								</div>
+							</div>
 							<input name="vsNr" id="vsNr" class="form-control mt-2" placeholder="Vs. Numero" required></input>
 							<textarea name="note" id="note" class="form-control mt-2" placeholder="Note"></textarea>
+							<div id="responseMessage" class="mt-3"></div>
 						</div>
 						<div class="modal-footer" style="flex-wrap:unset;">
 							<button type="submit" class="btn btn-block" id="warningCheckOut">Conferma ordine</button>
@@ -247,6 +272,8 @@ try {
 	var shipmentDefaultMethod = <%=shipmentDefaultMethod%>;
 	var defaultShipper = <%=defaultShipper%>;
 	var deafultDeliveryMethod = <%=deafultDeliveryMethod%>;
+	
+	var datiDestinazione = <%=datiDestinazione%>;
 	
 	var cart = $('#cart', parent.document);
 	
@@ -335,7 +362,17 @@ try {
 		populateDeliveryMethods();
 		populateShipmentMethods();
 		populateShippers();
+		populateDatiDestinazione();
 	});
+	
+	function populateDatiDestinazione(){
+		if(datiDestinazione != null){
+			document.getElementById('Indirizzo').value = datiDestinazione.Indirizzo.trim();
+			document.getElementById('CAP').value = datiDestinazione.CAP.trim();
+			document.getElementById('Localita').value = datiDestinazione.Localita.trim();
+			document.getElementById('Provincia').value = datiDestinazione.Provincia.trim();
+		}
+	}
 	
 	function populateShippers(){
 		let select = document.getElementById('shipper');
@@ -367,35 +404,37 @@ try {
 		select.innerHTML = '';
 		
 		let defaultOption = document.createElement('option');
-		defaultOption.value = ''; 
-		defaultOption.textContent = 'Seleziona una modalità di spedizione'; 
+		defaultOption.value = data.shipmentMethods[0].Id; 
+		defaultOption.textContent = data.shipmentMethods[0].Description; 
 		defaultOption.disabled = true; 
 		defaultOption.selected = true; 
 		select.appendChild(defaultOption);
+		
+		$('#IdModalitaSpedizioneHiddenInputValue').val(data.shipmentMethods[0].Id);
 
-		data.shipmentMethods.forEach(function(method) {
-			let option = document.createElement('option');
-			option.value = method.Id; 
-			option.textContent = method.Description; 
-			select.appendChild(option); 
-		});
+		// 		data.shipmentMethods.forEach(function(method) {
+		// 			let option = document.createElement('option');
+		// 			option.value = method.Id; 
+		// 			option.textContent = method.Description; 
+		// 			select.appendChild(option); 
+		// 		});
 	}
 	
 	function populateDeliveryMethods() {
 		let select = document.getElementById('deliveryMethod');
-		let data = JSON.stringify(deafultDeliveryMethod);
-		data = JSON.parse(data);
+		//let data = JSON.stringify(deafultDeliveryMethod);
+		//data = JSON.parse(data);
 		
 		select.innerHTML = '';
 		
 		let defaultOption = document.createElement('option');
-		defaultOption.value = data.Id; 
-		defaultOption.textContent = data.Description; 
+		defaultOption.value = deliveryMethods.deliveryMethods[0].Id; 
+		defaultOption.textContent = deliveryMethods.deliveryMethods[0].Description; 
 		defaultOption.disabled = true; 
 		defaultOption.selected = true; 
 		select.appendChild(defaultOption);
 		
-		$('#IdModalitaConsegnaHiddenInputValue').val(data.Id);
+		$('#IdModalitaConsegnaHiddenInputValue').val(deliveryMethods.deliveryMethods[0].Id);
 
 		// 		data.deliveryMethods.forEach(function(method) {
 		// 			let option = document.createElement('option');
@@ -484,8 +523,6 @@ try {
 
 	function confirmCheckOutOrder() {
 		if (table.rows('.selected').data().length > 0) { //solo se ne ho selezionata almeno 1
-			let txt = "Vuoi procedere alla creazione dell'ordine? ";
-			$('#warningTxt')[0].innerHTML = txt;
 			$('#warningCheckOutClick')[0].click();
 			//$('#warningCheckOut').attr('onClick', 'checkOutOrder()');
 		}
@@ -497,6 +534,9 @@ try {
 	}
 
 	function checkOutOrder() {
+		const responseMessage = document.getElementById('responseMessage');
+		responseMessage.innerHTML = '';
+		
 		parent.mostraSpinner();
 		//Loop tra le righe selezionate per costruire un json che contiene le chiavi dei record da cancellare
 		let keys = [];
@@ -524,7 +564,6 @@ try {
 		$('#checkoutForm').serializeArray().forEach(function(field) {
 		    formData[field.name] = field.value;
 		});
-		//Chiamata al WebService
 		$.ajax({
 			url: $('#urlWS').val() + '?id=YCKOC&tokenUID=' + $('#token').val(),
 			method: 'POST',
@@ -532,9 +571,8 @@ try {
 			data : "{items : '" + JSON.stringify(keys) + "', formData : '"+JSON.stringify(formData)+"'}",
 			contentType: 'application/json; charset=utf-8',
 			success: function(response) {
-				$('#successTxt')[0].innerHTML = "Grazie per aver effettuato l'ordine, a breve sarà visualizzabile nella voce 'Ordini'";
-				$('#successCheckOutClick')[0].click();
-				parent.rimuoviSpinner();
+				responseMessage.innerHTML = '<div class="alert alert-success">Richiesta inviata con successo!</div>';
+				checkoutForm.reset();
 			},
 			error: function(xhr, status, error) {
 				xhr.responseJSON.errors.forEach(function(obj) {
@@ -544,7 +582,10 @@ try {
 						openModal('txtWarning', $('#modalWarningClick',
 							parent.parent.document)[0], obj[0]);
 					}
+					responseMessage.innerHTML = '<div class="alert alert-danger">Errore durante l\'invio della richiesta. Riprova.</div>';
 				});
+			},
+			complete: function() {
 				parent.rimuoviSpinner();
 			}
 		});

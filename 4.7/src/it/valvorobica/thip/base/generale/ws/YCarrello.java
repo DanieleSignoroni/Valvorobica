@@ -30,6 +30,7 @@ import it.thera.thip.base.cliente.ModalitaConsegnaTM;
 import it.thera.thip.base.cliente.ModalitaSpedizione;
 import it.thera.thip.base.cliente.ModalitaSpedizioneTM;
 import it.thera.thip.base.fornitore.FornitoreAcquistoTM;
+import it.thera.thip.base.generale.ParametroPsn;
 import it.thera.thip.base.partner.AnagraficoDiBasePrimroseTM;
 import it.thera.thip.cs.DatiComuniEstesi;
 import it.thera.thip.vendite.generaleVE.ws.RicercaPrezzoEcomm;
@@ -212,18 +213,30 @@ public class YCarrello extends YPortalGenRequestJSON {
 			}
 
 			m.put("deafaultShipper", defaultShipper);
+
+			//			JSONObject deafultDeliveryMethod = user.getDefaultDeliveryMethod();
+			//			
+			//			if(cliente.getModalitaConsegna() != null && deafultDeliveryMethod == null) {
+			//				deafultDeliveryMethod = new JSONObject();
+			//				
+			//				deafultDeliveryMethod.put("Id", cliente.getModalitaConsegna().getIdModConsegna());
+			//				deafultDeliveryMethod.put("Description", cliente.getModalitaConsegna().getDescrizione());
+			//			}
+
+			//m.put("deafultDeliveryMethod", deafultDeliveryMethod);
 			
-			JSONObject deafultDeliveryMethod = user.getDefaultDeliveryMethod();
+		JSONObject datiDestinazione = new JSONObject();
+		
+		if(user.getCliente().getIndirizzoSpedizione() != null) {
 			
-			if(cliente.getModalitaConsegna() != null && deafultDeliveryMethod == null) {
-				deafultDeliveryMethod = new JSONObject();
-				
-				deafultDeliveryMethod.put("Id", cliente.getModalitaConsegna().getIdModConsegna());
-				deafultDeliveryMethod.put("Description", cliente.getModalitaConsegna().getDescrizione());
-			}
-			
-			m.put("deafultDeliveryMethod", deafultDeliveryMethod);
-			
+			datiDestinazione.put("Indirizzo", user.getCliente().getIndirizzoSpedizione().getDatiIndirizzo().getIndirizzo());
+			datiDestinazione.put("CAP", user.getCliente().getIndirizzoSpedizione().getDatiIndirizzo().getCAP());
+			datiDestinazione.put("Localita", user.getCliente().getIndirizzoSpedizione().getDatiIndirizzo().getLocalita());
+			datiDestinazione.put("Provincia", user.getCliente().getIndirizzoSpedizione().getDatiIndirizzo().getIdProvincia());
+		}
+		
+		m.put("shipmentData", datiDestinazione);
+
 		} catch (SQLException e) {
 			e.printStackTrace(Trace.excStream);
 		}
@@ -237,6 +250,7 @@ public class YCarrello extends YPortalGenRequestJSON {
 				+ " ON F."+FornitoreAcquistoTM.R_ANAGRAFICO+" = A."+AnagraficoDiBasePrimroseTM.ID_ANAGRAFICO+" "
 				+ "WHERE F."+FornitoreAcquistoTM.ID_AZIENDA+" = '"+getUserPortalSession().getIdAzienda()+"' "
 				+ "AND F."+FornitoreAcquistoTM.STATO+" = '"+DatiComuniEstesi.VALIDO+"' ";
+		where += " AND F."+FornitoreAcquistoTM.ID_FORNITORE+" IN ('001682','001846') ";
 		ResultSet rs = null;
 		CachedStatement cs = null;
 		try {
@@ -266,13 +280,14 @@ public class YCarrello extends YPortalGenRequestJSON {
 	}
 
 	public String getChiaveDocumentoDigitaleCondizioniVendita() {
-		return null;
+		return ParametroPsn.getValoreParametroPsn("YPortaleECommerce", "SalesConditionPdfKey");
 	}
 
 	@SuppressWarnings("rawtypes")
 	public JSONObject deliveryMethodsList() {
 		JSONObject response = new JSONObject();
 		String where = " "+ModalitaConsegnaTM.ID_AZIENDA+" = '"+getUserPortalSession().getIdAzienda()+"' AND "+ModalitaConsegnaTM.STATO+" = '"+DatiComuniEstesi.VALIDO+"' ";
+		where += " AND "+ModalitaConsegnaTM.ID_MOD_CONSEGNA+" = '05' "; //PER ORA SOLO FRANCO CON ADDEBITO IN FATT.
 		try {
 			Vector list = ModalitaConsegna.retrieveList(ModalitaConsegna.class, where, "", false);
 			Iterator iter = list.iterator();
@@ -299,6 +314,7 @@ public class YCarrello extends YPortalGenRequestJSON {
 	public JSONObject shipmentMethodsList() {
 		JSONObject response = new JSONObject();
 		String where = " "+ModalitaSpedizioneTM.ID_AZIENDA+" = '"+getUserPortalSession().getIdAzienda()+"' AND "+ModalitaSpedizioneTM.STATO+" = '"+DatiComuniEstesi.VALIDO+"' ";
+		where += " AND "+ModalitaSpedizioneTM.ID_MOD_SPEDIZIONE+" = 'VE' "; //PER ORA SOLO VETTORE
 		try {
 			Vector list = ModalitaSpedizione.retrieveList(ModalitaSpedizione.class, where, "", false);
 			Iterator iter = list.iterator();

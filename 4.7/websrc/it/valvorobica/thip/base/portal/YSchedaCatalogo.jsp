@@ -119,6 +119,7 @@ if (userPortalSession.getJsonCatalogo() == null) {
 							<input id="Nome" class="form-control mt-2" placeholder="Nome" required></input>
 							<input id="Cognome" class="form-control mt-2" placeholder="Cognome" required></input>
 							<input id="Email" class="form-control mt-2" placeholder="Email" required></input>
+							<input id="QtaContactUds" class="form-control mt-2" placeholder="Qta." required></input>
 							<textarea id="Note" class="form-control mt-2" placeholder="Il tuo messaggio"></textarea>
 							<div id="responseMessage" class="mt-3"></div>
 						</div>
@@ -144,21 +145,27 @@ if (userPortalSession.getJsonCatalogo() == null) {
 	    card.className = 'col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4';
 
 	    var cardContent = 
-	      '<div class="card" id="' + item.text + '">' +
-	        '<img onclick="toggleChildren(this)" class="img-fluid card-img" src="' + item.img + '">' +
-	        '<div class="row card-img-overlaysoftre">' +
-	          '<h5>' + item.text + '</h5>' +
-	       	  '<span class="card-info" title="Informazioni">Informazioni aggiuntive</span>' +
+	    	  '<div class="card" id="' + item.text + '">' +
+	    	    '<img onclick="toggleChildren(this)" class="img-fluid card-img" src="' + item.img + '">' +
+	    	    '<div class="row card-img-overlaysoftre">' +
+	    	      '<h5>' + item.text + '</h5>';
+
+	    if (item.description) {
+	    	cardContent += '<span class="card-info" title="Informazioni">Informazioni aggiuntive</span>';
+	    }
+
+	    cardContent +=
 	        '</div>' +
 	      '</div>';
 
-	    card.innerHTML = cardContent;
+	    card.innerHTML = cardContent
 
-	    var infoIcon = card.querySelector('.card-info');
-	    infoIcon.addEventListener('click', function() {
-	        openDetailDescription(item); // Pass the item object directly
-	    });
-
+	    if(item.description){
+		    var infoIcon = card.querySelector('.card-info');
+		    infoIcon.addEventListener('click', function() {
+		        openDetailDescription(item); // Pass the item object directly
+		    });
+		}
 	    return card;
 	}
 
@@ -178,7 +185,7 @@ if (userPortalSession.getJsonCatalogo() == null) {
 	    // Modal inner content using string concatenation
 	    modalContainer.innerHTML = 
 	        '<div class="modal-dialog modal-confirm modal-description">' +
-	            '<div class="modal-content">' +
+	            '<div class="modal-content modal-content-description">' +
 	                '<div class="modal-header">' +
 	                    '<h4 class="modal-title">'+(item.text)+'</h4>' +
 	                '</div>' +
@@ -542,8 +549,8 @@ if (userPortalSession.getJsonCatalogo() == null) {
 		const responseMessage = document.getElementById('responseMessage');
 		responseMessage.innerHTML = '';
 		contactUsForm.reset();
-		var tr = event.parentNode.parentNode;
-		var td0 = tr.querySelector('[name=articolo]');
+		let tr = event.parentNode.parentNode;
+		let td0 = tr.querySelector('[name=articolo]');
 
 		$('#modalContactUdsClick')[0].click();
 		$('#contactProduct').html(td0.innerHTML);
@@ -563,21 +570,23 @@ if (userPortalSession.getJsonCatalogo() == null) {
 	});
 
 	function sendMailSalesManager() {
-		var nome = document.getElementById('Nome').value;
-		var cognome = document.getElementById('Cognome').value;
-		var email = document.getElementById('Email').value;
-		var note = document.getElementById('Note').value;
-		var productId = document.getElementById('ContactUsProductId').value;
+		let nome = document.getElementById('Nome').value;
+		let cognome = document.getElementById('Cognome').value;
+		let email = document.getElementById('Email').value;
+		let note = document.getElementById('Note').value;
+		let productId = document.getElementById('ContactUsProductId').value;
+		let quantita = document.getElementById('QtaContactUds').value;
 
 		const responseMessage = document.getElementById('responseMessage');
 		responseMessage.innerHTML = '';
 
-		var payload = {
+		let payload = {
 			nome: nome,
 			cognome: cognome,
 			email: email,
 			note: note,
-			productId: productId
+			productId: productId,
+			quantita : quantita
 		};
 
 		$.ajax({
@@ -612,10 +621,10 @@ if (userPortalSession.getJsonCatalogo() == null) {
 	}
 
 	function compilaURLWS() {
-		var ris;
-		var url = window.location.href;
-		var wbAppPth = parent.document.getElementById('webAppPath').value;
-		var cut = url.indexOf(wbAppPth);
+		let ris;
+		let url = window.location.href;
+		let wbAppPth = parent.document.getElementById('webAppPath').value;
+		let cut = url.indexOf(wbAppPth);
 		ris = url.substring(0, cut);
 		ris += wbAppPth;
 		ris += "/ws";

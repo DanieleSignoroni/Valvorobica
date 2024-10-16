@@ -102,6 +102,6 @@
 
 @media (min-width: 1200px) {
     .modal-dialog {
-        max-width: 50%; /* Set a maximum width of 50% for extra-large devices */
+        max-width: 80%; /* Set a maximum width of 50% for extra-large devices */
     }
 }

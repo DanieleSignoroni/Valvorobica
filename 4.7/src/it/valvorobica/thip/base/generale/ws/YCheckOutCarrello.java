@@ -25,6 +25,7 @@ import it.thera.thip.base.ecommerce.Gwmso00f;
 import it.thera.thip.base.ecommerce.Gwror00f;
 import it.thera.thip.base.ecommerce.Gwtor00f;
 import it.thera.thip.base.ecommerce.Gwtor00fTM;
+import it.thera.thip.base.partner.IndirizzoPrimRose;
 import it.thera.thip.vendite.generaleVE.ws.RicercaPrezzoEcomm;
 import it.thera.thip.vendite.proposteEvasione.CreaMessaggioErrore;
 import it.valvorobica.thip.base.portal.YCarrelloPortale;
@@ -99,12 +100,17 @@ public class YCheckOutCarrello extends YPortalGenRequestJSON {
 				idFlusso = "PortaleCEE";
 			}
 			codificaFlusso(idFlusso);
-			
+
 			JSONObject formData = new JSONObject(body.get("formData").toString());
-			
+
 			String idModalitaSpedizione = formData.getString("IdModalitaSpedizione");
 			String idVettore1 = formData.getString("IdVettore1");
 			String idModalitaConsegna = formData.getString("IdModalitaConsegna");
+
+			String indirizzo = formData.getString("Indirizzo");
+			String CAP = formData.getString("CAP");
+			String localita = formData.getString("Localita");
+			String provincia = formData.getString("Provincia");
 
 			Gwtor00f testata = generaTestataOrdineECommerce(cliente);
 
@@ -118,6 +124,29 @@ public class YCheckOutCarrello extends YPortalGenRequestJSON {
 			testata.setTocomm(note);
 			testata.setTovsri(numeroRiferimentoCliente);
 
+			IndirizzoPrimRose indirizzoSpedizione = cliente.getIndirizzoSpedizione() != null ? cliente.getIndirizzoSpedizione().getDatiIndirizzo() : null;
+
+			if (indirizzoSpedizione != null && indirizzoSpedizione.getIndirizzo().equals(indirizzo)
+					&& indirizzoSpedizione.getCAP().equals(CAP)
+					&& indirizzoSpedizione.getLocalita().equals(localita)) {
+
+				testata.setToinsp(indirizzoSpedizione.getIndirizzo());
+				testata.setTocasp(indirizzoSpedizione.getCAP());
+				testata.setTolosp(indirizzoSpedizione.getLocalita());
+				testata.setTocnaz(cliente.getIdNazione());
+				testata.setToprsp(indirizzoSpedizione.getIdProvincia());
+			} else {
+				testata.setToinsp(indirizzo);
+				testata.setTocasp(CAP);
+				testata.setTolosp(localita);
+				testata.setTocnaz(cliente.getIdNazione());
+				testata.setToprsp(provincia.toUpperCase());
+			}
+
+			testata.setTorasp(cliente.getRagioneSociale());
+
+			testata.setTolisw(cliente.getIdListino());
+
 			int rc = 0;
 			rc = testata.save();
 			if (rc > 0) {
@@ -127,6 +156,11 @@ public class YCheckOutCarrello extends YPortalGenRequestJSON {
 
 						YCarrelloPortale item = (YCarrelloPortale) YCarrelloPortale.elementWithKey(
 								YCarrelloPortale.class, itemCheckOut.getKey(), PersistentObject.NO_LOCK);
+
+						if(item == null) {
+							errors.add("Non e' stata trovata la riga nel carrello, ricaricare la pagina del carrrello");
+							return errors;
+						}
 
 						Gwror00f riga = generaRigaOrdineECommerce(itemCheckOut, item, testata);
 						riga.setRocarr(new BigDecimal(i)); 

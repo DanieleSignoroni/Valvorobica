@@ -242,7 +242,7 @@
      new com.thera.thermfw.web.WebTextArea("YImgCatalogoPortale", "Descrizione"); 
   YImgCatalogoPortaleDescrizione.setParent(YImgCatalogoPortaleForm); 
 %>
-<textarea class="<%=YImgCatalogoPortaleDescrizione.getClassType()%>" cols="130" id="<%=YImgCatalogoPortaleDescrizione.getId()%>" maxlength="<%=YImgCatalogoPortaleDescrizione.getMaxLength()%>" name="<%=YImgCatalogoPortaleDescrizione.getName()%>" rows="50" size="<%=YImgCatalogoPortaleDescrizione.getSize()%>"></textarea><% 
+<textarea class="<%=YImgCatalogoPortaleDescrizione.getClassType()%>" cols="100" id="<%=YImgCatalogoPortaleDescrizione.getId()%>" maxlength="<%=YImgCatalogoPortaleDescrizione.getMaxLength()%>" name="<%=YImgCatalogoPortaleDescrizione.getName()%>" rows="30" size="<%=YImgCatalogoPortaleDescrizione.getSize()%>"></textarea><% 
   YImgCatalogoPortaleDescrizione.write(out); 
 %>
 </td>

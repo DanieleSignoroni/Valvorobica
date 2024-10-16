@@ -16,6 +16,7 @@ import com.thera.thermfw.cbs.Message;
 import com.thera.thermfw.cbs.MessageReplyType;
 import com.thera.thermfw.cbs.MessageTextType;
 import com.thera.thermfw.cbs.MessageTmpl;
+import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.persist.KeyHelper;
 import com.thera.thermfw.persist.PersistentObject;
@@ -24,6 +25,7 @@ import com.thera.thermfw.ssd.SSDConfiguration;
 
 import it.thera.thip.base.articolo.Articolo;
 import it.thera.thip.base.generale.ParametroPsn;
+import it.thera.thip.vendite.proposteEvasione.CreaMessaggioErrore;
 
 /**
  * <h1>Softre Solutions</h1>
@@ -52,6 +54,7 @@ public class YSendMailSalesManager extends YPortalGenRequestJSON {
 		String cognome = getAppParam("cognome") != null ? getAppParam("cognome") : "";
 		String email= getAppParam("email") != null ? getAppParam("email") : "";
 		String note = getAppParam("note");
+		String quantita = getAppParam("quantita");
 
 		String idArticolo = getAppParam("productId") != null ? getAppParam("productId") : "";
 
@@ -62,8 +65,6 @@ public class YSendMailSalesManager extends YPortalGenRequestJSON {
 			String EmailSalesManagerReceiver = ParametroPsn.getValoreParametroPsn("YPortaleECommerce", "EmailSalesManagerReceiver");
 			String EmailSalesManagerSender = ParametroPsn.getValoreParametroPsn("YPortaleECommerce", "EmailSalesManagerSender");
 			String modelMessageID = ParametroPsn.getValoreParametroPsn("YPortaleECommerce", "ModelMessageIdEmailSM");
-			EmailSalesManagerSender = "info@portale.it";
-			EmailSalesManagerReceiver = "daniele.signoroni@smeup.com";
 			try {
 
 				Articolo articolo = (Articolo) 
@@ -73,8 +74,8 @@ public class YSendMailSalesManager extends YPortalGenRequestJSON {
 						}), PersistentObject.NO_LOCK);
 
 				Message messaggio = buildMessage(
+						new String[] {cognome,nome,idArticolo,note,email,quantita},
 						new String[] {articolo.getIdArticolo()},
-						new String[] {cognome,nome,idArticolo,note,email},
 						EmailSalesManagerReceiver,
 						modelMessageID);
 
@@ -82,10 +83,16 @@ public class YSendMailSalesManager extends YPortalGenRequestJSON {
 				messaggio.setEmailDest(EmailSalesManagerReceiver);
 
 				if (messaggio != null) {
-					messaggio.save();
-					Vector mailNotSend = sendMail(messaggio,EmailSalesManagerSender,EmailSalesManagerReceiver);
-					if(mailNotSend.size() > 0) {
-						errors.add("Impossibile inviare la mail verso : "+mailNotSend.get(0));
+					int rc = messaggio.save();
+					if(rc > 0) {
+						ConnectionManager.commit();
+						Vector mailNotSend = sendMail(messaggio,EmailSalesManagerSender,EmailSalesManagerReceiver);
+						if(mailNotSend.size() > 0) {
+							errors.add("Impossibile inviare la mail verso : "+mailNotSend.get(0));
+						}
+					}else {
+						ConnectionManager.rollback();
+						errors.add("Impossibile salvare il messaggio : "+CreaMessaggioErrore.daRcAErrorMessage(rc, (SQLException) messaggio.getException()));
 					}
 				}
 			}catch (SQLException e) {
@@ -102,7 +109,7 @@ public class YSendMailSalesManager extends YPortalGenRequestJSON {
 		Message m = null;
 		MessageTmpl mt = MessageTmpl.elementWithKey(msgModello, PersistentObject.NO_LOCK);
 		if (mt != null) {
-			mt.setSubject(msgModello);
+			mt.setSubject(mt.getSubject());
 			mt.setText(msg);
 			mt.setParams(textParameters, subjectParameters);
 			mt.setReplyType(MessageReplyType.NO_REPLY);

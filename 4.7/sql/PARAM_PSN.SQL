@@ -1,12 +1,16 @@
-INSERT INTO <SCH><THIP>PARAM_PSN (ID_PROGRESSIVO, ID_FUNZIONE, ID_PARAMETRO, ID_AZIENDA, DESCRIZIONE, DESCR_RIDOTTA, R_RIFER_ATTRIB, VALORE_PARAM, STATO, R_UTENTE_CRZ, R_UTENTE_AGG, NOTA, AREA, NUMERO_FIX) VALUES (<NUM><PARAM_PSN>, 'YPortaleECommerce', 'EmailSalesManagerReceiver', null, 'EmailSalesManager Receiver', 'EmailSalesManag', 'EmailAddressChar', null, 'V', <USER>, <USER> , null, '-' , null);
+INSERT INTO <SCH><THIP>PARAM_PSN (ID_PROGRESSIVO, ID_FUNZIONE, ID_PARAMETRO, ID_AZIENDA, DESCRIZIONE, DESCR_RIDOTTA, R_RIFER_ATTRIB, VALORE_PARAM, STATO, R_UTENTE_CRZ, R_UTENTE_AGG, NOTA, AREA, NUMERO_FIX) VALUES (<NUM><PARAM_PSN>, 'YPortaleECommerce', 'EmailSalesManagerReceiver', null, 'EmailSalesManager Receiver', 'EmailSalesManag', 'EmailAddressChar', 'portale.ecommerce@valvorobica.it', 'V', <USER>, <USER> , null, '-' , null);
 INSERT INTO <SCH><THIP>PARAM_PSN_L (ID_PROGRESSIVO, ID_LINGUA, DESCRIZIONE, DESCR_RIDOTTA) VALUES (<LAST_NUM><PARAM_PSN>,'it', 'EmailSalesManager Receiver', 'EmailSalesManag');
 
 
-INSERT INTO <SCH><THIP>PARAM_PSN (ID_PROGRESSIVO, ID_FUNZIONE, ID_PARAMETRO, ID_AZIENDA, DESCRIZIONE, DESCR_RIDOTTA, R_RIFER_ATTRIB, VALORE_PARAM, STATO, R_UTENTE_CRZ, R_UTENTE_AGG, NOTA, AREA, NUMERO_FIX) VALUES (<NUM><PARAM_PSN>, 'YPortaleECommerce', 'EmailSalesManagerSender', null, 'EmailSalesManager Sender', 'EmailSalesManag', 'EmailAddressChar', 'portale.ecommerce@valvorobica.it', 'V', <USER>, <USER> , null, '-' , null);
+INSERT INTO <SCH><THIP>PARAM_PSN (ID_PROGRESSIVO, ID_FUNZIONE, ID_PARAMETRO, ID_AZIENDA, DESCRIZIONE, DESCR_RIDOTTA, R_RIFER_ATTRIB, VALORE_PARAM, STATO, R_UTENTE_CRZ, R_UTENTE_AGG, NOTA, AREA, NUMERO_FIX) VALUES (<NUM><PARAM_PSN>, 'YPortaleECommerce', 'EmailSalesManagerSender', null, 'EmailSalesManager Sender', 'EmailSalesManag', 'EmailAddressChar', 'info@customersportal.it', 'V', <USER>, <USER> , null, '-' , null);
 INSERT INTO <SCH><THIP>PARAM_PSN_L (ID_PROGRESSIVO, ID_LINGUA, DESCRIZIONE, DESCR_RIDOTTA) VALUES (<LAST_NUM><PARAM_PSN>,'it', 'EmailSalesManager Sender', 'EmailSalesManag');
 
 
 INSERT INTO <SCH><THIP>PARAM_PSN (ID_PROGRESSIVO, ID_FUNZIONE, ID_PARAMETRO, ID_AZIENDA, DESCRIZIONE, DESCR_RIDOTTA, R_RIFER_ATTRIB, VALORE_PARAM, STATO, R_UTENTE_CRZ, R_UTENTE_AGG, NOTA, AREA, NUMERO_FIX) VALUES (<NUM><PARAM_PSN>, 'YPortaleECommerce', 'ModelMessageIdEmailSM', null, 'Modello messagio portale e-commerce', 'Modello messagi', 'MsgTmplId', 'YPORT_EC_AV_COM', 'V', <USER>, <USER> , null, '-' , null);
 INSERT INTO <SCH><THIP>PARAM_PSN_L (ID_PROGRESSIVO, ID_LINGUA, DESCRIZIONE, DESCR_RIDOTTA) VALUES (<LAST_NUM><PARAM_PSN>,'it', 'Modello messagio portale e-commerce', 'Modello messagi');
+
+
+INSERT INTO <SCH><THIP>PARAM_PSN (ID_PROGRESSIVO, ID_FUNZIONE, ID_PARAMETRO, ID_AZIENDA, DESCRIZIONE, DESCR_RIDOTTA, R_RIFER_ATTRIB, VALORE_PARAM, STATO, R_UTENTE_CRZ, R_UTENTE_AGG, NOTA, AREA, NUMERO_FIX) VALUES (<NUM><PARAM_PSN>, 'YPortaleECommerce', 'SalesConditionPdfKey', null, 'Chiave documento digitale cond ven.', 'Chiave document', 'Stringa50', null, 'V', <USER>, <USER> , null, '-' , null);
+INSERT INTO <SCH><THIP>PARAM_PSN_L (ID_PROGRESSIVO, ID_LINGUA, DESCRIZIONE, DESCR_RIDOTTA) VALUES (<LAST_NUM><PARAM_PSN>,'it', 'Chiave documento digitale cond ven.', 'Chiave document');
 
 
