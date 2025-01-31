@@ -1,0 +1,3 @@
+<B>2025-01-30 08:59:36</B>
+<BR>Il descrittore di classe <B>YFirmaDigitVettoriEsclusi</B> è stato generato correttamente
+<BR><B>La generazione descrittori di classe è completata con successo</B><BR>

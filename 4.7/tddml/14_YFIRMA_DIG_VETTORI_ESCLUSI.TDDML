@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- YFIRMA_DIG_VETTORI_ESCLUSI (YFIRMA_): Firma digitale - Vettori esclusi; -->
+  <CreateTable schema="THIPPERS" name="YFIRMA_DIG_VETTORI_ESCLUSI" shortname="YFIRMA_">
+    <Column name="ID_AZIENDA" shortname="ID_AZIENDA" type="char" length="3" nullable="no"/>
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_VETTORE" shortname="R_VETTORE" type="char" length="8" nullable="no"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="YFIRMA_DIG_VET_I01" tabschema="THIPPERS" tabname="YFIRMA_DIG_VETTORI_ESCLUSI" shortname="YFIRMA_I01" unique="yes">
+    <IndexCol name="ID_AZIENDA" order="Asc"/>
+    <IndexCol name="R_VETTORE" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="YFIRMA_DIG_VETTORI_ESCLUSI">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="R_VETTORE"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="YFIRMA_DIG_VETTORI_ESCLUSI" text="Firma digitale - Vettori esclusi">
+      <CommentColumn name="ID_AZIENDA" text="Azienda"/>
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+      <CommentColumn name="R_VETTORE" text="Vettore"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="YFIRMA_DIG_VET_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="YFIRMA_DIG_VETTORI_ESCLUSI"/>
+</TDDML>

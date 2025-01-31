@@ -32,9 +32,7 @@
 <!ATTLIST UserCode
       TYPE (methods | attributes | classes) #IMPLIED>
 <!ENTITY templateVersion "1.0">
-<!ENTITY className "YMicroFamiglia">
+<!ENTITY className "YFirmaDigitVettoriEsclusi">
 <!ENTITY bracesPosition "Up">
 <!ENTITY blockIndent "2">
-<!ENTITY ref1 "YMicroFamigliaTM">
-<!ENTITY ref2 "YMicroFamiglia">
-<!ENTITY ref3 "">
+<!ENTITY ref1 "YFirmaDigitVettoriEsclusiPO">
