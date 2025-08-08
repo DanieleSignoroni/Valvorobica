@@ -1,0 +1,3 @@
+<B>2025-08-08 14:51:05</B>
+<BR>Il descrittore di classe <B>CapparioSusa</B> è stato generato correttamente
+<BR><B>La generazione descrittori di classe è completata con successo</B><BR>

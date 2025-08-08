@@ -1,0 +1,25 @@
+<tfml>
+
+<generator type="form"/>
+
+<form name="myForm" errorList="yes" locktype="nolock" classHdr="YCaricamentoFileSusa" 
+			menubar="yes" inputFont="Arial,10"	toolbar="yes" 
+			header="it.thera.thip.cs.Header.jsp" footer="it.thera.thip.cs.Footer.jsp"
+			servlet="it.valvorobica.thip.susa.utility.web.CaricamentoFileSusaFormActionAdapter"			
+			onLoadPresent="yes"
+			jsLibraryName="it/valvorobica/thip/susa/utility/CaricamentoFileSusa.js">
+			>
+
+	 <menubar  name="myMenuBar">
+      <import file="it/thera/thip/cs/defObjMenu.tfml"/>
+    </menubar>
+    <toolbar name="myToolBar" imgwidth="16" imgheight="16">
+      <import file="it/thera/thip/cs/defObjMenu.tfml"/>
+    </toolbar>
+	
+	<textinput classAD="IdAzienda" name="IdAzienda"/>
+	<textinput classAD="TemporaryFileName" name="TemporaryFileName"/>
+	<textinput classAD="ClassNameOrigine" name="ClassNameOrigine"/>
+	
+	</form>
+</tfml>

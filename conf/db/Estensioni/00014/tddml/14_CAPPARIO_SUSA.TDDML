@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- CAPPARIO_SUSA (CAPPARI): Cappario - Susa; -->
+  <CreateTable schema="THIPPERS" name="CAPPARIO_SUSA" shortname="CAPPARI">
+    <Column name="CAP" shortname="CAP" type="char" length="9" nullable="no"/>
+    <Column name="LOCALITA" shortname="LOCALITA" type="varchar" length="50" nullable="no"/>
+    <Column name="CODICE_INSTRADAMENTO" shortname="CODICE_INS" type="char" length="5" nullable="yes"/>
+    <Column name="ID_PROVINCIA" shortname="ID_PROVINC" type="char" length="5" nullable="yes"/>
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="CAPPARIO_SUSA_I01" tabschema="THIPPERS" tabname="CAPPARIO_SUSA" shortname="CAPPAR_I02" unique="yes">
+    <IndexCol name="CAP" order="Asc"/>
+    <IndexCol name="LOCALITA" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="CAPPARIO_SUSA">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="CAP"/>
+        <ColumnRef name="LOCALITA"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="CAPPARIO_SUSA" text="Cappario - Susa">
+      <CommentColumn name="CAP" text="CAP"/>
+      <CommentColumn name="LOCALITA" text="Localita"/>
+      <CommentColumn name="CODICE_INSTRADAMENTO" text="Codice Instradamento"/>
+      <CommentColumn name="ID_PROVINCIA" text="Provincia"/>
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="CAPPARIO_SUSA_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="CAPPARIO_SUSA"/>
+</TDDML>

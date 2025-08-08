@@ -1,0 +1,2 @@
+<B>2025-08-08 14:51:03</B>
+<BR><B>La generazione delle classi Java è stata completata con successo.</B><BR>
