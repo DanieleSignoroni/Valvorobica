@@ -32,7 +32,7 @@
 <!ATTLIST UserCode
       TYPE (methods | attributes | classes) #IMPLIED>
 <!ENTITY templateVersion "1.0">
-<!ENTITY className "CapparioSusa">
+<!ENTITY className "RoutesSusa">
 <!ENTITY bracesPosition "Up">
 <!ENTITY blockIndent "2">
-<!ENTITY ref1 "CapparioSusaPO">
+<!ENTITY ref1 "RoutesSusaPO">

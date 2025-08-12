@@ -9,12 +9,16 @@ import java.nio.file.Files;
 import java.sql.SQLException;
 
 import com.thera.thermfw.common.BusinessObjectAdapter;
+import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.security.Authorizable;
 
 import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.cs.ThipException;
 import it.valvorobica.thip.susa.CapparioSusa;
+import it.valvorobica.thip.susa.CapparioSusaTM;
+import it.valvorobica.thip.susa.RoutesSusa;
+import it.valvorobica.thip.susa.RoutesSusaTM;
 
 /**
  *
@@ -83,38 +87,66 @@ public class CaricamentoFileSusa extends BusinessObjectAdapter implements Author
 	}
 
 	protected int processaFile() throws SQLException {
-		if (!"CapparioSusa".equals(getClassNameOrigine())) {
+		int creati = 0;
+		if (!"CapparioSusa".equals(getClassNameOrigine()) && !"RoutesSusa".equals(getClassNameOrigine())) {
 			return 0; // niente da fare per altre origini
 		}
-		File file = new File(getTemporaryFileName());
-		if (file == null || !file.exists()) {
-			throw new ThipException("File non trovato nel percorso: " + getTemporaryFileName());
+		String stmt = "DELETE FROM ";
+		if("CapparioSusa".equals(getClassNameOrigine())){
+			stmt += CapparioSusaTM.TABLE_NAME;
+		}else if("RoutesSusa".equals(getClassNameOrigine())){
+			stmt += RoutesSusaTM.TABLE_NAME;
 		}
-
-		Charset cs = StandardCharsets.ISO_8859_1;
-		int creati = 0;
-
-		try (BufferedReader br = Files.newBufferedReader(file.toPath(), cs)) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.trim().isEmpty()) continue;
-
-				String cap        = slice(line, 1, 7);
-				String localita   = slice(line, 8, 48);
-				String instrad    = slice(line, 49, 53);
-				String provincia  = slice(line, 54, 55);
-
-				CapparioSusa c = (CapparioSusa) Factory.createObject(CapparioSusa.class);
-				c.setCap(cap);
-				c.setLocalita(localita);
-				c.setCodiceInstradamento(instrad);
-				c.setIdProvincia(provincia);
-				c.save();
-
-				creati++;
+		CachedStatement csDel = new CachedStatement(stmt);
+		int ris = csDel.executeUpdate();
+		if(ris >= 0) {
+			File file = new File(getTemporaryFileName());
+			if (file == null || !file.exists()) {
+				throw new ThipException("File non trovato nel percorso: " + getTemporaryFileName());
 			}
-		} catch (IOException e) {
-			throw new ThipException("Errore lettura file cappario: " + e.getMessage());
+
+			Charset cs = StandardCharsets.ISO_8859_1;
+
+			try (BufferedReader br = Files.newBufferedReader(file.toPath(), cs)) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.trim().isEmpty()) continue;
+					if ("CapparioSusa".equals(getClassNameOrigine())) {
+						String cap        = slice(line, 1, 7);
+						String localita   = slice(line, 8, 48);
+						String instrad    = slice(line, 49, 53);
+						String provincia  = slice(line, 54, 55);
+
+						CapparioSusa c = (CapparioSusa) Factory.createObject(CapparioSusa.class);
+						c.setCap(cap);
+						c.setLocalita(localita);
+						c.setCodiceInstradamento(instrad);
+						c.setIdProvincia(provincia);
+						c.save();
+
+						creati++;
+					}else if ("RoutesSusa".equals(getClassNameOrigine())) {
+						String descrServizio    = slice(line, 1, 12);
+						String filialePartenza  = slice(line, 13, 14);
+						String codiceInstrad    = slice(line, 21, 25);
+						String codiceLinea      = slice(line, 32, 36);
+						String codiceZona       = slice(line, 45, 47);
+						String descrLinea       = slice(line, 53, 83);
+
+						RoutesSusa r = (RoutesSusa) Factory.createObject(RoutesSusa.class);
+						r.setDescrizioneServzio(descrServizio);
+						r.setFilialePartenza(filialePartenza);
+						r.setCodiceInstradamento(codiceInstrad);
+						r.setCodiceLinea(codiceLinea);
+						r.setCodiceZona(codiceZona);
+						r.setDescrzioneLinea(descrLinea);
+						r.save();
+						creati++;
+					}
+				}
+			} catch (IOException e) {
+				throw new ThipException("Errore lettura file cappario: " + e.getMessage());
+			}
 		}
 
 		return creati;

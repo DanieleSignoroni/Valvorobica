@@ -1,0 +1,30 @@
+<tfml>
+  <generator type="form"/>
+  <form classHdr="RoutesSusa"
+    name="RoutesSusaForm"
+    locktype="nolock"
+    errorList="yes" menubar="yes" toolbar="yes" submitReset="none"
+    servlet="com.thera.thermfw.web.servlet.FormActionAdapter"
+    jsLibraryName="it/valvorobica/thip/susa/RoutesSusa.js"
+    onLoadPresent="yes"
+    header="com.thera.thermfw.common.Header.jsp"
+    footer="com.thera.thermfw.common.Footer.jsp">
+    <menubar  name="myMenuBar">
+      <import file="it/thera/thip/cs/defObjMenu.tfml"/>
+    </menubar>
+    <toolbar name="myToolBar" imgwidth="16" imgheight="16">
+      <import file="it/thera/thip/cs/defObjMenu.tfml"/>
+    </toolbar>
+    <tabbed name="mytabbed" height="100%" width="100%">
+      <tab name="tab1" resourceFile="it.valvorobica.thip.susa.resources.RoutesSusa" resourceID="tab1">
+        <textinput name="DescrizioneServzio" classAD="DescrizioneServzio"/>
+        <textinput name="FilialePartenza" classAD="FilialePartenza"/>
+        <textinput name="CodiceInstradamento" classAD="CodiceInstradamento"/>
+        <textinput name="CodiceLinea" classAD="CodiceLinea"/>
+        <textinput name="CodiceZona" classAD="CodiceZona"/>
+        <textinput name="DescrzioneLinea" classAD="DescrzioneLinea"/>
+      </tab>
+    </tabbed>
+  </form>
+</tfml>
+

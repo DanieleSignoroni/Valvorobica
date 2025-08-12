@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- ROUTES_SUSA (ROUTES_): Routes - Susa; -->
+  <CreateTable schema="THIPPERS" name="ROUTES_SUSA" shortname="ROUTES_">
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="DESCRIZIONE_SERVZIO" shortname="DESCRIZION" type="char" length="15" nullable="no"/>
+    <Column name="FILIALE_PARTENZA" shortname="FILIALE_PA" type="char" length="2" nullable="yes"/>
+    <Column name="CODICE_INSTRADAMENTO" shortname="CODICE_INS" type="char" length="5" nullable="no"/>
+    <Column name="CODICE_LINEA" shortname="CODICE_LIN" type="char" length="5" nullable="yes"/>
+    <Column name="CODICE_ZONA" shortname="CODICE_ZON" type="char" length="3" nullable="yes"/>
+    <Column name="DESCRZIONE_LINEA" shortname="DESCRZIONE" type="varchar" length="50" nullable="yes"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="ROUTES_SUSA_I01" tabschema="THIPPERS" tabname="ROUTES_SUSA" shortname="ROUTES_I01" unique="yes">
+    <IndexCol name="DESCRIZIONE_SERVZIO" order="Asc"/>
+    <IndexCol name="CODICE_INSTRADAMENTO" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="ROUTES_SUSA">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="DESCRIZIONE_SERVZIO"/>
+        <ColumnRef name="CODICE_INSTRADAMENTO"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="ROUTES_SUSA" text="Routes - Susa">
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+      <CommentColumn name="DESCRIZIONE_SERVZIO" text="Descriz. Servizio"/>
+      <CommentColumn name="FILIALE_PARTENZA" text="Filiale di partenza"/>
+      <CommentColumn name="CODICE_INSTRADAMENTO" text="Codice Instradamento"/>
+      <CommentColumn name="CODICE_LINEA" text="Codice linea"/>
+      <CommentColumn name="CODICE_ZONA" text="Codice zona"/>
+      <CommentColumn name="DESCRZIONE_LINEA" text="Descrizione Linea"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="ROUTES_SUSA_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="ROUTES_SUSA"/>
+</TDDML>
