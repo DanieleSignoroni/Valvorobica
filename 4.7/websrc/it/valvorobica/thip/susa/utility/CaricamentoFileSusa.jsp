@@ -36,6 +36,7 @@
   YCaricamentoFileSusaForm.setJSTypeList(jsList); 
   YCaricamentoFileSusaForm.setHeader("it.thera.thip.cs.Header.jsp"); 
   YCaricamentoFileSusaForm.setFooter("it.thera.thip.cs.Footer.jsp"); 
+  YCaricamentoFileSusaForm.setWebFormModifierClass("it.valvorobica.thip.susa.utility.web.CaricamentoFileSusaFormModifier"); 
   YCaricamentoFileSusaForm.setDeniedAttributeModeStr("hideNone"); 
   int mode = YCaricamentoFileSusaForm.getMode(); 
   String key = YCaricamentoFileSusaForm.getKey(); 

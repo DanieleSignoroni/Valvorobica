@@ -6,6 +6,7 @@
 			menubar="yes" inputFont="Arial,10"	toolbar="yes" 
 			header="it.thera.thip.cs.Header.jsp" footer="it.thera.thip.cs.Footer.jsp"
 			servlet="it.valvorobica.thip.susa.utility.web.CaricamentoFileSusaFormActionAdapter"			
+			webFormModifierClass="it.valvorobica.thip.susa.utility.web.CaricamentoFileSusaFormModifier"
 			onLoadPresent="yes"
 			jsLibraryName="it/valvorobica/thip/susa/utility/CaricamentoFileSusa.js">
 			>
