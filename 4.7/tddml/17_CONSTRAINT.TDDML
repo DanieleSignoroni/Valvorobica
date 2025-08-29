@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- ETICHETTE_SUSA (ETICHET) -->
+  <AlterTable schema="THIPPERS" name="ETICHETTE_SUSA">
+    <AddConstraint>
+      <Constraint name="TestataUds_1950721" refschema="LOGIS" reftable="LUDS_TESTA" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="COD_UDS"/>
+      </Constraint>
+    </AddConstraint>
+  </AlterTable>
+</TDDML>

@@ -32,7 +32,7 @@
 <!ATTLIST UserCode
       TYPE (methods | attributes | classes) #IMPLIED>
 <!ENTITY templateVersion "1.0">
-<!ENTITY className "YRptSegnacolloSusa">
+<!ENTITY className "YEtichettaSusa">
 <!ENTITY bracesPosition "Up">
 <!ENTITY blockIndent "2">
-<!ENTITY ref1 "YRptSegnacolloSusaPO">
+<!ENTITY ref1 "YEtichettaSusaPO">

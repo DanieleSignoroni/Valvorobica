@@ -1,4 +1,4 @@
 
-Elaborazione file comandi W:\PthDev\Projects\Panthera\Valvorobica\conf\db\Estensioni\00016\tddml\16_CONSTRAINT.TDDML.
-ALTER TABLE THIPPERS.RPT_SEGNACOLLO_SUSA ADD CONSTRAINT Azienda_937649661 FOREIGN KEY (ID_AZIENDA)
-        REFERENCES THIP.AZIENDE_ESTESE
+Elaborazione file comandi W:\PthDev\Projects\Panthera\Valvorobica\conf\db\Estensioni\00017\tddml\17_CONSTRAINT.TDDML.
+ALTER TABLE THIPPERS.ETICHETTE_SUSA ADD CONSTRAINT TestataUds_1950721 FOREIGN KEY (COD_UDS)
+        REFERENCES LOGIS.LUDS_TESTA

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- ETICHETTE_SUSA (ETICHET): Etichette - Susa; -->
+  <CreateTable schema="THIPPERS" name="ETICHETTE_SUSA" shortname="ETICHET">
+    <Column name="COD_UDS" shortname="COD_UDS" type="char" length="20" nullable="no"/>
+    <Column name="ETICHETTA_BASE_64" shortname="ETICHETTA_" type="blob" length="100M" nullable="yes"/>
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="ETICHETTE_SUSA_I01" tabschema="THIPPERS" tabname="ETICHETTE_SUSA" shortname="ETICHE_I01" unique="yes">
+    <IndexCol name="COD_UDS" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="ETICHETTE_SUSA">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="COD_UDS"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="ETICHETTE_SUSA" text="Etichette - Susa">
+      <CommentColumn name="COD_UDS" text="CodUds"/>
+      <CommentColumn name="ETICHETTA_BASE_64" text="EtichettaBase64"/>
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="ETICHETTE_SUSA_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="ETICHETTE_SUSA"/>
+</TDDML>
