@@ -1,13 +1,22 @@
 package it.valvorobica.thip.vendite.documentoVE.susa;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import com.thera.thermfw.base.ResourceLoader;
 import com.thera.thermfw.base.TimeUtils;
@@ -15,13 +24,18 @@ import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.persist.KeyHelper;
+import com.thera.thermfw.persist.PersistentObject;
 
 import it.thera.thip.base.articolo.ArticoloBase;
 import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.base.comuniVenAcq.DdtTes;
 import it.thera.thip.base.comuniVenAcq.DdtTesTM;
+import it.thera.thip.base.generale.IntegrazioneThipLogis;
+import it.thera.thip.logis.lgb.TestataLista;
+import it.thera.thip.vendite.documentoVE.DdtTestataVendita;
 import it.thera.thip.vendite.documentoVE.DocumentoVendita;
 import it.thera.thip.vendite.documentoVE.DocumentoVenditaTM;
+import it.valvorobica.thip.susa.YEtichettaSusa;
 import it.valvorobica.thip.vendite.documentoVE.brt.EstremiBartolini;
 import it.valvorobica.thip.vendite.documentoVE.brt.YExpDDTBartolini;
 
@@ -284,6 +298,114 @@ public class IntegrazioneCorriereSusa {
 		setString(co,codiceBarcodeCollo, 18, 47);
 
 		return co.toString();
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static List documentiVenditaDDT(String keyDDT) {
+		List docs = new ArrayList();
+		String[] parts = KeyHelper.unpackObjectKey(keyDDT);
+
+		List<String> keysDocVenTes = new ArrayList<String>();
+
+		String stmt = "SELECT  " + "ID_AZIENDA ,ID_ANNO_DOC ,ID_NUMERO_DOC  " + "FROM THIP.DOC_VEN_TES "
+				+ "WHERE ID_AZIENDA = '" + parts[0] + "' " + "AND ANNO_BOLLA = '" + parts[1] + "' "
+				+ "AND NUMERO_BOLLA = '" + parts[2] + "' " + "AND TIPO_BOLLA = '" + parts[3] + "' ";
+
+		ResultSet rs = null;
+		CachedStatement cs = null;
+
+		try {
+			cs = new CachedStatement(stmt);
+			rs = cs.executeQuery();
+			while(rs.next()) {
+				keysDocVenTes.add(KeyHelper.buildObjectKey(new String[] {
+						rs.getString(DocumentoVenditaTM.ID_AZIENDA),
+						rs.getString(DocumentoVenditaTM.ID_ANNO_DOC),
+						rs.getString(DocumentoVenditaTM.ID_NUMERO_DOC)
+				}));
+			}
+			rs.close();
+			cs.free();
+		}catch (Exception e) {
+			e.printStackTrace(Trace.excStream);
+		}
+		for (Iterator iterator = keysDocVenTes.iterator(); iterator.hasNext();) {
+			String c = (String) iterator.next();
+			try {
+				docs.add((DocumentoVendita) DocumentoVendita.elementWithKey(DocumentoVendita.class, c, PersistentObject.NO_LOCK));
+			} catch (SQLException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+		}
+		return docs;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static File generaFileTracciato2_3_Susa(List ddts) {
+		File f = null;
+		StringBuilder fileContent = new StringBuilder();
+		Iterator iterDdts = ddts.iterator();
+		while(iterDdts.hasNext()) {
+			DdtTestataVendita ddt = (DdtTestataVendita) iterDdts.next();
+			if(ddt.getFlagRisUte3() != YExpDDTBartolini.PROCESSATO) {
+				IntegrazioneCorriereSusa integrazione = IntegrazioneCorriereSusa.newInstance();
+
+				fileContent.append(integrazione.generaRecordBO(ddt)).append(System.lineSeparator());
+				fileContent.append(integrazione.generaRecordNO(ddt));
+
+				List dvs = documentiVenditaDDT(ddt.getKey());
+				Iterator iterDvs = dvs.iterator();
+				while(iterDdts.hasNext()) {
+					DocumentoVendita dv = (DocumentoVendita) iterDvs.next();
+					try {
+						TestataLista tl = (TestataLista) TestataLista.elementWithKey(TestataLista.class, KeyHelper.buildObjectKey(new String[] {
+								dv.getIdAzienda(),(IntegrazioneThipLogis.VENDITA + dv.getAnnoDocumento() + dv.getNumeroDocumento())
+						}), PersistentObject.NO_LOCK);
+						if(tl != null) {
+							Vector elencoUds = TestataLista.getElencoUds(tl);
+							Iterator iterUds = elencoUds.iterator();
+							while(iterUds.hasNext()) {
+								String codUds = (String) iterUds.next();
+
+								YEtichettaSusa etic = YEtichettaSusa.elementWithKey(codUds, PersistentObject.NO_LOCK);
+								if(etic  != null) {
+									fileContent.append(integrazione.generaRecordCO(ddt, codUds));
+									
+									etic.delete(); //La cancello ora, alla fine dell'esportazione commit/rollback decideranno cosa consolidare a db
+								}
+							}
+						}
+					} catch (SQLException e) {
+						e.printStackTrace(Trace.excStream);
+					}
+				}
+
+				if(iterDdts.hasNext()) {
+					fileContent.append(System.lineSeparator());
+				}
+			}
+		}
+		if(fileContent != null && !fileContent.toString().isEmpty()) {
+			String timeStamp = LocalDateTime.now()
+					.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+
+			String prefix = "spedizione_susa_" + timeStamp + "_"; // createTempFile richiede un prefix di almeno 3 char
+			String suffix = ".txt";
+			try {
+				// crea il file temporaneo (ritorna Path)
+				Path temp = Files.createTempFile(prefix, suffix);
+
+				// scrivi con charset esplicito
+				Files.write(temp, fileContent.toString().getBytes(StandardCharsets.UTF_8));
+
+				// Se ti serve ancora come java.io.File:
+				f = temp.toFile();
+			}catch (IOException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+
+		}
+		return f;
 	}
 
 	//72102 Fine

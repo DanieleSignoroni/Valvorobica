@@ -1,5 +1,6 @@
 package it.valvorobica.thip.susa;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -86,94 +87,28 @@ public class YEXPDDTSusa extends BatchRunnable implements Authorizable {
 
 	@SuppressWarnings("rawtypes")
 	protected boolean esportaBolleVersoFtpSusa() {
-		StringBuilder fileContent = new StringBuilder();
 		List ddts = recuperaListaDDT();
-		Iterator iterDdts = ddts.iterator();
-		int rcSave = 0;
-		while(rcSave >= 0 && iterDdts.hasNext()) {
-			DdtTestataVendita ddt = (DdtTestataVendita) iterDdts.next();
-			if(ddt.getFlagRisUte3() != YExpDDTBartolini.PROCESSATO) {
-				IntegrazioneCorriereSusa integrazione = IntegrazioneCorriereSusa.newInstance();
-
-				fileContent.append(integrazione.generaRecordBO(ddt)).append(System.lineSeparator());
-				fileContent.append(integrazione.generaRecordNO(ddt));
-
-				List dvs = documentiVenditaDDT(ddt.getKey());
-				Iterator iterDvs = dvs.iterator();
-				while(iterDdts.hasNext()) {
-					DocumentoVendita dv = (DocumentoVendita) iterDvs.next();
-					try {
-						TestataLista tl = (TestataLista) TestataLista.elementWithKey(TestataLista.class, KeyHelper.buildObjectKey(new String[] {
-								dv.getIdAzienda(),(IntegrazioneThipLogis.VENDITA + dv.getAnnoDocumento() + dv.getNumeroDocumento())
-						}), PersistentObject.NO_LOCK);
-						if(tl != null) {
-							Vector elencoUds = TestataLista.getElencoUds(tl);
-							Iterator iterUds = elencoUds.iterator();
-							while(iterUds.hasNext()) {
-								String codUds = (String) iterUds.next();
-
-								YEtichettaSusa etic = YEtichettaSusa.elementWithKey(codUds, PersistentObject.NO_LOCK);
-								if(etic  != null) {
-									fileContent.append(integrazione.generaRecordCO(ddt, codUds));
-								}
-							}
-						}
-					} catch (SQLException e) {
-						e.printStackTrace(Trace.excStream);
-					}
+		if(ddts.size() > 0) {
+			File file = IntegrazioneCorriereSusa.generaFileTracciato2_3_Susa(ddts);
+			if(file != null) {
+				
+				//..Esporto il file verso l'FTP di Susa
+				
+				//..In seguito se ho correttamente posizionato il file nell'area FTP flaggo i DDT come processati
+				
+				Iterator iterDdts = ddts.iterator();
+				int rcSave = 0;
+				while(rcSave >= 0 && iterDdts.hasNext()) {
+					DdtTestataVendita ddt = (DdtTestataVendita) iterDdts.next();
+					int rc = IntegrazioneCorriereSusa.flaggaComeProcessatiDocumentiVenditaAppartenentiDDT(ddt.getKey(), YExpDDTBartolini.PROCESSATO);
+					if(rc < 0)
+						rcSave = rc;
+					else
+						rcSave += rc;
 				}
-
-				if(iterDdts.hasNext()) {
-					fileContent.append(System.lineSeparator());
-				}
-				int rc = IntegrazioneCorriereSusa.flaggaComeProcessatiDocumentiVenditaAppartenentiDDT(ddt.getKey(), YExpDDTBartolini.PROCESSATO);
-				if(rc < 0)
-					rcSave = rc;
-				else
-					rcSave += rc;
 			}
 		}
 		return true;
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List documentiVenditaDDT(String keyDDT){
-		List docs = new ArrayList();
-		String[] parts = KeyHelper.unpackObjectKey(keyDDT);
-
-		List<String> keysDocVenTes = new ArrayList<String>();
-
-		String stmt = "SELECT  " + "ID_AZIENDA ,ID_ANNO_DOC ,ID_NUMERO_DOC  " + "FROM THIP.DOC_VEN_TES "
-				+ "WHERE ID_AZIENDA = '" + parts[0] + "' " + "AND ANNO_BOLLA = '" + parts[1] + "' "
-				+ "AND NUMERO_BOLLA = '" + parts[2] + "' " + "AND TIPO_BOLLA = '" + parts[3] + "' ";
-
-		ResultSet rs = null;
-		CachedStatement cs = null;
-
-		try {
-			cs = new CachedStatement(stmt);
-			rs = cs.executeQuery();
-			while(rs.next()) {
-				keysDocVenTes.add(KeyHelper.buildObjectKey(new String[] {
-						rs.getString(DocumentoVenditaTM.ID_AZIENDA),
-						rs.getString(DocumentoVenditaTM.ID_ANNO_DOC),
-						rs.getString(DocumentoVenditaTM.ID_NUMERO_DOC)
-				}));
-			}
-			rs.close();
-			cs.free();
-		}catch (Exception e) {
-			e.printStackTrace(Trace.excStream);
-		}
-		for (Iterator iterator = keysDocVenTes.iterator(); iterator.hasNext();) {
-			String c = (String) iterator.next();
-			try {
-				docs.add((DocumentoVendita) DocumentoVendita.elementWithKey(DocumentoVendita.class, c, PersistentObject.NO_LOCK));
-			} catch (SQLException e) {
-				e.printStackTrace(Trace.excStream);
-			}
-		}
-		return docs;
 	}
 
 	@SuppressWarnings("unchecked")
