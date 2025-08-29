@@ -1,21 +1,19 @@
 <tfml>
   <generator type="batchForm" />
-	<form name="YStampaEticSusaBatch"
-				errorList="yes"
+	<form name="YEXPDDTSusa" errorList="yes"
 				locktype="nolock"
-				classHdr="YStampaEticSusaBatch"
+				classHdr="YEXPDDTSusa"
 				menubar="no"
 				inputFont="Arial,10"
 				toolbar="yes"
-				jsLibraryName="it/valvorobica/thip/susa/YStampaEticSusaBatch.js"
-				onLoadPresent="yes"
+				onLoadPresent="no"
 				header="com.thera.thermfw.common.Header.jsp"
 				footer="com.thera.thermfw.common.Footer.jsp">
 			    
 		<toolbar name="myToolBar" width="24" height="24" imgwidth="16" imgheight="16" color="#f7fbfd" background="#C8D6E1">
   			<import file="it/thera/thip/cs/PrintRunnableMenu.tfml"/>
-  			<textinput name="CodiceTestataLista" classAD="CodiceTestataLista"/>
-  			<checkbox name="ParcheggiaEticPerInvio" classAD="ParcheggiaEticPerInvio"/>
 		</toolbar>
+		<textinput classAD="DateFrom" name="DateFrom" showCalendarBtn="yes"/>
+		<textinput classAD="DateTo" name="DateTo" showCalendarBtn="yes"/>
 	</form>
 </tfml>

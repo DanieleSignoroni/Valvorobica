@@ -4,7 +4,7 @@
 </head>
 <link href="thermweb/css/thermGrid.css" rel="STYLESHEET" type="text/css" />
 <body topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">
-	<form name="YStampaEticSusaBatch">
+	<form name="YEXPDDTSusa">
 		<table width="100%" cellpadding="2" cellspacing="2">
 			<tr>
 				<td style="height: 0"><span class="toolbar" id="myToolBar"></span></td>
@@ -13,11 +13,19 @@
 				<td>
 					<table>
 						<tr>
-							<td valign="top"><label for="CodiceTestataLista"></label></td>
-							<td valign="top"><input id="CodiceTestataLista" name="CodiceTestataLista"></input></td>
+							<td colspan="2"><p
+									style="font-weight: bold; font-size: 15px;">
+									Indicare l'intervallo di date per l'estrazione dei 'DDT di
+									Vendita' <br></br>
+								</p></td>
 						</tr>
 						<tr>
-							<td valign="top"><input type="checkbox" id="ParcheggiaEticPerInvio" name="ParcheggiaEticPerInvio"></input></td>
+							<td nowrap="true"><label for="DateFrom"></label></td>
+							<td><input name="DateFrom" type="text" id="DateFrom" /></td>
+						</tr>
+						<tr>
+							<td nowrap="true"><label for="DateTo"></label></td>
+							<td><input name="DateTo" type="text" id="DateTo" /></td>
 						</tr>
 					</table>
 				</td>

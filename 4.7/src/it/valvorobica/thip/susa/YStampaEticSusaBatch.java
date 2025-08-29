@@ -1,8 +1,8 @@
 package it.valvorobica.thip.susa;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Vector;
 
 import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.batch.AvailableReport;
@@ -11,13 +11,15 @@ import com.thera.thermfw.batch.ElaboratePrintRunnable;
 import com.thera.thermfw.batch.PrintingToolInterface;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Factory;
+import com.thera.thermfw.persist.KeyHelper;
 import com.thera.thermfw.persist.PersistentObject;
 import com.thera.thermfw.security.Authorizable;
 
+import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.base.documenti.TipoDestinatario;
-import it.thera.thip.base.generale.IntegrazioneThipLogis;
 import it.thera.thip.logis.fis.TestataUds;
 import it.thera.thip.logis.lgb.TestataLista;
+import it.thera.thip.vendite.documentoVE.DdtTestataVendita;
 import it.thera.thip.vendite.documentoVE.DocumentoVendita;
 import it.valvorobica.thip.logis.lgb.YTestataLista;
 import it.valvorobica.thip.vendite.documentoVE.susa.IntegrazioneCorriereSusa;
@@ -41,22 +43,29 @@ import it.valvorobica.thip.vendite.documentoVE.susa.IntegrazioneCorriereSusa;
 
 public class YStampaEticSusaBatch extends ElaboratePrintRunnable implements Authorizable{
 
-	protected String iCodiceUds;
+	protected String iCodiceTestataLista;
+	protected boolean iParcheggiaEticPerInvio;
 
 	protected AvailableReport iAvailableRpt;
 
-	protected YRptSegnacolloSusa iRptEtichetta;
-
-	public String getCodiceUds() {
-		return iCodiceUds;
+	public String getCodiceTestataLista() {
+		return iCodiceTestataLista;
 	}
 
-	public void setCodiceUds(String iCodiceUds) {
-		this.iCodiceUds = iCodiceUds;
+	public void setCodiceTestataLista(String iCodiceTestataLista) {
+		this.iCodiceTestataLista = iCodiceTestataLista;
+	}
+
+	public boolean isParcheggiaEticPerInvio() {
+		return iParcheggiaEticPerInvio;
+	}
+
+	public void setParcheggiaEticPerInvio(boolean iParcheggiaEticPerInvio) {
+		this.iParcheggiaEticPerInvio = iParcheggiaEticPerInvio;
 	}
 
 	public YStampaEticSusaBatch() {
-
+		setParcheggiaEticPerInvio(false);
 	}
 
 	protected boolean createAvailableReport() throws Exception{
@@ -92,34 +101,13 @@ public class YStampaEticSusaBatch extends ElaboratePrintRunnable implements Auth
 				return false;
 			}
 			if(isOk) {
-				TestataUds tu = (TestataUds) TestataUds.elementWithKey(TestataUds.class, iCodiceUds, PersistentObject.NO_LOCK);
-				if(tu != null) {
-					isOk = createReportInternal(tu);
-					if(isOk) {
-						String nomef = getPrintToolInterface().exportAvailableReport(iAvailableRpt); 
-						if(nomef != null) {
-							File f = new File(nomef);
-							if(f.exists()) {
-								YEtichettaSusa etic = (YEtichettaSusa) Factory.createObject(YEtichettaSusa.class);
-								etic.setCodUds(tu.getCodice());
-								try {
-									int rc = etic.save();
-									if (rc > 0) {
-										rc = etic.getEtichettaBase64().setBytes(Files.readAllBytes(f.toPath()));
-										if (rc > 0) {
-											ConnectionManager.commit();
-										} else {
-											ConnectionManager.rollback();
-										}
-									}
-								} catch (SQLException e) {
-									e.printStackTrace(Trace.excStream);
-								}
-							}
-						}
-					}
+				TestataLista tl = (TestataLista) TestataUds.elementWithKey(TestataLista.class, KeyHelper.buildObjectKey(new String[] {
+						Azienda.getAziendaCorrente(),getCodiceTestataLista()
+				}), PersistentObject.NO_LOCK);
+				if(tl != null) {
+					isOk = createReportInternal(tl);
 				}else {
-					output.println("Non esiste nessuna testata UDS con codice "+iCodiceUds);
+					output.println("Non esiste nessuna testata lista con codice "+getCodiceTestataLista());
 				}
 			}
 		} catch (Exception e) {
@@ -128,11 +116,11 @@ public class YStampaEticSusaBatch extends ElaboratePrintRunnable implements Auth
 		return isOk;
 	}
 
-	protected boolean createReportInternal(TestataUds tu) {
+	@SuppressWarnings("rawtypes")
+	protected boolean createReportInternal(TestataLista tl) throws SQLException {
 		boolean isOk = true;
-		isOk = controllaUds(tu);
 		if(isOk) {
-			DocumentoVendita dv = ((YTestataLista)tu.getTestataLista()).getDocumentoVendita();
+			DocumentoVendita dv = ((YTestataLista)tl).getDocumentoVendita();
 			if(dv != null) {
 				if(IntegrazioneCorriereSusa.isDocumentoVenditaVettoreSusa(dv)) {
 					String CAP = null;
@@ -157,65 +145,89 @@ public class YStampaEticSusaBatch extends ElaboratePrintRunnable implements Auth
 						idProvincia = dv.getIdProvinciaDen();
 						clienteIndirizzoProvincia = dv.getRagioneSocaleDest() + "\n " + dv.getIndirizzoDestinatario() + "\n " + dv.getIdProvinciaDen();
 					}
-					iRptEtichetta = (YRptSegnacolloSusa) Factory.createObject(YRptSegnacolloSusa.class);
-					iRptEtichetta.setCodUds(tu.getCodice());
-
-					String[] codiceLineaCodiceZona = AlgoritmoInstradamentoSusa.getInstance().determinaCodiceLineaCodiceZona(CAP, localita, idProvincia);
-					iRptEtichetta.setCodiceLinea(codiceLineaCodiceZona[0]);
-					iRptEtichetta.setCodiceZona(codiceLineaCodiceZona[1]);
-
-					iRptEtichetta.setInteger01(tu.getRigheUds().size()); //..I colli contenuti in questo UDS sono le righe
-
-					iRptEtichetta.setDecimal01(tu.getVolumeIngombro());
-					iRptEtichetta.setDecimal02(tu.getPesoLordo());
-
-					iRptEtichetta.setVarchar02(localita);
-					iRptEtichetta.setVarchar03(""); //.Sarebbe il mittente, valvorobica o allebi?
-
-					iRptEtichetta.setVarchar04(clienteIndirizzoProvincia);
-
-					try {
-						int rc = iRptEtichetta.save();
-						if(rc > 0) {
-							ConnectionManager.commit();
-							isOk = true;
-						}else {
-							ConnectionManager.rollback();
+					if(CAP == null || localita == null | idProvincia == null) {
+						try {
+							DdtTestataVendita ddt = (DdtTestataVendita) DdtTestataVendita.elementWithKey(DdtTestataVendita.class, KeyHelper.buildObjectKey(new String[] {
+									dv.getIdAzienda(),dv.getAnnoBolla(),dv.getNumeroBolla(),String.valueOf(DdtTestataVendita.TIPO_DDT_VEN)
+							}), PersistentObject.NO_LOCK);
+							if(ddt != null) {
+								CAP = ddt.getCapDen();
+								localita = ddt.getLocalitaDen();
+								idProvincia = ddt.getIdProvinciaDen();
+								clienteIndirizzoProvincia = ddt.getRagioneSocDen() + "\n " + ddt.getIndirizzoDen() + "\n " + ddt.getIdProvinciaDen();
+							}
+						} catch (SQLException e) {
+							e.printStackTrace(Trace.excStream);
 						}
-					}catch (SQLException e) {
-						e.printStackTrace(Trace.excStream);
+					}
+					String[] codiceLineaCodiceZona = AlgoritmoInstradamentoSusa.getInstance().determinaCodiceLineaCodiceZona(CAP, localita, idProvincia);
+					Vector elencoUds = TestataLista.getElencoUds(tl);
+					Iterator iterUds = elencoUds.iterator();
+					int count = 0;
+					int rcTot = 0;
+					while(rcTot >= 0 && iterUds.hasNext()) {
+						TestataUds tu = (TestataUds) TestataUds.elementWithKey(TestataUds.class, (String) iterUds.next(), PersistentObject.NO_LOCK);
+						YRptSegnacolloSusa iRptEtichetta = (YRptSegnacolloSusa) Factory.createObject(YRptSegnacolloSusa.class);
+						iRptEtichetta.setBatchJobId(getBatchJob().getBatchJobId());
+						iRptEtichetta.setReportNr(iAvailableRpt.getReportNr());
+						iRptEtichetta.setRigaJobId(count++);
+
+						iRptEtichetta.setCodUds(tu.getCodice());
+
+						iRptEtichetta.setCodiceLinea(codiceLineaCodiceZona[0]);
+						iRptEtichetta.setCodiceZona(codiceLineaCodiceZona[1]);
+
+						iRptEtichetta.setInteger01(tu.getRigheUds().size()); //..I colli contenuti in questo UDS sono le righe
+
+						iRptEtichetta.setDecimal01(tu.getVolumeIngombro());
+						iRptEtichetta.setDecimal02(tu.getPesoLordo());
+
+						iRptEtichetta.setVarchar02(localita);
+						iRptEtichetta.setVarchar03(""); //.Sarebbe il mittente, valvorobica o allebi?
+
+						iRptEtichetta.setVarchar04(clienteIndirizzoProvincia);
+
+						YEtichettaSusa etic = (YEtichettaSusa) Factory.createObject(YEtichettaSusa.class);
+						etic.setCodUds(tu.getCodice());
+						if(isParcheggiaEticPerInvio()) {
+							etic.retrieve(); //potrebbe gia' esistere quindi provo a selezionarla
+						}
+						try {
+							int rc = iRptEtichetta.save();
+							if(rc < 0)
+								rcTot = rc;
+							else
+								rcTot += rc;
+
+							if(isParcheggiaEticPerInvio())
+								rc += etic.save();
+
+							if(rc < 0)
+								rcTot = rc;
+							else
+								rcTot += rc;
+						}catch (SQLException e) {
+							e.printStackTrace(Trace.excStream);
+						}
+					}
+					if(rcTot > 0) {
+						ConnectionManager.commit();
+					}else {
+						ConnectionManager.rollback();
 					}
 				}else {
+					isOk = false;
 					output.println("L'uds appartiene ad un documento di vendita che non ha come vettore Susa");
 				}
 			}else {
+				isOk = false;
 				output.println("Lista non collegata ad un documento vendita");
 			}
 		}else {
+			isOk = false;
 			output.println("Impossibile stampare l'UDS perche' non rispetta le condizioni sopra indicate");
 		}
 		return isOk;
-	}
-
-	protected boolean controllaUds(TestataUds tu) {
-		if(tu == null)
-			return false;
-		if(tu.getStatoAllestimento() != TestataUds.CHIUSO) {
-			output.println("Uds non chiusa");
-			return false;
-		}
-		TestataLista tl = tu.getTestataLista();
-		if(tl != null) {
-			char tipo = tl.getCodice().charAt(0);
-			if(tipo != IntegrazioneThipLogis.VENDITA) {
-				output.println("Uds non di vendita");
-				return false;
-			}
-		}else {
-			output.println("Uds senza testata lista");
-			return false;
-		}
-		return false;
 	}
 
 	@Override

@@ -129,16 +129,27 @@
 				<td>
 					<table>
 						<tr>
-							<td valign="top"><%{  WebLabelCompound label = new com.thera.thermfw.web.WebLabelCompound(null, null, "YStampaEticSusaBatch", "CodiceUds", null); 
+							<td valign="top"><%{  WebLabelCompound label = new com.thera.thermfw.web.WebLabelCompound(null, null, "YStampaEticSusaBatch", "CodiceTestataLista", null); 
    label.setParent(YStampaEticSusaBatchForm); 
-%><label class="<%=label.getClassType()%>" for="CodiceUds"><%label.write(out);%></label><%}%></td>
+%><label class="<%=label.getClassType()%>" for="CodiceTestataLista"><%label.write(out);%></label><%}%></td>
 							<td valign="top"><% 
-  WebTextInput YStampaEticSusaBatchCodiceUds =  
-     new com.thera.thermfw.web.WebTextInput("YStampaEticSusaBatch", "CodiceUds"); 
-  YStampaEticSusaBatchCodiceUds.setParent(YStampaEticSusaBatchForm); 
+  WebTextInput YStampaEticSusaBatchCodiceTestataLista =  
+     new com.thera.thermfw.web.WebTextInput("YStampaEticSusaBatch", "CodiceTestataLista"); 
+  YStampaEticSusaBatchCodiceTestataLista.setParent(YStampaEticSusaBatchForm); 
 %>
-<input class="<%=YStampaEticSusaBatchCodiceUds.getClassType()%>" id="<%=YStampaEticSusaBatchCodiceUds.getId()%>" maxlength="<%=YStampaEticSusaBatchCodiceUds.getMaxLength()%>" name="<%=YStampaEticSusaBatchCodiceUds.getName()%>" size="<%=YStampaEticSusaBatchCodiceUds.getSize()%>"><% 
-  YStampaEticSusaBatchCodiceUds.write(out); 
+<input class="<%=YStampaEticSusaBatchCodiceTestataLista.getClassType()%>" id="<%=YStampaEticSusaBatchCodiceTestataLista.getId()%>" maxlength="<%=YStampaEticSusaBatchCodiceTestataLista.getMaxLength()%>" name="<%=YStampaEticSusaBatchCodiceTestataLista.getName()%>" size="<%=YStampaEticSusaBatchCodiceTestataLista.getSize()%>"><% 
+  YStampaEticSusaBatchCodiceTestataLista.write(out); 
+%>
+</td>
+						</tr>
+						<tr>
+							<td valign="top"><% 
+  WebCheckBox YStampaEticSusaBatchParcheggiaEticPerInvio =  
+     new com.thera.thermfw.web.WebCheckBox("YStampaEticSusaBatch", "ParcheggiaEticPerInvio"); 
+  YStampaEticSusaBatchParcheggiaEticPerInvio.setParent(YStampaEticSusaBatchForm); 
+%>
+<input id="<%=YStampaEticSusaBatchParcheggiaEticPerInvio.getId()%>" name="<%=YStampaEticSusaBatchParcheggiaEticPerInvio.getName()%>" type="checkbox" value="Y"><%
+  YStampaEticSusaBatchParcheggiaEticPerInvio.write(out); 
 %>
 </td>
 						</tr>
