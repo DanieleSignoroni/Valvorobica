@@ -19,6 +19,22 @@ import com.thera.thermfw.security.Conflictable;
 import it.thera.thip.base.azienda.Azienda;
 import it.thera.thip.cs.EntitaAzienda;
 
+/**
+ * <p></p>
+ *
+ * <p>
+ * Company: Softre Solutions<br>
+ * Author: Daniele Signoroni<br>
+ * Date: 29/08/2025
+ * </p>
+ */
+
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72102    29/08/2025  DSSOF3   Prima stesura
+ */
+
 public abstract class YRptSegnacolloSusaPO extends EntitaAzienda implements BusinessObject, Authorizable, Deletable, Conflictable {
 
 	private static YRptSegnacolloSusa cInstance;

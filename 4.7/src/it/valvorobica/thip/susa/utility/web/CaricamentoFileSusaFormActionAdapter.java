@@ -15,7 +15,7 @@ import com.thera.thermfw.web.servlet.FormActionAdapter;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    08/08/2025  DSSOF3   Prima stesura
+ * 72102    08/08/2025  DSSOF3   Prima stesura
  */
 
 public class CaricamentoFileSusaFormActionAdapter extends FormActionAdapter {

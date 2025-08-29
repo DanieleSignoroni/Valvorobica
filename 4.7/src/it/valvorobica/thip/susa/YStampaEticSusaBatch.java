@@ -38,7 +38,7 @@ import it.valvorobica.thip.vendite.documentoVE.susa.IntegrazioneCorriereSusa;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    29/08/2025  DSSOF3   Prima stesura
+ * 72102    29/08/2025  DSSOF3   Prima stesura
  */
 
 public class YStampaEticSusaBatch extends ElaboratePrintRunnable implements Authorizable{

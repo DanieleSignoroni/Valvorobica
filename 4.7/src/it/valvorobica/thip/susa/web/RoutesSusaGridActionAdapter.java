@@ -24,7 +24,7 @@ import com.thera.thermfw.web.servlet.GridActionAdapter;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    12/08/2025  DSSOF3   Prima stesura
+ * 72102    12/08/2025  DSSOF3   Prima stesura
  */
 
 public class RoutesSusaGridActionAdapter extends GridActionAdapter {

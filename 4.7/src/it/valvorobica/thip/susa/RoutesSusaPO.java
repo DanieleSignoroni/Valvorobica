@@ -20,7 +20,7 @@ import com.thera.thermfw.security.*;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    12/08/2025  DSSOF3   Prima stesura
+ * 72102    12/08/2025  DSSOF3   Prima stesura
  */
 
 public abstract class RoutesSusaPO extends PersistentObjectDCE implements BusinessObject, Authorizable, Deletable, Conflictable {

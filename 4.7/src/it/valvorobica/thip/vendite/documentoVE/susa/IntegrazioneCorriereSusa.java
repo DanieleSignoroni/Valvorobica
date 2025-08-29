@@ -39,7 +39,8 @@ import it.valvorobica.thip.vendite.documentoVE.brt.YExpDDTBartolini;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 71XXX    11/04/2025  DSSOF3   Prima stesura
+ * 71929    11/04/2025  DSSOF3   Prima stesura
+ * 72102	29/08/2025	DSSOF3   Aggiungere metodi
  */
 
 public class IntegrazioneCorriereSusa {
@@ -253,6 +254,8 @@ public class IntegrazioneCorriereSusa {
 
 		return ArticoloBase.UPDATE_OK;
 	}
+	
+	//72102 Inizio
 
 	public static boolean isDocumentoVenditaVettoreSusa(DocumentoVendita dv) {
 		String idAzienda = dv.getIdAzienda();
@@ -264,5 +267,7 @@ public class IntegrazioneCorriereSusa {
 		}
 		return true;
 	}
+	
+	//72102 Fine
 
 }

@@ -1,4 +1,3 @@
-
 package it.valvorobica.thip.susa;
 
 import java.sql.SQLException;
@@ -20,6 +19,22 @@ import com.thera.thermfw.security.Conflictable;
 
 import it.thera.thip.cs.PersistentObjectDCE;
 import it.thera.thip.logis.fis.TestataUds;
+
+/**
+ * <p></p>
+ *
+ * <p>
+ * Company: Softre Solutions<br>
+ * Author: Daniele Signoroni<br>
+ * Date: 29/08/2025
+ * </p>
+ */
+
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72102    29/08/2025  DSSOF3   Prima stesura
+ */
 
 public abstract class YEtichettaSusaPO extends PersistentObjectDCE implements BusinessObject, Authorizable, Deletable, Conflictable {
 

@@ -8,6 +8,22 @@ import com.thera.thermfw.persist.TableManager;
 
 import it.thera.thip.cs.DatiComuniEstesiTTM;
 
+/**
+ * <p></p>
+ *
+ * <p>
+ * Company: Softre Solutions<br>
+ * Author: Daniele Signoroni<br>
+ * Date: 29/08/2025
+ * </p>
+ */
+
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72102    29/08/2025  DSSOF3   Prima stesura
+ */
+
 public class YRptSegnacolloSusaTM extends TableManager {
 
 	public static final String ID_AZIENDA = "ID_AZIENDA";

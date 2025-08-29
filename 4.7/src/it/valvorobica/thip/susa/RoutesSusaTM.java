@@ -18,7 +18,7 @@ import it.thera.thip.cs.*;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    12/08/2025  DSSOF3   Prima stesura
+ * 72102    12/08/2025  DSSOF3   Prima stesura
  */
 
 public class RoutesSusaTM extends TableManager {

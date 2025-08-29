@@ -18,7 +18,7 @@ import it.thera.thip.cs.*;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    08/08/2025  DSSOF3   Prima stesura
+ * 72102    08/08/2025  DSSOF3   Prima stesura
  */
 
 public class CapparioSusaTM extends TableManager {
