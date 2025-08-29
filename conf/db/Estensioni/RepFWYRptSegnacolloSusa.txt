@@ -1,0 +1,3 @@
+<B>2025-08-29 10:43:11</B>
+<BR>Il descrittore di classe <B>YRptSegnacolloSusa</B> è stato generato correttamente
+<BR><B>La generazione descrittori di classe è completata con successo</B><BR>

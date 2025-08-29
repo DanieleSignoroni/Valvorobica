@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- RPT_SEGNACOLLO_SUSA (RPT_SEG): Rpt - Segnacollo Susa; -->
+  <CreateTable schema="THIPPERS" name="RPT_SEGNACOLLO_SUSA" shortname="RPT_SEG">
+    <Column name="ID_AZIENDA" shortname="ID_AZIENDA" type="char" length="3" nullable="no"/>
+    <Column name="STATO" shortname="STATO" type="char" length="1" nullable="no"/>
+    <Column name="R_UTENTE_CRZ" shortname="R_UTENTE_C" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_CRZ" shortname="TIMESTAMP_" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="R_UTENTE_AGG" shortname="R_UTENTE_A" type="char" length="20" nullable="yes"/>
+    <Column name="TIMESTAMP_AGG" shortname="TIMESTAMP0" type="timestamp" nullable="no" default="CURRENT TIMESTAMP"/>
+    <Column name="BATCH_JOB_ID" shortname="BATCH_JOB_" type="integer" nullable="no"/>
+    <Column name="REPORT_NR" shortname="REPORT_NR" type="integer" nullable="no"/>
+    <Column name="RIGA_JOB_ID" shortname="RIGA_JOB_I" type="integer" nullable="no"/>
+    <Column name="CODICE_LINEA" shortname="CODICE_LIN" type="char" length="5" nullable="yes"/>
+    <Column name="CODICE_ZONA" shortname="CODICE_ZON" type="char" length="3" nullable="yes"/>
+    <Column name="COD_UDS" shortname="COD_UDS" type="char" length="20" nullable="yes"/>
+    <Column name="VARCHAR01" shortname="VARCHAR01" type="varchar" length="255" nullable="yes"/>
+    <Column name="VARCHAR02" shortname="VARCHAR02" type="varchar" length="255" nullable="yes"/>
+    <Column name="VARCHAR03" shortname="VARCHAR03" type="varchar" length="255" nullable="yes"/>
+    <Column name="VARCHAR04" shortname="VARCHAR04" type="varchar" length="255" nullable="yes"/>
+    <Column name="VARCHAR05" shortname="VARCHAR05" type="varchar" length="255" nullable="yes"/>
+    <Column name="FLAG01" shortname="FLAG01" type="char" length="1" nullable="no" default="N"/>
+    <Column name="FLAG02" shortname="FLAG02" type="char" length="1" nullable="no" default="N"/>
+    <Column name="FLAG03" shortname="FLAG03" type="char" length="1" nullable="no" default="N"/>
+    <Column name="FLAG04" shortname="FLAG04" type="char" length="1" nullable="no" default="N"/>
+    <Column name="FLAG05" shortname="FLAG05" type="char" length="1" nullable="no" default="N"/>
+    <Column name="DECIMAL01" shortname="DECIMAL01" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="DECIMAL02" shortname="DECIMAL02" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="DECIMAL03" shortname="DECIMAL03" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="DECIMAL04" shortname="DECIMAL04" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="DECIMAL05" shortname="DECIMAL05" type="decimal" length="19" scale="6" nullable="yes"/>
+    <Column name="INTEGER01" shortname="INTEGER01" type="integer" nullable="yes"/>
+    <Column name="INTEGER02" shortname="INTEGER02" type="integer" nullable="yes"/>
+    <Column name="INTEGER03" shortname="INTEGER03" type="integer" nullable="yes"/>
+    <Column name="INTEGER04" shortname="INTEGER04" type="integer" nullable="yes"/>
+    <Column name="INTEGER05" shortname="INTEGER05" type="integer" nullable="yes"/>
+  </CreateTable>
+  <CreateIndex schema="THIPPERS" name="RPT_SEGNACOLLO_I01" tabschema="THIPPERS" tabname="RPT_SEGNACOLLO_SUSA" shortname="RPT_SE_I01" unique="yes">
+    <IndexCol name="ID_AZIENDA" order="Asc"/>
+    <IndexCol name="BATCH_JOB_ID" order="Asc"/>
+    <IndexCol name="REPORT_NR" order="Asc"/>
+    <IndexCol name="RIGA_JOB_ID" order="Asc"/>
+  </CreateIndex>
+  <AlterTable schema="THIPPERS" name="RPT_SEGNACOLLO_SUSA">
+    <AddPrimaryKey>
+      <PrimaryKey>
+        <ColumnRef name="ID_AZIENDA"/>
+        <ColumnRef name="BATCH_JOB_ID"/>
+        <ColumnRef name="REPORT_NR"/>
+        <ColumnRef name="RIGA_JOB_ID"/>
+      </PrimaryKey>
+    </AddPrimaryKey>
+  </AlterTable>
+  <Comment>
+    <CommentTable schema="THIPPERS" name="RPT_SEGNACOLLO_SUSA" text="Rpt - Segnacollo Susa">
+      <CommentColumn name="ID_AZIENDA" text="Azienda"/>
+      <CommentColumn name="STATO" text="Stato"/>
+      <CommentColumn name="R_UTENTE_CRZ" text="Utente creazione"/>
+      <CommentColumn name="TIMESTAMP_CRZ" text="Timestamp creazione"/>
+      <CommentColumn name="R_UTENTE_AGG" text="Utente ultima modifica"/>
+      <CommentColumn name="TIMESTAMP_AGG" text="Timestamp ultima modifica"/>
+      <CommentColumn name="BATCH_JOB_ID" text="BatchJobId"/>
+      <CommentColumn name="REPORT_NR" text="ReportNr"/>
+      <CommentColumn name="RIGA_JOB_ID" text="RigaJobId"/>
+      <CommentColumn name="CODICE_LINEA" text="CodiceLinea"/>
+      <CommentColumn name="CODICE_ZONA" text="CodiceZona"/>
+      <CommentColumn name="COD_UDS" text="CodUds"/>
+      <CommentColumn name="VARCHAR01" text="Varchar01"/>
+      <CommentColumn name="VARCHAR02" text="Varchar02"/>
+      <CommentColumn name="VARCHAR03" text="Varchar03"/>
+      <CommentColumn name="VARCHAR04" text="Varchar04"/>
+      <CommentColumn name="VARCHAR05" text="Varchar05"/>
+      <CommentColumn name="FLAG01" text="Flag01"/>
+      <CommentColumn name="FLAG02" text="Flag02"/>
+      <CommentColumn name="FLAG03" text="Flag03"/>
+      <CommentColumn name="FLAG04" text="Flag04"/>
+      <CommentColumn name="FLAG05" text="Flag05"/>
+      <CommentColumn name="DECIMAL01" text="Decimal01"/>
+      <CommentColumn name="DECIMAL02" text="Decimal02"/>
+      <CommentColumn name="DECIMAL03" text="Decimal03"/>
+      <CommentColumn name="DECIMAL04" text="Decimal04"/>
+      <CommentColumn name="DECIMAL05" text="Decimal05"/>
+      <CommentColumn name="INTEGER01" text="Integer01"/>
+      <CommentColumn name="INTEGER02" text="Integer02"/>
+      <CommentColumn name="INTEGER03" text="Integer03"/>
+      <CommentColumn name="INTEGER04" text="Integer04"/>
+      <CommentColumn name="INTEGER05" text="Integer05"/>
+    </CommentTable>
+    <CommentIndex schema="THIPPERS" name="RPT_SEGNACOLLO_I01" text="Primary Key"/>
+  </Comment>
+  <Grant schema="THIPPERS" name="RPT_SEGNACOLLO_SUSA"/>
+</TDDML>

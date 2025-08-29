@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <!-- RPT_SEGNACOLLO_SUSA (RPT_SEG) -->
+  <AlterTable schema="THIPPERS" name="RPT_SEGNACOLLO_SUSA">
+    <AddConstraint>
+      <Constraint name="Azienda_937649661" refschema="THIP" reftable="AZIENDE_ESTESE" schema="THIPPERS" ondelete="Restrict">
+        <ColumnRef name="ID_AZIENDA"/>
+      </Constraint>
+    </AddConstraint>
+  </AlterTable>
+</TDDML>
