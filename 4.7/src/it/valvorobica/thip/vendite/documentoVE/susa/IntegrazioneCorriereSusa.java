@@ -254,7 +254,7 @@ public class IntegrazioneCorriereSusa {
 
 		return ArticoloBase.UPDATE_OK;
 	}
-	
+
 	//72102 Inizio
 
 	public static boolean isDocumentoVenditaVettoreSusa(DocumentoVendita dv) {
@@ -267,7 +267,25 @@ public class IntegrazioneCorriereSusa {
 		}
 		return true;
 	}
-	
+
+	public String generaRecordCO(DdtTes ddt, String codiceBarcodeCollo) {
+		// Crea una riga di 47 spazi
+		char[] buffer = new char[77];
+		java.util.Arrays.fill(buffer, ' ');
+		StringBuilder co = new StringBuilder(new String(buffer));
+
+		// Fissa "NO" come tipo record
+		setString(co, "CO", 1, 2);
+
+		// Inserisce il riferimento DDT (uguale a WDTRIFDOC del BO)
+		setString(co, ddt.getIdNumeroDdt(), 3, 17);
+
+		// Inserisce il codice barcode del collo (massimo 30 caratteri)
+		setString(co,codiceBarcodeCollo, 18, 47);
+
+		return co.toString();
+	}
+
 	//72102 Fine
 
 }
