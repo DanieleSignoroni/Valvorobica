@@ -1,0 +1,2 @@
+# LPARAM_LOGIS
+    INSERT INTO <SCH><LOGIS>LPARAM_LOGIS (SEZIONE, CHIAVE, VALORE, NOTE) VALUES ('YTrasferimentoFincan', 'CodTipoLista', 'P/FIN_NW', null);

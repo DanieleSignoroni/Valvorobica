@@ -1,0 +1,20 @@
+<tfml>
+<generator type="form"/>
+
+<form classHdr="DocumentoVendita" name="DocumentoVenditaForm"
+        errorList="yes" menubar="yes" toolbar="yes" submitReset="none"
+		servlet="it.valvorobica.thip.vendite.documentoVE.web.YConfermaMissioniChiudiListaFincantieriServlet"
+		onLoadPresent="yes"
+    	header="it.thera.thip.cs.Header.jsp"
+        footer="it.thera.thip.cs.Footer.jsp"
+		jsLibraryName="it/valvorobica/thip/vendite/documentoVE/ConfermaMissioniChiudiListaFincantieri.js"
+        webFormModifierClass="it.valvorobica.thip.vendite.documentoVE.web.YConfermaMissioniChiudiListaFincantieriFormModifier">
+
+       	<label name="thTerminata" resourceID="Terminata" resourceFile="it.thera.thip.vendite.documentoVE.resources.DocumentoVendita"></label>
+       	<label name="thTerminataErr" resourceID="TerminataError" resourceFile="it.thera.thip.vendite.documentoVE.resources.DocumentoVendita"></label> <!-- Fix 41089 -->
+       	<label name="thElaborazione" resourceID="Elaborazione" resourceFile="it.thera.thip.base.comuniVenAcq.resources.Documento"></label>
+  	    <button name="thChiudi"  resourceFile="it.thera.thip.vendite.documentoVE.resources.DocumentoVendita" resourceID="Chiudi"/>
+
+
+</form>
+</tfml>

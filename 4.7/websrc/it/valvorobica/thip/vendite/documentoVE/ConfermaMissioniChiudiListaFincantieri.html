@@ -1,0 +1,91 @@
+<html>
+
+<head>
+	<title>ConvalidaRegressione</title>
+</head>
+<script language="JavaScript" >	window.name = "ConvalidaRegressione";
+								window.resizeTo(500,500);</script>
+<script src="thermweb/factory/gui/components/search.js" language="JavaScript1.2" type="text/javascript"></script> <!-- fix 12091-->
+
+<body leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0">
+
+
+	<form name="DocumentoVenditaForm" action="submit">
+			<!-- **************************************************************************************************** -->
+			<!-- ErrorList -->
+    		<table width="100%" heigth="100%" align="center">
+			<tr>
+			<td >&nbsp;</td>
+			</tr>
+			<tr>
+			<td align="center">
+			<!-- Fix 41089 Inizio -->
+							<img align="center" style="display:none; width:2em; height:auto;" id ="errorIcon" name ="errorIcon" src="com/thera/thermfw/batch/images/error.svg" border="0"    alt="" />
+							<img align="center" style="display:none; width:2em; height:auto;" id ="successIcon" name ="successIcon" src="com/thera/thermfw/batch/images/success.svg" border="0"   alt="" />
+			<!-- Fix 41089 Fine --> 
+				 	<label  name="thTitolo" id="thTitolo">CONVALIDA</label> 		
+			</td>
+			<td style="display:none">
+				<label name="thTerminata" id="thTerminata">TERMINATA</label>
+			</td>
+			<!-- Fix 41089 inizio -->
+			<td style="display:none">
+				<label name="thTerminataErr" id="thTerminataErr">TERMINATA</label>
+			</td>
+			<!-- Fix 41089 fine -->
+			</tr>
+	<!--Fix 36914 inizo-->
+<!-- 			<tr>
+			<td>&nbsp;</td>
+			</tr> -->
+			
+			<tr>
+			<td  align="center">
+			<img id ="loading" name ="loading" src="it/thera/thip/base/comuniVenAcq/image/loading1.gif" width="150" height="150" border="0"  alt="" />
+			</td>
+			</tr>
+		<!--Fix 36914 fine-->
+			<tr><td  id="SezImmagine" name="SezImmagine" align="center"><!-- Fix 12091-->
+			<!--<img id ="immagine" name ="immagine" src="it/thera/thip/vendite/documentoVE/images/scimmione.gif" width="150" height="150" border="0"  alt=""/>-->
+				<label name="thElaborazione" id="thElaborazione">Elaborazione</label>
+
+			</td></tr>
+           <!-- Fix 27106<tr><td align="center" style="display:none" id="thDocsConvReg"><textarea id="DocsConvReg" name="DocsConvReg" rows="5" cols="70"/></td></tr>Fix 24719-->
+           <tr><td align="center" style="display:none" id="thDocsConvReg"><textarea id="DocsConvReg" name="DocsConvReg" rows="5" cols="70" readonly="true"/></td></tr><!--Fix 27106-->
+			</table>
+			<table>
+
+				<tr>
+					<td><input type ="text" id="thIdAzienda" name="thIdAzienda" style = "display:none"/></td>
+				</tr>
+				<tr>
+					<td><input type ="text" id="thAnnoDocumento" name="thAnnoDocumento" style = "display:none"/></td>
+				</tr>
+				<tr>
+					<td><input type ="text" id="thNumeroDocumento" name="thNumeroDocumento" style = "display:none"/></td>
+				</tr>
+				<tr>
+					<td><input type ="text" id="thAzione" name="thAzione" style = "display:none"/></td>
+				</tr>
+
+			</table>
+
+		<table width="100%" heigth="100%" align="center">
+			<tr>
+    			<td style="height:0">
+		    	  <span class="errorlist" />
+			    </td>
+			</tr>
+
+			<tr>
+			<td align="center">
+			<!-- <button name="thChiudi" id="thChiudi" type="button" onClick="chiudi()">Chiudi</button> Fix 36914-->
+			<button name="thChiudi" id="thChiudi" type="button" onClick="chiudi()" style = "display:none">Chiudi</button><!--Fix 36914-->
+			</td>
+			</tr>
+		</table>
+
+	</form>
+
+</body>
+</html>
