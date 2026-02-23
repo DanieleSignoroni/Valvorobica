@@ -567,7 +567,13 @@ public class YTestataLista extends TestataLista {
 				errors = esecuzioneMissioni.confermaMissione(m, m.getQta1Richiesta(), m.getQta1Richiesta(), null);
 			}
 			if(errors.isEmpty()) {
-				ConnectionManager.commit();
+				retrieve();
+				if(getStatoLista() == APERTO) {
+					errors = forzaChiudi();
+					if(errors.isEmpty()) {
+						ConnectionManager.commit();
+					}
+				}
 			}
 		}else {
 			errors.add(new ErrorMessage("BAS0000078","Non ci sono missioni da fare per la lista selezionata"));
