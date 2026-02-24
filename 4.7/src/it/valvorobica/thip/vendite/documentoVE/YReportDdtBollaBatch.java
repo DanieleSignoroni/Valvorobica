@@ -19,7 +19,6 @@ import com.thera.thermfw.batch.BatchOptions;
 import com.thera.thermfw.batch.BatchService;
 import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.ConnectionManager;
-import com.thera.thermfw.persist.ErrorCodes;
 import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.persist.KeyHelper;
 import com.thera.thermfw.persist.PersistentObject;
@@ -29,25 +28,16 @@ import it.thera.thip.base.cliente.ModalitaConsegna;
 import it.thera.thip.base.comuniVenAcq.AzioneMagazzino;
 import it.thera.thip.base.comuniVenAcq.ReportDdtBollaTestata;
 import it.thera.thip.base.documenti.StatoAttivita;
-import it.thera.thip.base.generale.CfgLogTxMov;
-import it.thera.thip.base.generale.CfgLogTxMovTM;
-import it.thera.thip.base.generale.IntegrazioneThipLogis;
 import it.thera.thip.base.generale.ParametroPsn;
-import it.thera.thip.cs.ThipException;
 import it.thera.thip.logis.fis.AnagraficaUdc;
 import it.thera.thip.logis.fis.InserimentoMovimenti;
 import it.thera.thip.logis.fis.MappaUdc;
-import it.thera.thip.logis.fis.Missione;
-import it.thera.thip.logis.fis.Operatore;
 import it.thera.thip.logis.fis.OperazioneMovimento;
-import it.thera.thip.logis.fis.Postazione;
 import it.thera.thip.logis.fis.Saldo;
 import it.thera.thip.logis.fis.TestataUds;
 import it.thera.thip.logis.fis.TestataUdsTM;
 import it.thera.thip.logis.fis.TipoUdc;
-import it.thera.thip.logis.fis.Ubicazione;
 import it.thera.thip.logis.lgb.MagLogico;
-import it.thera.thip.logis.lgb.TestataLista;
 import it.thera.thip.vendite.documentoVE.DocumentoVendita;
 import it.thera.thip.vendite.documentoVE.DocumentoVenditaTM;
 import it.thera.thip.vendite.documentoVE.ReportDdtBollaBatch;
@@ -57,8 +47,6 @@ import it.thera.thip.vendite.generaleVE.TipoDocumento;
 import it.valvorobica.thip.base.articolo.cambioArticolo.web.YCambioArticoloSave;
 import it.valvorobica.thip.base.azienda.YOggettinoUdsStampaDDT;
 import it.valvorobica.thip.base.cliente.YClienteVendita;
-import it.valvorobica.thip.logis.bas.YCostantiValvo;
-import it.valvorobica.thip.logis.lgb.YRigaLista;
 import it.valvorobica.thip.logis.lgb.YTestataLista;
 import it.valvorobica.thip.logis.rf.gui.YProcessaListeCompattoRF;
 import it.valvorobica.thip.vendite.documentoVE.susa.IntegrazioneCorriereSusa;
@@ -139,12 +127,6 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 		super.gestioneOutputBatchPers(docVen);
 		try {
 			//gestioneUDC(docVen);//70860 TBSOF3 Trasformazione UDS in UDC in stampa DDT
-			if(docVen != null) {
-				TestataLista tl = YCostantiValvo.testataListaDocumentoVendita(docVen, PersistentObject.NO_LOCK);
-				if(tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
-					trasferimentoFincantieri(docVen, tl);
-				}
-			}
 		}catch (Exception e) {//catturo tutto
 			e.printStackTrace(Trace.excStream);
 		}
@@ -1218,117 +1200,4 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 	//		}
 	//		return ret;
 	//	}
-
-	@SuppressWarnings("rawtypes")
-	protected int trasferimentoFincantieri(DocumentoVendita docVen, TestataLista tl) throws ThipException {
-		int rc = ErrorCodes.OK;
-		Iterator iterRighe = tl.getRigheLista().iterator();
-		while(iterRighe.hasNext()) {
-			YRigaLista rl = (YRigaLista) iterRighe.next();
-			Postazione pt = YCostantiValvo.getPostazioneNonGestita(rl.getCodiceMagFisico());
-			Operatore op = YCostantiValvo.getOperatoreGenerico(rl.getCodiceMagFisico());
-			Vector missioniTerminate = rl.getMissioniTerminate(pt, op ,null);
-			for (Iterator iterator = missioniTerminate.iterator(); iterator.hasNext();) {
-				Missione m = (Missione) iterator.next();
-				Vector errori = spostaMerceFincantieri(m, docVen, tl);
-				if(!errori.isEmpty()) {
-					throw new ThipException(errori);
-				}
-			}
-		}
-		return rc;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public Ubicazione trovaUbicazioneEntMagazzinoTrasferimento(DocumentoVendita dv) {
-		Ubicazione ub = null;
-		try {
-			CausaleRigaDocVen cauRigDef = dv.getCausale().getCausaleRigaDocumVen();
-			if(cauRigDef != null && cauRigDef.getIdCauMagTrasferim() != null && dv.getIdMagazzinoTra() != null) {
-				Vector elencoFiltri = new Vector();
-				String where = CfgLogTxMovTM.ID_AZIENDA + "='" + dv.getIdAzienda() + "' AND " +
-						CfgLogTxMovTM.ID_CAU_MOV_MAG + "='" + cauRigDef.getIdCauMagTrasferim() +"' AND " +
-						CfgLogTxMovTM.ID_MAGAZZINO + "='" + dv.getIdMagazzinoTra() +"' AND " +
-						CfgLogTxMovTM.ABILITATO + "='Y'";
-				elencoFiltri = CfgLogTxMov.retrieveList(where,"",false);
-				if(elencoFiltri.size() > 0) {
-					CfgLogTxMov filtro = (CfgLogTxMov)elencoFiltri.get(0);
-					if(filtro.getOperazioneLogisSenzaUDC() != null) {
-						ub = filtro.getOperazioneLogisSenzaUDC().getUbicazioneDefault();
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace(Trace.excStream);
-		}
-
-		return ub;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public Vector spostaMerceFincantieri(Missione m , DocumentoVendita dv, TestataLista tl) {
-		Vector errori = null;
-		InserimentoMovimenti insMov = (InserimentoMovimenti) Factory.createObject(InserimentoMovimenti.class);
-		try {
-			String codiceOperazioneMovimentoLogis = ParametroPsn.getValoreParametroPsn("YOpMovScaricoTrasfUds", "IdOperazioneMovimentoScarico");
-			String codiceCausaleScarico = ParametroPsn.getValoreParametroPsn("YCausaleMovimTrasfUdsScar", "CausaleMovimentoTrasferimentoUdsScarico");
-			String codiceCausaleCarico = ParametroPsn.getValoreParametroPsn("YCausaleMovimTrasfUdsCar", "CausaleMovimentoTrasferimentoUdsCarico");
-			OperazioneMovimento operazioneMovim = (OperazioneMovimento)
-					OperazioneMovimento.elementWithKey(OperazioneMovimento.class, 
-							KeyHelper.buildObjectKey(new String[] {Azienda.getAziendaCorrente(), codiceOperazioneMovimentoLogis}), 0);	
-			insMov.setOperazMovim(operazioneMovim);
-			insMov.setPostazione(YCostantiValvo.getPostazioneNonGestita(m.getCodiceMagFisico()));
-			insMov.setOperatore(YCostantiValvo.getOperatoreGenerico(m.getCodiceMagFisico()));
-			insMov.settaCampiOperazMovim();
-			insMov.setCodiceGruppo(Azienda.getAziendaCorrente());
-			Ubicazione ub = trovaUbicazioneEntMagazzinoTrasferimento(dv);
-			insMov.setUbicazione(ub);
-			insMov.setUbicazioneScelta(m.getUbicazione());
-			insMov.setUbicazioneDestinataria(m.getUbicazione());
-			Saldo saldo = trovaSaldoCorrenteMerce(m, ub, dv);
-			if(saldo != null) {
-				insMov.setQuantita(m.getQta1Evasa());
-				insMov.setQuantitaPrmErp(m.getQta1Evasa());
-				insMov.setSaldoPrimario(saldo);
-				insMov.setArticolo(m.getArticolo());
-				insMov.setLotto(m.getLotto());
-				insMov.setCodiceCausale(codiceCausaleScarico);
-				insMov.setCodiceCausaleInversa(codiceCausaleCarico);
-				MagLogico mag = (MagLogico) MagLogico.elementWithKey(MagLogico.class, KeyHelper.buildObjectKey(new String[] { Azienda.getAziendaCorrente(), dv.getIdMagazzinoTra()}), 0);
-				insMov.setMagLogicoCarico(mag);
-				insMov.setMagLogicoScarico(mag);
-				insMov.setMagFisico(m.getMagFisico());
-				if(m.getMappaUdc() != null)
-					insMov.setMappaUdc(m.getMappaUdc());
-				errori = insMov.fine();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace(Trace.excStream);
-		}
-		return errori;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public Saldo trovaSaldoCorrenteMerce(Missione m, Ubicazione ub, DocumentoVendita dv) {
-		String partita = dv.getAnnoDocumento().trim() + "%" + dv.getNumeroDocumento() + IntegrazioneThipLogis.VENDITA + dv.getTipoDocumento();
-		String where = " LOTTO01 = '" + m.getLotto1() + "' "
-				+ " AND COD_ARTICOLO = '" + m.getCodiceArticolo() + "' "
-				+ " AND COD_MAG_LOGICO = '" + dv.getIdMagazzinoTra() + "' "
-				+ " AND COD_SOCIETA = '" + Azienda.getAziendaCorrente() + "'"
-				+ " AND COD_UBICAZIONE = '" + ub.getCodice() + "'"
-				+ " AND COD_MAG_FISICO = '"+m.getCodiceMagFisico()+"' "
-				+ " AND COD_GRUPPO = '"+Azienda.getAziendaCorrente()+"' "
-				+ " AND PARTITA LIKE  '"+partita+"' "
-				+ " AND COD_MAPPA_UDC IS NULL ";
-		try {
-			Vector saldi = Saldo.retrieveList(Saldo.class, where, "", false);
-			if(saldi.size() > 0) {
-				return (Saldo) saldi.get(0);
-			}
-		} catch (Exception e) {
-			e.printStackTrace(Trace.excStream);
-		}
-		return null;
-	}
-
 }
