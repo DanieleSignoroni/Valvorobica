@@ -654,9 +654,9 @@ public class YDocumentoVendita extends DocumentoVendita {
 				insMov.setMagLogicoScarico(mag);
 				insMov.setMagFisico(m.getMagFisico());
 				insMov.setDataPartita(TimeUtils.getCurrentDate());
-				insMov.setPartita(IntegrazioneThipLogis.chiaveDocToString(getAnnoDocumento(),
-						getNumeroDocumento(),
-						String.valueOf(getTipoDocumento())));
+				insMov.setPartita(IntegrazioneThipLogis.chiaveDocToString(getAnnoDocumento(), 
+						getNumeroDocumento(), 
+						String.valueOf(MovimentoMagazzino.AREA_VENDITA)+ String.valueOf(getTipoDocumento())));
 				if(m.getMappaUdc() != null)
 					insMov.setMappaUdc(m.getMappaUdc());
 				errori = insMov.fine();
@@ -669,7 +669,9 @@ public class YDocumentoVendita extends DocumentoVendita {
 
 	@SuppressWarnings("rawtypes")
 	public Saldo trovaSaldoCorrenteMerce(Missione m, Ubicazione ub) {
-		String partita = getAnnoDocumento().trim() + "%" + getNumeroDocumento() + IntegrazioneThipLogis.VENDITA + getTipoDocumento();
+		String partita = IntegrazioneThipLogis.chiaveDocToString(getAnnoDocumento(), 
+				getNumeroDocumento(), 
+				String.valueOf(MovimentoMagazzino.AREA_VENDITA)+ String.valueOf(getTipoDocumento()));
 		String where = " LOTTO01 = '" + m.getLotto1() + "'"
 				+ " AND COD_ARTICOLO = '" + m.getCodiceArticolo() + "' "
 				+ " AND COD_MAG_LOGICO = '" + getIdMagazzinoTra() + "'"
@@ -677,7 +679,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 				+ " AND COD_UBICAZIONE = '" + ub.getCodice() + "'"
 				+ " AND COD_MAG_FISICO = '"+m.getCodiceMagFisico()+"'"
 				+ " AND COD_GRUPPO = '"+Azienda.getAziendaCorrente()+"'"
-				+ " AND PARTITA LIKE  '"+partita+"'"
+				+ " AND PARTITA = '"+partita+"'"
 				+ " AND COD_MAPPA_UDC IS NULL ";
 		try {
 			Vector saldi = Saldo.retrieveList(Saldo.class, where, "", false);
