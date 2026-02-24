@@ -13,9 +13,13 @@ import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Database;
 import com.thera.thermfw.persist.Factory;
+import com.thera.thermfw.persist.KeyHelper;
+import com.thera.thermfw.persist.PersistentObject;
 
 import it.thera.thip.base.generale.IntegrazioneThipLogis;
 import it.thera.thip.logis.bas.ParametriLogis;
+import it.thera.thip.logis.fis.Operatore;
+import it.thera.thip.logis.fis.Postazione;
 import it.thera.thip.logis.lgb.TestataLista;
 import it.thera.thip.vendite.documentoVE.DocumentoVendita;
 
@@ -110,7 +114,7 @@ public class YCostantiValvo {
 		}
 		return media;
 	}
-	
+
 	public static DocumentoVendita documentoVenditaTestataLista(TestataLista testataLista, int lockType) {
 		DocumentoVendita dv = (DocumentoVendita) Factory.createObject(DocumentoVendita.class);
 		if (testataLista.getCodice().length() > 5) {
@@ -131,7 +135,7 @@ public class YCostantiValvo {
 		}
 		return dv;
 	}
-	
+
 	public static TestataLista testataListaDocumentoVendita(DocumentoVendita docVendita, int lockType) {
 		TestataLista ttl = (TestataLista) Factory.createObject(TestataLista.class);
 		String AnnoDocumento="";
@@ -162,10 +166,30 @@ public class YCostantiValvo {
 		}
 		return ttl;
 	}
-	
+
 	public static String codTipoListaTrasferimentoFincantieri() {
 		String cod = ParametriLogis.valoreDiSezioneChiave("YTrasferimentoFincan", "CodTipoLista");
 		return cod != null ? cod : "";
 	}
-	
+
+	public static Operatore getOperatoreGenerico(String codiceMagFisico) {
+		try {
+			return (Operatore) Operatore.elementWithKey(Operatore.class, 
+					KeyHelper.buildObjectKey(new String[] {codiceMagFisico, "GENERICA"}), PersistentObject.NO_LOCK);
+		} catch (SQLException e) {
+			e.printStackTrace(Trace.excStream);
+		}
+		return null;
+	}
+
+	public static Postazione getPostazioneNonGestita(String codiceMagFisico) {
+		try {
+			return (Postazione) Postazione.elementWithKey(Postazione.class, 
+					KeyHelper.buildObjectKey(new String[] {codiceMagFisico, "NONGEST"}), PersistentObject.NO_LOCK);
+		} catch (SQLException e) {
+			e.printStackTrace(Trace.excStream);
+		}
+		return null;
+	}
+
 }

@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="WebContent/dtd"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/classes"/>
 	<classpathentry kind="lib" path="4.7/lib"/>
-	<classpathentry kind="lib" path="4.7/rpt"/>
 	<classpathentry kind="lib" path="LibThipPers" sourcepath="T:/ThipPers/Valvorobica/4.7/src"/>
 	<classpathentry kind="lib" path="RptThipPers"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/DevPortalTools"/>

@@ -2,6 +2,7 @@ package it.valvorobica.thip.vendite.documentoVE.web;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -38,18 +39,14 @@ public class YConfermaMissioniChiudiListaFincantieriServlet extends ServletGesti
 
 	private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void processAction(ServletEnvironment se) throws ServletException, IOException {
 		super.processAction(se);
-		String action = getStringParameter(se.getRequest(), "thAction");
-		String azione =  getStringParameter(se.getRequest(), "thAzione");
 		String idAzienda = getStringParameter(se.getRequest(), "thIdAzienda");
 		String idNumeroDoc = getStringParameter(se.getRequest(), "thNumeroDocumento");
 		String idAnnoDoc = getStringParameter(se.getRequest(), "thAnnoDocumento");
-		String className = getStringParameter(se.getRequest(),"thClassName");
-		String boDataCollectorName = getStringParameter(se.getRequest(), COLLECTOR_NAME);
-		List errori = null;
+		List errori = new ArrayList();
 		try {
 			DocumentoVendita dv = (DocumentoVendita) creaDocumento(idAzienda, idAnnoDoc, idNumeroDoc);
 			if(dv != null) {
