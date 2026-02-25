@@ -76,11 +76,13 @@ public class YTestataListaWebFormModifier extends TestataListaWebFormModifier{
 						break;
 					}
 				}
+				
 				//72375 <
 				if(!testataLista.getTipoLista().getFlagUds()) {
 					check = true;
 				}
 				//72375 >
+				
 				if(check && checkQta) {
 					String keyOrdineEsec = testataLista.getRiferimentoPartner();
 					String anno = "";
