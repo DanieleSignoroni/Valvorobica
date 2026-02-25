@@ -33,7 +33,6 @@ import it.thera.thip.logis.fis.Operatore;
 import it.thera.thip.logis.fis.Postazione;
 import it.thera.thip.logis.fis.TestataUds;
 import it.thera.thip.logis.fis.TipoUds;
-import it.thera.thip.logis.fis.Ubicazione;
 import it.thera.thip.logis.lgb.RigaLista;
 import it.thera.thip.logis.lgb.TestataLista;
 import it.thera.thip.vendite.documentoVE.DocumentoVenRigaLottoPrm;
@@ -608,23 +607,18 @@ public class YTestataLista extends TestataLista {
 		while(iterRighe.hasNext()) {
 			YRigaLista riga = (YRigaLista) iterRighe.next();
 			riga.setStatoRigaLista(APERTO);
+			riga.save();
 			Vector elMiss = riga.getMissioniTerminate(pt, op, null);
 			for (Iterator iterator = elMiss.iterator(); iterator.hasNext();) {
 				Missione missione = (Missione) iterator.next();
-				String codiceUbicazione = ParametroPsn.getValoreParametroPsn("YUbicazioneAnnullamento", "Ubicazione annullamento missione");
-				if(codiceUbicazione != null) {
-					codiceUbicazione = KeyHelper.buildObjectKey(new String[] {Azienda.getAziendaCorrente(), codiceUbicazione} );
-					Ubicazione ubicazione = (Ubicazione) Ubicazione.elementWithKey(Ubicazione.class, codiceUbicazione, 0);
-					if(ubicazione != null) {
-						missione.setMappaUdcInv(null);
-						missione.setCodiceMappaUdcInv(null);
-						missione.setMappaUdc(null);
-						missione.setCodiceMappaUdc(null);
-						errors = missione.annulloConfermata(ubicazione);
-						if(!errors.isEmpty()) {
-							return errors;
-						}
-					}
+				missione.setMappaUdcInv(null);
+				missione.setCodiceMappaUdcInv(null);
+				missione.setMappaUdc(null);
+				missione.setCodiceMappaUdc(null);
+				//..regredisco verso la stessa ubicazione di prelievo (tanto e' automatico il magazziniere non sposta la merce).
+				errors = missione.annulloConfermata(missione.getUbicazione()); 
+				if(!errors.isEmpty()) {
+					return errors;
 				}
 
 			}

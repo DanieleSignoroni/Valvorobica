@@ -176,7 +176,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 		ErrorMessage em = super.convalida(rc);
 		//72375 <
 		TestataLista tl = YCostantiValvo.testataListaDocumentoVendita(this, PersistentObject.NO_LOCK);
-		if(tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
+		if(em == null && tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
 			try {
 				rc = trasferimentoFincantieri(tl);
 				if(rc <= ErrorCodes.OK) {
@@ -508,17 +508,23 @@ public class YDocumentoVendita extends DocumentoVendita {
 	protected int regressioneTrasferimentoFincantieri(TestataLista tl)throws ThipException {
 		int rc = ErrorCodes.OK;
 		try {
-			YRigaMovimento rm = (YRigaMovimento) rigaMovimentoSpostaMerceFincantieri();
-			if(rm != null) {
-				Vector errori = rm.storna();
-				if(errori != null && !errori.isEmpty()) {
-					throw new ThipException(errori);
-				}else {
-					rc = ErrorCodes.OK;
-					YRigaMovimento rms = (YRigaMovimento) rigaMovimentoStornoSpostaMerceFincantieri();
-					if(rms != null) {
-						TestataMovimento mt = rms.getTestataMovimento();
-						rc = mt.delete();
+			List<YRigaMovimento> righe = righeMovimentoStornoSpostaMerceFincantieri();
+			for (Iterator iterator = righe.iterator(); iterator.hasNext();) {
+				YRigaMovimento rm = (YRigaMovimento) iterator.next();
+				if(rm != null) {
+					Vector errori = rm.storna();
+					if(errori != null && !errori.isEmpty()) {
+						throw new ThipException(errori);
+					}else {
+						rc = ErrorCodes.OK;
+						List<YRigaMovimento> righeStorno = righeMovimentoSpostaMerceFincantieri();
+						for (Iterator iterator2 = righeStorno.iterator(); iterator2.hasNext();) {
+							YRigaMovimento rms = (YRigaMovimento) iterator.next();
+							if(rms != null) {
+								TestataMovimento mt = rms.getTestataMovimento();
+								rc = mt.delete();
+							}
+						}
 					}
 				}
 			}
@@ -528,11 +534,13 @@ public class YDocumentoVendita extends DocumentoVendita {
 		return rc;
 	}
 
-	public RigaMovimento rigaMovimentoStornoSpostaMerceFincantieri() {
-		YRigaMovimento rm = null;
+	@SuppressWarnings("rawtypes")
+	public List<YRigaMovimento> righeMovimentoStornoSpostaMerceFincantieri() {
+		List<YRigaMovimento> rms = new ArrayList<YRigaMovimento>();
 		String codiceOperazioneMovimentoLogis = ParametroPsn.getValoreParametroPsn("YOpMovScaricoTrasfUds", "IdOperazioneMovimentoScarico");
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		ArrayList<String> keys = new ArrayList<String>();
 		try {
 			Database db = ConnectionManager.getCurrentDatabase();
 			ps = cTrovaMovimentoINGFINStorno.getStatement();
@@ -544,24 +552,42 @@ public class YDocumentoVendita extends DocumentoVendita {
 			db.setString(ps, 3, codiceOperazioneMovimentoLogis);
 			rs = ps.executeQuery();
 			if(rs.next()) {
-				rm = (YRigaMovimento) YRigaMovimento.elementWithKey(YRigaMovimento.class, KeyHelper.buildObjectKey(new String[] {
+				keys.add(KeyHelper.buildObjectKey(new String[] {
 						rs.getString(RigaMovimentoTM.CODICE_SOCIETA),
 						rs.getString(RigaMovimentoTM.CODICE_TESTATA),
 						rs.getString(RigaMovimentoTM.CODICE_RIGA),
 						rs.getString(RigaMovimentoTM.CODICE_DETTAGLIO),
-				}), NO_LOCK);
+				}));
 			}
 		}catch (SQLException e) {
 			e.printStackTrace(Trace.excStream);
+		}finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace(Trace.excStream);
+				}
+			}
 		}
-		return rm;
+		for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			try {
+				rms.add((YRigaMovimento) YRigaMovimento.elementWithKey(YRigaMovimento.class, key, NO_LOCK));
+			} catch (SQLException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+		}
+		return rms;
 	}
 
-	public RigaMovimento rigaMovimentoSpostaMerceFincantieri() {
-		YRigaMovimento rm = null;
+	@SuppressWarnings("rawtypes")
+	public List<YRigaMovimento> righeMovimentoSpostaMerceFincantieri() {
+		List<YRigaMovimento> rms = new ArrayList<YRigaMovimento>();
 		String codiceOperazioneMovimentoLogis = ParametroPsn.getValoreParametroPsn("YOpMovScaricoTrasfUds", "IdOperazioneMovimentoScarico");
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		ArrayList<String> keys = new ArrayList<String>();
 		try {
 			Database db = ConnectionManager.getCurrentDatabase();
 			ps = cTrovaMovimentoINGFIN.getStatement();
@@ -573,17 +599,33 @@ public class YDocumentoVendita extends DocumentoVendita {
 			db.setString(ps, 3, codiceOperazioneMovimentoLogis);
 			rs = ps.executeQuery();
 			if(rs.next()) {
-				rm = (YRigaMovimento) YRigaMovimento.elementWithKey(YRigaMovimento.class, KeyHelper.buildObjectKey(new String[] {
+				keys.add(KeyHelper.buildObjectKey(new String[] {
 						rs.getString(RigaMovimentoTM.CODICE_SOCIETA),
 						rs.getString(RigaMovimentoTM.CODICE_TESTATA),
 						rs.getString(RigaMovimentoTM.CODICE_RIGA),
 						rs.getString(RigaMovimentoTM.CODICE_DETTAGLIO),
-				}), NO_LOCK);
+				}));
 			}
 		}catch (SQLException e) {
 			e.printStackTrace(Trace.excStream);
+		}finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace(Trace.excStream);
+				}
+			}
 		}
-		return rm;
+		for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			try {
+				rms.add((YRigaMovimento) YRigaMovimento.elementWithKey(YRigaMovimento.class, key, NO_LOCK));
+			} catch (SQLException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+		}
+		return rms;
 	}
 
 	@SuppressWarnings("rawtypes")
