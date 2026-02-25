@@ -178,7 +178,7 @@ public class YCostantiValvo {
 	public static Operatore getOperatoreGenerico(String codiceMagFisico) {
 		try {
 			return (Operatore) Operatore.elementWithKey(Operatore.class, 
-					KeyHelper.buildObjectKey(new String[] {codiceMagFisico, "GENERICA"}), PersistentObject.NO_LOCK);
+					KeyHelper.buildObjectKey(new String[] {codiceMagFisico, "NONGEST"}), PersistentObject.NO_LOCK);
 		} catch (SQLException e) {
 			e.printStackTrace(Trace.excStream);
 		}
@@ -188,7 +188,7 @@ public class YCostantiValvo {
 	public static Postazione getPostazioneNonGestita(String codiceMagFisico) {
 		try {
 			return (Postazione) Postazione.elementWithKey(Postazione.class, 
-					KeyHelper.buildObjectKey(new String[] {codiceMagFisico, "NONGEST"}), PersistentObject.NO_LOCK);
+					KeyHelper.buildObjectKey(new String[] {codiceMagFisico, "GENERICA"}), PersistentObject.NO_LOCK);
 		} catch (SQLException e) {
 			e.printStackTrace(Trace.excStream);
 		}

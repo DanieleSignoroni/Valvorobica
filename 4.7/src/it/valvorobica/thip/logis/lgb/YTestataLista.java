@@ -33,6 +33,7 @@ import it.thera.thip.logis.fis.Operatore;
 import it.thera.thip.logis.fis.Postazione;
 import it.thera.thip.logis.fis.TestataUds;
 import it.thera.thip.logis.fis.TipoUds;
+import it.thera.thip.logis.fis.Ubicazione;
 import it.thera.thip.logis.lgb.RigaLista;
 import it.thera.thip.logis.lgb.TestataLista;
 import it.thera.thip.vendite.documentoVE.DocumentoVenRigaLottoPrm;
@@ -576,15 +577,57 @@ public class YTestataLista extends TestataLista {
 			}
 			if(errors.isEmpty()) {
 				retrieve();
-				if(getStatoLista() == APERTO) {
-					errors = forzaChiudi();
+				if(getLivelloEstrazione() == PARZIALE) {
+					errors = regressioneLista();
 					if(errors.isEmpty()) {
 						ConnectionManager.commit();
+					}
+					errors.add(new ErrorMessage("BAS0000078","Livello prelievo PARZIALE, le giacenze trovate non coprono totalmente le quantita' richieste, sistemare prima il documento"));
+				}else {
+					if(getStatoLista() == APERTO) {
+						errors = forzaChiudi();
+						if(errors.isEmpty()) {
+							ConnectionManager.commit();
+						}
 					}
 				}
 			}
 		}else {
 			errors.add(new ErrorMessage("BAS0000078","Non ci sono missioni da fare per la lista selezionata"));
+		}
+		return errors;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List regressioneLista() throws SQLException {
+		Postazione pt = YCostantiValvo.getPostazioneNonGestita(getCodiceMagFisicoImpegno());
+		Operatore op = YCostantiValvo.getOperatoreGenerico(getCodiceMagFisicoImpegno());
+		List errors = new ArrayList();
+		setStatoLista(TestataLista.APERTO);
+		Iterator iterRighe = getRigheLista().iterator();
+		while(iterRighe.hasNext()) {
+			YRigaLista riga = (YRigaLista) iterRighe.next();
+			riga.setStatoRigaLista(APERTO);
+			Vector elMiss = riga.getMissioniTerminate(pt, op, null);
+			for (Iterator iterator = elMiss.iterator(); iterator.hasNext();) {
+				Missione missione = (Missione) iterator.next();
+				String codiceUbicazione = ParametroPsn.getValoreParametroPsn("YUbicazioneAnnullamento", "Ubicazione annullamento missione");
+				if(codiceUbicazione != null) {
+					codiceUbicazione = KeyHelper.buildObjectKey(new String[] {Azienda.getAziendaCorrente(), codiceUbicazione} );
+					Ubicazione ubicazione = (Ubicazione) Ubicazione.elementWithKey(Ubicazione.class, codiceUbicazione, 0);
+					if(ubicazione != null) {
+						missione.setMappaUdcInv(null);
+						missione.setCodiceMappaUdcInv(null);
+						missione.setMappaUdc(null);
+						missione.setCodiceMappaUdc(null);
+						errors = missione.annulloConfermata(ubicazione);
+						if(!errors.isEmpty()) {
+							return errors;
+						}
+					}
+				}
+
+			}
 		}
 		return errors;
 	}
