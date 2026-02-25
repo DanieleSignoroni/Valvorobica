@@ -32,6 +32,12 @@ import it.thera.thip.vendite.documentoVE.DocumentoVendita;
  * </p>
  */
 
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72375	25/02/2026	DSSOF3	 Gestione regressione missioni anche per quelle liste che non gestiscono uds.
+ */
+
 public class YTestataListaWebFormModifier extends TestataListaWebFormModifier{
 
 	@SuppressWarnings({ "static-access", "rawtypes" })
@@ -70,9 +76,11 @@ public class YTestataListaWebFormModifier extends TestataListaWebFormModifier{
 						break;
 					}
 				}
+				//72375 <
 				if(!testataLista.getTipoLista().getFlagUds()) {
 					check = true;
 				}
+				//72375 >
 				if(check && checkQta) {
 					String keyOrdineEsec = testataLista.getRiferimentoPartner();
 					String anno = "";

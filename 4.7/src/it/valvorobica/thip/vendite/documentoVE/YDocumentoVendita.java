@@ -83,9 +83,15 @@ import it.valvorobica.thip.vendite.ordineVE.YOrdineVendita;
  * </p>
  */
 
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72375	25/02/2026	DSSOF3	 Trasferimento fincantieri.
+ */
 
 public class YDocumentoVendita extends DocumentoVendita {
 
+	//72375 <
 	public static final String STMT_MOVIMENTO_INGFIN = "SELECT\r\n"
 			+ "	*\r\n"
 			+ "FROM\r\n"
@@ -117,6 +123,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 			+ "ORDER BY\r\n"
 			+ "	R.TS_AGGIORNAMENTO DESC";
 	public static CachedStatement cTrovaMovimentoINGFINStorno = new CachedStatement(STMT_MOVIMENTO_INGFIN_STORNO);
+	//72375 >
 
 	protected BigDecimal iTariffaQuintale;
 
@@ -167,6 +174,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 	@Override
 	public ErrorMessage convalida(int rc) {
 		ErrorMessage em = super.convalida(rc);
+		//72375 <
 		TestataLista tl = YCostantiValvo.testataListaDocumentoVendita(this, PersistentObject.NO_LOCK);
 		if(tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
 			try {
@@ -178,6 +186,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 				e.printStackTrace(Trace.excStream);
 			}
 		}
+		//72375 >
 		return em;
 	}
 
@@ -186,6 +195,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 	public List regressione(int rc) {
 		List errori = super.regressione(rc);
 		if(errori == null || errori.isEmpty()) {
+			//72375 <
 			TestataLista tl = YCostantiValvo.testataListaDocumentoVendita(this, PersistentObject.NO_LOCK);
 			if(tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
 				try {
@@ -199,6 +209,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 					e.printStackTrace(Trace.excStream);
 				}
 			}
+			//72375 >
 		}
 		return errori;
 	}
@@ -492,6 +503,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 		return true;
 	}
 
+	//72375 <
 	@SuppressWarnings("rawtypes")
 	protected int regressioneTrasferimentoFincantieri(TestataLista tl)throws ThipException {
 		int rc = ErrorCodes.OK;
@@ -691,5 +703,6 @@ public class YDocumentoVendita extends DocumentoVendita {
 		}
 		return null;
 	}
+	//72375 >
 
 }

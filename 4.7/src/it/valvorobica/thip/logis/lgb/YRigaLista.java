@@ -62,8 +62,15 @@ import it.valvorobica.thip.magazzino.generalemag.YPersDatiMagazzino;
  *         </p>
  */
 
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72375	25/02/2026	DSSOF3	 Trasferimento fincantieri.
+ */
+
 public class YRigaLista extends RigaLista {
 
+	//72375 <
 	private static final String STMT_SALDO_DIFF_ART_SAME_UDC = "SELECT "
 			+ "	* "
 			+ "FROM "
@@ -87,6 +94,7 @@ public class YRigaLista extends RigaLista {
 			+ "	AND COD_MAG_FISICO = ? "
 			+ "	AND COD_UBICAZIONE = ? ";
 	public static CachedStatement cEsistonoSaldiPiuMagazziniStessaUbicazione = new CachedStatement(STMT_SALDO_PIU_MAGAZ_STESSA_UBIC);
+	//72375 >
 
 	protected int numeroMissioni = 0;
 
@@ -265,9 +273,11 @@ public class YRigaLista extends RigaLista {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Vector generazioneMissioniStandard(Vector eS, PianificazioneLista pl, Postazione pt, Operatore op) {
+		//72375 <
 		if(getTestataLista() != null && getTestataLista().getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
 			gestisciSaldiTrasferimentoFincantieri(eS);
 		}
+		//72375 >
 		Vector errori = new Vector();
 		elencoMissioni.clear();
 		// 71481 vengono ordinate le missioni per colata e quantità
@@ -472,6 +482,7 @@ public class YRigaLista extends RigaLista {
 		return errori;
 	}
 
+	//72375 <
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void gestisciSaldiTrasferimentoFincantieri(Vector eS) {
 		//..Rimuovo i saldi che hanno UDC contententi piu' articoli
@@ -567,6 +578,8 @@ public class YRigaLista extends RigaLista {
 		}
 		return sal;
 	}
+	
+	//72375 >
 
 	private List<SaldoQtaAssegnata> getListaSaldiNoACC(List<SaldoQtaAssegnata> saldi) {
 		List<SaldoQtaAssegnata> listaNoAcc = new ArrayList<SaldoQtaAssegnata>();

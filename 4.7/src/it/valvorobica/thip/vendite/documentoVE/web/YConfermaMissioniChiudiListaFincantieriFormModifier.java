@@ -18,7 +18,7 @@ import it.thera.thip.base.comuniVenAcq.web.ConvalidaRegressioneModifier;
 /*
  * Revisions:
  * Number   Date        Owner    Description
- * 72XXX    20/02/2026  DSSOF3   Prima stesura
+ * 72375    20/02/2026  DSSOF3   Prima stesura
  */
 public class YConfermaMissioniChiudiListaFincantieriFormModifier extends ConvalidaRegressioneModifier {
 

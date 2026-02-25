@@ -43,6 +43,7 @@ import it.thera.thip.vendite.generaleVE.CondizioniDiVendita;
 import it.thera.thip.vendite.generaleVE.RicercaCondizioniDiVendita;
 import it.valvorobica.thip.base.articolo.YArticoloDatiMagaz;
 import it.valvorobica.thip.base.cliente.YClienteVendita;
+import it.valvorobica.thip.logis.bas.YCostantiValvo;
 import it.valvorobica.thip.logis.fis.YEsecuzioneMissioni;
 import it.valvorobica.thip.logis.fis.YMissione;
 import it.valvorobica.thip.logis.fis.YUdsArticolo;
@@ -65,6 +66,12 @@ import it.valvorobica.thip.vendite.generaleVE.YGestioneSpeseRigheVendita;
  * 										.</p>
  * <b>71195	TBSOF3	08/08/2023</b>	<br>Gestione peso variabile prima stesura<br>
  * <b>71545	DSSOF3	06/06/2024</b>	<p>Sistemare creazione riga spesa imballo.</p>
+ */
+
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72375	25/02/2026	DSSOF3	 Trasferimento fincantieri.
  */
 
 public class YTestataLista extends TestataLista {
@@ -549,13 +556,14 @@ public class YTestataLista extends TestataLista {
 		}
 	}
 
+	//72375 <
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List eseguiMissioniTrasferimentoFincantieri() throws SQLException {
 		YEsecuzioneMissioni esecuzioneMissioni = (YEsecuzioneMissioni) Factory.createObject(YEsecuzioneMissioni.class);
 		List errors = new ArrayList();
 		esecuzioneMissioni.setMagFisico(getMagFisicoImpegno());
-		esecuzioneMissioni.setCodiceOperatore("NONGEST");
-		esecuzioneMissioni.setCodicePostazione("GENERICA");
+		esecuzioneMissioni.setOperatore(YCostantiValvo.getOperatoreGenerico(getCodiceMagFisicoImpegno()));
+		esecuzioneMissioni.setPostazione(YCostantiValvo.getPostazioneNonGestita(getCodiceMagFisicoImpegno()));
 		esecuzioneMissioni.setAreaLavoro(esecuzioneMissioni.getPostazione().getAreaLavoro());
 		esecuzioneMissioni.setTipoMacchina(esecuzioneMissioni.getPostazione().getTipoMacchina());
 		esecuzioneMissioni.getElencoTestate().add(this);
@@ -580,4 +588,5 @@ public class YTestataLista extends TestataLista {
 		}
 		return errors;
 	}
+	//72375 >
 }

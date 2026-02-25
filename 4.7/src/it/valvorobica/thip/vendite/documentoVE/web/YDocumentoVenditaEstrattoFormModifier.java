@@ -27,6 +27,11 @@ import it.valvorobica.thip.logis.bas.YCostantiValvo;
  * </p>
  */
 
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72375    20/02/2026  DSSOF3   Trasferimento fincantieri.
+ */
 
 public class YDocumentoVenditaEstrattoFormModifier extends DocumentoVenditaEstrattoFormModifier {
 
@@ -48,6 +53,7 @@ public class YDocumentoVenditaEstrattoFormModifier extends DocumentoVenditaEstra
 	public void writePulsantiBarraAzioniPers(JspWriter out) throws IOException {
 		super.writePulsantiBarraAzioniPers(out);
 		DocumentoVendita doc = (DocumentoVendita)getBODataCollector().getBo();
+		//72375 <
 		if(doc.getStatoAvanzamento() == StatoAvanzamento.PROVVISORIO) {
 			TestataLista tl = YCostantiValvo.testataListaDocumentoVendita(doc, PersistentObject.NO_LOCK);
 			if(tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
@@ -58,6 +64,7 @@ public class YDocumentoVenditaEstrattoFormModifier extends DocumentoVenditaEstra
 				out.println("</td>");
 			}
 		}
+		//72375 >
 	}
 
 

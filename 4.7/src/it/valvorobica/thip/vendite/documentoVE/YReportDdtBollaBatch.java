@@ -29,23 +29,27 @@ import it.thera.thip.base.comuniVenAcq.AzioneMagazzino;
 import it.thera.thip.base.comuniVenAcq.ReportDdtBollaTestata;
 import it.thera.thip.base.documenti.StatoAttivita;
 import it.thera.thip.base.generale.ParametroPsn;
-import it.thera.thip.logis.fis.AnagraficaUdc;
-import it.thera.thip.logis.fis.InserimentoMovimenti;
-import it.thera.thip.logis.fis.MappaUdc;
-import it.thera.thip.logis.fis.OperazioneMovimento;
-import it.thera.thip.logis.fis.Saldo;
+//72375 rem <
+//import it.thera.thip.logis.fis.AnagraficaUdc; 
+//import it.thera.thip.logis.fis.InserimentoMovimenti;
+//import it.thera.thip.logis.fis.MappaUdc;
+//import it.thera.thip.logis.fis.OperazioneMovimento;
+//import it.thera.thip.logis.fis.Saldo;
+//72375 rem >
 import it.thera.thip.logis.fis.TestataUds;
-import it.thera.thip.logis.fis.TestataUdsTM;
-import it.thera.thip.logis.fis.TipoUdc;
-import it.thera.thip.logis.lgb.MagLogico;
+//72375 rem <
+//import it.thera.thip.logis.fis.TestataUdsTM;
+//import it.thera.thip.logis.fis.TipoUdc;
+//import it.thera.thip.logis.lgb.MagLogico;
+//72375 rem >
 import it.thera.thip.vendite.documentoVE.DocumentoVendita;
 import it.thera.thip.vendite.documentoVE.DocumentoVenditaTM;
 import it.thera.thip.vendite.documentoVE.ReportDdtBollaBatch;
 import it.thera.thip.vendite.generaleVE.CausaleRigaDocVen;
 import it.thera.thip.vendite.generaleVE.CausaleRigaVendita;
 import it.thera.thip.vendite.generaleVE.TipoDocumento;
-import it.valvorobica.thip.base.articolo.cambioArticolo.web.YCambioArticoloSave;
-import it.valvorobica.thip.base.azienda.YOggettinoUdsStampaDDT;
+//import it.valvorobica.thip.base.articolo.cambioArticolo.web.YCambioArticoloSave; //72375 rem
+//import it.valvorobica.thip.base.azienda.YOggettinoUdsStampaDDT; //72375 rem
 import it.valvorobica.thip.base.cliente.YClienteVendita;
 import it.valvorobica.thip.logis.lgb.YTestataLista;
 import it.valvorobica.thip.logis.rf.gui.YProcessaListeCompattoRF;
@@ -95,6 +99,12 @@ import it.valvorobica.thip.vendite.generaleVE.YGestioneSpeseRigheVendita;
  *  </p>
  */
 
+/*
+ * Revisions:
+ * Number   Date        Owner    Description
+ * 72375	25/02/2026	DSSOF3	 Trasferimento fincantieri, remmare vecchia gestione.
+ */
+
 public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 
 	protected boolean iDaTerminalino;
@@ -126,7 +136,9 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 	protected void gestioneOutputBatchPers(DocumentoVendita docVen) {
 		super.gestioneOutputBatchPers(docVen);
 		try {
+			//72375 remmata <
 			//gestioneUDC(docVen);//70860 TBSOF3 Trasformazione UDS in UDC in stampa DDT
+			//72375 fine remmata >
 		}catch (Exception e) {//catturo tutto
 			e.printStackTrace(Trace.excStream);
 		}
@@ -922,7 +934,7 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 		return map;
 	}
 
-	/*
+	/* 72375 inizio remmata
 	@SuppressWarnings({ "rawtypes" })
 	protected void gestioneUDC(DocumentoVendita docVen) {	//TBSOF3 metodo per gestire la creazione della UDC dalla UDS
 		if(docVen != null) {
@@ -940,7 +952,6 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 			}
 		}
 	}
-	 */
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Vector getElencoUds(DocumentoVendita docVen) {
@@ -983,6 +994,7 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 		}
 		return elencoUds;
 	}
+
 	@SuppressWarnings("rawtypes")
 	protected void creaMovimento(YOggettinoUdsStampaDDT ogg, DocumentoVendita docVen) {	//TBSOF3 creo il movimento su logis
 		InserimentoMovimenti insMov = (InserimentoMovimenti) Factory.createObject(InserimentoMovimenti.class);
@@ -1040,19 +1052,6 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 		}
 	}
 
-	/**
-	 * <h1>Recupero codice ubicazione:</h1>
-	 * <br><br>
-	 * <b>XXXXX	DSSOF3	10/05/2023</b>	<p>Recupero il codice ubicazione da usare per la creazione del movimento e della mappa UDC,
-	 * 										dalla tabella LOGIS.LUDS_TESTA, usando come chiave il CODICE_UDS.<br>
-	 * 									   In questo caso se COD_UBICAZIONE trovata e' =! da FCTRA prendo il valore della colonna,
-	 * 										altrimenti tengo il valore presente nel parametro di pers. YCodiceUbicazioneUdsTrasf.<br>
-	 * 									</p>
-	 * @param ogg
-	 * @param docVen
-	 * @param codiceUbicazione
-	 * @return
-	 */
 	protected String getCodiceUbicazione(YOggettinoUdsStampaDDT ogg, DocumentoVendita docVen,String codiceUbicazione) {
 		String stmt = "SELECT COD_UBICAZIONE FROM "+TestataUdsTM.NOME_TABELLA+" "
 				+ "WHERE "+TestataUdsTM.CODICE+"='"+ogg.getCodiceUds()+"' "; //la chiave e' solo il codiceUds
@@ -1189,15 +1188,16 @@ public class YReportDdtBollaBatch extends ReportDdtBollaBatch{
 		return saldo;
 	}
 
-	//	public static Ubicazione getUbicazione(String codiceMag, String codiceOperazioneMov) {
-	//		String key = codiceMag + KeyHelper.KEY_SEPARATOR + codiceOperazioneMov;
-	//		Ubicazione ret = null;
-	//		try {
-	//			ret = (Ubicazione) Ubicazione.elementWithKey(Ubicazione.class,
-	//					key, PersistentObject.NO_LOCK);
-	//		}catch (SQLException e) {
-	//			e.printStackTrace(Trace.excStream);
-	//		}
-	//		return ret;
-	//	}
+		public static Ubicazione getUbicazione(String codiceMag, String codiceOperazioneMov) {
+			String key = codiceMag + KeyHelper.KEY_SEPARATOR + codiceOperazioneMov;
+			Ubicazione ret = null;
+			try {
+				ret = (Ubicazione) Ubicazione.elementWithKey(Ubicazione.class,
+						key, PersistentObject.NO_LOCK);
+			}catch (SQLException e) {
+				e.printStackTrace(Trace.excStream);
+			}
+			return ret;
+		}
+	72375 fine remmata  */ 
 }

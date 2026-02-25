@@ -37,6 +37,7 @@ import it.thera.thip.vendite.documentoVE.DocumentoVendita;
  * Revisions:
  * Number   Date        Owner    Description
  * 72183    24/10/2025  DSSOF3   Aggiunto metodo media mensile
+ * 72375	25/02/2026	DSSOF3	 Nuovi metodi di utils.
  */
 
 public class YCostantiValvo {
@@ -115,6 +116,8 @@ public class YCostantiValvo {
 		return media;
 	}
 
+	//72375 <
+	
 	public static DocumentoVendita documentoVenditaTestataLista(TestataLista testataLista, int lockType) {
 		DocumentoVendita dv = (DocumentoVendita) Factory.createObject(DocumentoVendita.class);
 		if (testataLista.getCodice().length() > 5) {
@@ -191,5 +194,7 @@ public class YCostantiValvo {
 		}
 		return null;
 	}
+	
+	//72375 >
 
 }
