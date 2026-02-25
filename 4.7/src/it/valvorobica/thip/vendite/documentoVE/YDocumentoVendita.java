@@ -179,9 +179,14 @@ public class YDocumentoVendita extends DocumentoVendita {
 		if(em == null && tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
 			try {
 				rc = trasferimentoFincantieri(tl);
-				if(rc <= ErrorCodes.OK) {
+				if(rc < 0) {
 					em = CreaMessaggioErrore.daRcAErrorMessage(rc, null);
-				}
+				}/*else if(rc > 0 && getJobParameters() != null && getJobParameters().startsWith("StampaBolla"))
+					try {
+						ConnectionManager.commit();
+					} catch (SQLException e) {
+						e.printStackTrace(Trace.excStream);
+					}*/
 			} catch (ThipException e) {
 				e.printStackTrace(Trace.excStream);
 			}
@@ -200,7 +205,7 @@ public class YDocumentoVendita extends DocumentoVendita {
 			if(tl != null && tl.getCodiceTipoLista().equals(YCostantiValvo.codTipoListaTrasferimentoFincantieri())) {
 				try {
 					rc = regressioneTrasferimentoFincantieri(tl);
-					if(rc <= ErrorCodes.OK) {
+					if(rc < 0) {
 						if(errori == null)
 							errori = new ArrayList();
 						errori.add(CreaMessaggioErrore.daRcAErrorMessage(rc, null));
@@ -515,15 +520,18 @@ public class YDocumentoVendita extends DocumentoVendita {
 					Vector errori = rm.storna();
 					if(errori != null && !errori.isEmpty()) {
 						throw new ThipException(errori);
-					}else {
-						rc = ErrorCodes.OK;
-						List<YRigaMovimento> righeStorno = righeMovimentoSpostaMerceFincantieri();
-						for (Iterator iterator2 = righeStorno.iterator(); iterator2.hasNext();) {
-							YRigaMovimento rms = (YRigaMovimento) iterator.next();
-							if(rms != null) {
-								TestataMovimento mt = rms.getTestataMovimento();
-								rc = mt.delete();
-							}
+					}
+				}
+			}
+			if(righe.size() > 0) {
+				List<YRigaMovimento> righeStorno = righeMovimentoSpostaMerceFincantieri();
+				for (Iterator iterator2 = righeStorno.iterator(); iterator2.hasNext();) {
+					YRigaMovimento rms = (YRigaMovimento) iterator2.next();
+					if(rms != null) {
+						TestataMovimento mt = rms.getTestataMovimento();
+						rc = mt.delete();
+						if(rc < 0) {
+							throw new ThipException(CreaMessaggioErrore.daRcAErrorMessage(rc, null));
 						}
 					}
 				}
