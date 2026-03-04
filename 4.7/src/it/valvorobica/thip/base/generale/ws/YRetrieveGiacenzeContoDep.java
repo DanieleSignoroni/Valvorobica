@@ -3,14 +3,21 @@ package it.valvorobica.thip.base.generale.ws;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.persist.CachedStatement;
+import com.thera.thermfw.persist.Column;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Database;
+import com.thera.thermfw.persist.KeyHelper;
+import com.thera.thermfw.persist.PersistentObject;
+
+import it.thera.thip.base.articolo.Articolo;
+import it.thera.thip.magazzino.saldi.SaldoMagLottoClienteTM;
 
 /**
  *
@@ -44,7 +51,7 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 			+ "WHERE\r\n"
 			+ "	ID_AZIENDA = ?\r\n"
 			+ "	AND ID_MAGAZZINO = ?\r\n"
-			+ "	AND ID_CLIENTE = ?\r\n"
+			+ "	AND ID_CLIENTE = ?\r\n AND QTA_GIAC_PRM > 0"
 			+ "GROUP BY\r\n"
 			+ "	ID_AZIENDA ,\r\n"
 			+ "	ID_MAGAZZINO ,\r\n"
@@ -63,20 +70,23 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 		return res;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public List retrieveListaGiacenze() {
-		List giacenze = new ArrayList();
+	public JSONObject retrieveListaGiacenze() {
+		JSONObject result = new JSONObject();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		JSONArray records = new JSONArray();
 		try {
 			Database db = ConnectionManager.getCurrentDatabase();
 			ps = cEstrazioneGiacenze.getStatement();
 			db.setString(ps, 1, getUserPortalSession().getIdAzienda());
 			db.setString(ps, 2, "DEP");
-			db.setString(ps, 2, getUserPortalSession().getIdCliente());
+			db.setString(ps, 3, getUserPortalSession().getIdCliente());
 			rs = ps.executeQuery();
 			while(rs.next()) {
-
+				JSONObject record = new JSONObject();
+				record.put("idArticolo", Column.rightTrim(rs.getString(SaldoMagLottoClienteTM.ID_ARTICOLO)));
+				record.put("qtaGiac", rs.getBigDecimal("GIACENZA"));
+				records.put(record);
 			}
 		} catch (Exception e) {
 			e.printStackTrace(Trace.excStream);
@@ -88,6 +98,24 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 					e.printStackTrace(Trace.excStream);
 				}
 		}
-		return giacenze;
+		for (int i = 0; i < records.length(); i++) {
+			JSONObject record = records.getJSONObject(i);
+			Articolo art;
+			try {
+				art = (Articolo) Articolo.elementWithKey(Articolo.class, KeyHelper.buildObjectKey(new String[] {
+						getUserPortalSession().getIdAzienda(), record.getString("idArticolo")
+				}), PersistentObject.NO_LOCK);
+				if(art != null) {
+					record.put("descrizione", art.getDescrizioneArticoloNLS().getDescrizione());
+					record.put("descrizioneEstesa", art.getDescrizioneArticoloNLS().getDescrizioneEstesa());
+					record.put("descrizioneRidotta", art.getDescrizioneArticoloNLS().getDescrizioneRidotta());
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		result.put("records", records);
+		return result;
 	}
 }
