@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TDDML SYSTEM "../../../TDDML.dtd">
+<TDDML>
+  <AlterTable schema="THIPPERS" name="YAZIENDE_USER_PORTAL">
+    <AddColumn>
+      <Column name="GES_CONTO_DEP" shortname="GES_CONTO_DEP" type="char" length="1" nullable="no" default="N"/>
+    </AddColumn>
+  </AlterTable>
+</TDDML>
