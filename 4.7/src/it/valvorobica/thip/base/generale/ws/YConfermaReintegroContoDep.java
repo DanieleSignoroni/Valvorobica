@@ -12,11 +12,13 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.thera.thermfw.base.TimeUtils;
 import com.thera.thermfw.base.Trace;
+import com.thera.thermfw.common.ErrorMessage;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Factory;
 import com.thera.thermfw.persist.PersistentObject;
 
 import it.thera.thip.base.azienda.Azienda;
+import it.thera.thip.base.comuniVenAcq.GestoreDocumenti;
 import it.thera.thip.base.documenti.StatoAvanzamento;
 import it.thera.thip.magazzino.generalemag.Lotto;
 import it.thera.thip.vendite.documentoVE.DocumentoVenRigaLottoPrm;
@@ -72,8 +74,9 @@ public class YConfermaReintegroContoDep extends YPortalGenRequestJSON {
 		return m;
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	public void generaDocumentoReintegro(JSONObject body, Item[] items) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List generaDocumentoReintegro(JSONObject body, Item[] items) {
+		List errori = null;
 		DocumentoVendita dv = creaDocVenDaTestataJson(body);
 		try {
 			if(dv != null) {
@@ -98,6 +101,20 @@ public class YConfermaReintegroContoDep extends YPortalGenRequestJSON {
 					int rc = dv.save();
 					if(rc > 0) {
 						ConnectionManager.commit();
+						GestoreDocumenti ges = GestoreDocumenti.getInstance();
+						dv.retrieve();
+						errori = ges.convalida(dv);
+						ArrayList<String> erroriWS = (ArrayList<String>) risultatoWs.get("errori") != null ? (ArrayList<String>) risultatoWs.get("errori") : new ArrayList<String>();
+						for (int i = 0; i < errori.size(); i++) {
+							ErrorMessage em = (ErrorMessage) errori.get(i);
+							erroriWS.add(em.getText());
+						}
+						risultatoWs.put("errori", erroriWS);
+						if(errori.isEmpty()) {
+							ConnectionManager.commit();
+						}else {
+							ConnectionManager.rollback();
+						}
 					}else {
 						((ArrayList<String>)risultatoWs.get("errori")).add(CreaMessaggioErrore.daRcAErrorMessage(rc, null).getLongText());
 					}
@@ -108,6 +125,7 @@ public class YConfermaReintegroContoDep extends YPortalGenRequestJSON {
 		} catch (SQLException e) {
 			e.printStackTrace(Trace.excStream);
 		}
+		return errori;
 	}
 
 	@SuppressWarnings("unchecked")
