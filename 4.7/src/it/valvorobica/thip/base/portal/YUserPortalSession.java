@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.thera.thermfw.base.IniFile;
 import com.thera.thermfw.base.Trace;
+import com.thera.thermfw.persist.Column;
 import com.thera.thermfw.persist.ConnectionDescriptor;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.KeyHelper;
@@ -262,7 +263,7 @@ public class YUserPortalSession {
 	public static int getNumeroItemsCarrelloUtente(String idAzienda, String idUtente) {
 		String select = "SELECT COUNT(*) FROM " + YCarrelloPortaleTM.TABLE_NAME + " C ";
 		String where = "WHERE C." + YCarrelloPortaleTM.ID_AZIENDA + " = '" + idAzienda + "'" + " AND C."
-				+ YCarrelloPortaleTM.R_UTENTE_PORTALE + " = '" + idUtente + "' ";
+				+ YCarrelloPortaleTM.R_UTENTE_PORTALE + " = '" + idUtente + "' AND "+YCarrelloPortaleTM.GES_CONTO_DEP+" = '"+Column.FALSE_CHAR+"' ";
 		Map values = null;
 		boolean isopen = false;
 		Object[] info = SessionEnvironment.getDBInfoFromIniFile();

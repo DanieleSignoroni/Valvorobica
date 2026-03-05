@@ -1,3 +1,4 @@
+<%@page import="org.json.JSONObject"%>
 <%@page import="com.thera.thermfw.base.Trace"%>
 <%@page import="it.valvorobica.thip.base.generale.ws.YRetrieveGiacenzeContoDep"%>
 <%@page import="com.thera.thermfw.persist.ConnectionManager"%>
@@ -16,6 +17,7 @@ boolean isopen = false;
 Object[] info = SessionEnvironment.getDBInfoFromIniFile();
 String dbName = (String) info[0];
 String newsHtml = null;
+JSONObject result = null;
 try {
 	if (!Security.isCurrentDatabaseSetted()) {
 		Security.setCurrentDatabase(dbName, null);
@@ -30,6 +32,7 @@ try {
 	ws.setConnectionDescriptor(cd);
 	ws.setUserPortalSession(userPortalSession);
 	values = ws.send();
+	result = (JSONObject) values.get("listaGiacenze");
 } catch (Throwable t) {
 	t.printStackTrace(Trace.excStream);
 } finally {
@@ -74,17 +77,6 @@ try {
 		<table class="table table-striped table-hover table-bordered"
 			id="tableOrdini" style="width:100%">
 			<thead class="thead-dark">
-				<tr>
-					<th scope="col"></th>	<!-- Lasciare vuota, sede della checkbox -->
-					<th scope="col">N.ro Ordine</th>
-					<th scope="col">Key</th>
-					<th scope="col">Data</th>
-					<th scope="col">Sede di</th>
-					<th scope="col">Rif Vs Ord</th>
-					<th scope="col">Rag. Sociale</th>
-					<th scope="col">Consegna</th>
-					<th scope="col">Imponibile</th>
-				</tr>
 			</thead>
 			<tbody>
 			</tbody>
@@ -94,63 +86,133 @@ try {
 	<script type="text/javascript" src="js/main_1.js"></script>
 	<script>
 		$(document).ready(function() {
-			table = new DataTable('#tableOrdini', {
-				dom: '<"top"B>frt<"bottom"lip><"clear">',
-				        buttons: [
-				        	{
-				            	className: 'btn btn-secondary btn-sm',
-				                text: 'Flusso Vendite',
-				                action: function () {
-				                	if(table.rows('.selected').data().length > 1){
-				                		table.rows('.selected').deselect();
-				                		var txt = "Selezionare solo un ordine";
-				        				$('#txtWarning',parent.document)[0].innerHTML = txt;
-				        				$('#modalWarningClick',parent.document)[0].click();
-				                	}else if (table.rows('.selected').data().length < 1){
-				                		table.rows('.selected').deselect();
-				                		var txt = "Selezionare un ordine per vedere i documenti di trasporto collegati";
-				        				$('#txtWarning',parent.document)[0].innerHTML = txt;
-				        				$('#modalWarningClick',parent.document)[0].click();
-				                	}else{
-				                		flussoVendite(table.rows('.selected').data());
-				                	}
-				                }
-				            }
-				        ], 
-				        initComplete: function() { 
-				            var btns = $('.dt-button');
-				            btns.removeClass('dt-button');
-				          },
-					select: {
-						style: 'multi',
-				        selector: 'td:first-child'
-				    },
-				    columnDefs : [
-				    	{
-				            orderable: false,
-				            className: 'select-checkbox',
-				            targets: 0
-			       	 	},
-			       	 	{
-			                target: 2,
-			                visible: false
-			            },
-					],
-					 columns: [
-						 	{ data : 'Checkbox'},
-						 	{ data: 'Numero ordine'},
-						 	{ data: 'Key'},
-					        { data: 'Data' },
-					        { data: 'Sede di' },
-					        { data: 'Rif vs Ord' },
-					        { data: 'Rag.Sociale' },
-					        { data: 'Consegna' },
-					        { data: 'Imponibile' }
-					    ]
-				});
-			compilaURLWS();
+		    var dtHeaders = <%= result.get("headers") %>;
+		    var dtRecords = <%= result.get("records") %>;
+	
+		    dtHeaders.push(
+		        {
+		            title: "Quantità",
+		            data: null,
+		            orderable: false,
+		            className: "text-center align-middle",
+		            render: function(data, type, row) {
+		                var idArticoloPth = row.Articolo || '';
+		                var giacenza = row.Giacenza || 0;
+	
+		                return "<input type='hidden' name='IdArticoloPth' value='" + idArticoloPth + "'>" +
+		                       "<input type='hidden' name='disp' value='" + giacenza + "'>" +
+		                       "<input class='form-control rcrPrz' type='number' name='quantita' onchange='handleSemaforo(this.closest(\"tr\"))' style='width: 80px; margin: auto;'>";
+		            }
+		        },
+		        {
+		            title: "Disp.",
+		            data: null,
+		            orderable: false,
+		            className: "text-center align-middle",
+		            render: function(data, type, row) {
+		            	return "<span class='semaforo-container'><i class='fa fa-solid fa-circle ml-2' style='color:black;'></i></span>";
+		            }
+		        },
+		        {
+		            title: "Carrello",
+		            data: null,
+		            orderable: false,
+		            className: "text-center align-middle",
+		            render: function(data, type, row) {
+		            	return "<i onclick='addToCart(this)' title='Aggiungi al carrello' class='fa fa-regular fa-plus fa-2x' style='cursor:pointer;'></i>";
+		            }
+		        }
+		    );
+	
+		    $('#tableOrdini').DataTable({
+		        columns: dtHeaders,
+		        data: dtRecords,
+		    });
+		    compilaURLWS();
 		});
+		function handleSemaforo(row) {
+		    const quantityInput = row.querySelector("input[name='quantita']");
+		    const quantityValue = quantityInput.value.trim();
+		    const quantity = parseFloat(quantityValue) || 0;
 
+		    const dispInput = row.querySelector("input[name='disp']");
+		    const giacenza = parseFloat(dispInput.value) || 0;
+
+		    const semaforoCell = row.querySelector(".semaforo-container");
+
+		    if (!quantityValue) {
+		        semaforoCell.innerHTML = "<i class='fa fa-solid fa-circle ml-2' style='color:black;'></i>";
+		        return; 
+		    }
+
+		    var htmlSemaforoVerdeA = 
+		        "<span class='fa-stack' style='font-size: 1em;'>" +
+		            "<i class='fa-solid fa-circle fa-stack-1x' style='color: green;'></i>" +
+		            "<span class='fa-stack-1x' style='color: white; font-weight: bold; font-size: 0.6em;'>A</span>" +
+		        "</span>";
+
+		    if (giacenza === 0) {
+		        semaforoCell.innerHTML = "<i class='fa fa-solid fa-circle ml-2' style='color:orange;'></i>";
+		    } else if (quantity > giacenza) {
+		        semaforoCell.innerHTML = "<i class='fa fa-solid fa-circle ml-2' style='color:red;'></i>";
+		        if (giacenza + giacenzaAellebi >= quantity) {
+		            semaforoCell.innerHTML = htmlSemaforoVerdeA;
+		        }
+		    } else {
+		        semaforoCell.innerHTML = "<i class='fa fa-solid fa-circle ml-2' style='color:green;'></i>";
+		    }
+		}
+
+		function addToCart(btn) {
+		    var tr = btn.closest('tr');
+		    var art = tr.querySelector('[name=IdArticoloPth]').value;
+		    var qtaInput = tr.querySelector('[name=quantita]');
+		    var qta = qtaInput.value;
+
+		    if ($('#qtaCnf').val() != undefined && $('#qtaCnf').val() > 0) {
+		        qta = $('#qtaCnf').val();
+		    }
+
+		    var idUtente = "<%=userPortalSession.getIdUtente()%>";
+		    var idAzienda = "<%=userPortalSession.getIdAzienda()%>";
+		    var idCliente = "<%=userPortalSession.getIdCliente()%>";
+
+		    if (isNaN(qta) || qta == undefined || qta <= 0) {
+		        var txt = "Inserire una quantita' positiva";
+		        openModal('txtWarning', $('#modalWarningClick', parent.parent.document)[0], txt);
+		        return;
+		    }
+
+		    parent.mostraSpinner();
+
+		    var json = "{articolo : '" + art + "', quantita: '" + qta + "',idUtente: '" + idUtente + "',idAzienda:'" + idAzienda + "',idCliente:'" + idCliente + "', contoDeposito : true}";
+		    
+		    $.ajax({
+		        url: $('#urlWS').val() + '?id=YADDC&tokenUID=' + $('#token').val(),
+		        method: 'POST',
+		        dataType: 'json',
+		        data: json,
+		        contentType: 'application/json; charset=utf-8',
+		        success: function(response) {
+		            btn.classList.add('clicked');
+		            var items = parseFloat(response.nrItemsCart);
+		            setTimeout(function() {
+		                parent.rimuoviSpinner();
+		                btn.classList.remove('clicked');
+		                qtaInput.value = null;
+		            }, 2000);
+		        },
+		        error: function(xhr, status, error) {
+		            xhr.responseJSON.errors.forEach(function(obj) {
+		                if (obj[0].includes('token expired')) {
+		                    parent.parent.document.getElementById('tokenExpiredClick').click();
+		                }
+		            });
+		            parent.rimuoviSpinner();
+		        }
+		    });
+		}
+		
 		function compilaURLWS() {
 			var ris;
 			var url = window.location.href;

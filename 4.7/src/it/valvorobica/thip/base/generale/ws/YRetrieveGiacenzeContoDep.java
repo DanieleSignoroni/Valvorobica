@@ -3,11 +3,13 @@ package it.valvorobica.thip.base.generale.ws;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.thera.thermfw.base.ResourceLoader;
 import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.Column;
@@ -37,6 +39,8 @@ import it.thera.thip.magazzino.saldi.SaldoMagLottoClienteTM;
  */
 
 public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
+
+	public static final String RES = "it.valvorobica.thip.base.generale.ws.resources.YGiacenzeContoDeposito";
 
 	public static final String STMT_ESTRAZ_GIAC = "SELECT\r\n"
 			+ "	ID_AZIENDA ,\r\n"
@@ -84,8 +88,8 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				JSONObject record = new JSONObject();
-				record.put("idArticolo", Column.rightTrim(rs.getString(SaldoMagLottoClienteTM.ID_ARTICOLO)));
-				record.put("qtaGiac", rs.getBigDecimal("GIACENZA"));
+				record.put("Articolo", Column.rightTrim(rs.getString(SaldoMagLottoClienteTM.ID_ARTICOLO)));
+				record.put("Giacenza", rs.getBigDecimal("GIACENZA"));
 				records.put(record);
 			}
 		} catch (Exception e) {
@@ -103,12 +107,12 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 			Articolo art;
 			try {
 				art = (Articolo) Articolo.elementWithKey(Articolo.class, KeyHelper.buildObjectKey(new String[] {
-						getUserPortalSession().getIdAzienda(), record.getString("idArticolo")
+						getUserPortalSession().getIdAzienda(), record.getString("Articolo")
 				}), PersistentObject.NO_LOCK);
 				if(art != null) {
-					record.put("descrizione", art.getDescrizioneArticoloNLS().getDescrizione());
-					record.put("descrizioneEstesa", art.getDescrizioneArticoloNLS().getDescrizioneEstesa());
-					record.put("descrizioneRidotta", art.getDescrizioneArticoloNLS().getDescrizioneRidotta());
+					record.put("Descrizione", art.getDescrizioneArticoloNLS().getDescrizioneEstesa());
+					//					record.put("descrizione", art.getDescrizioneArticoloNLS().getDescrizione());
+					//					record.put("descrizioneRidotta", art.getDescrizioneArticoloNLS().getDescrizioneRidotta());
 
 				}
 			} catch (Exception e) {
@@ -116,6 +120,21 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 			}
 		}
 		result.put("records", records);
+		result.put("headers", buildHeaders());
 		return result;
+	}	
+
+	protected JSONArray buildHeaders() {
+		JSONArray headers = new JSONArray();
+		for(Enumeration<?> values = ResourceLoader.getKeys(RES); values.hasMoreElements();) {
+			String key = (String) values.nextElement();
+			String value = ResourceLoader.getString(RES, key);
+			JSONObject head = new JSONObject();
+			head.put("title", value);
+			head.put("data", value);
+
+			headers.put(head);
+		}
+		return headers;
 	}
 }
