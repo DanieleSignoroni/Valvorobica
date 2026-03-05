@@ -445,7 +445,7 @@ function checkOutOrder() {
 		formData: formData
 	};
 	$.ajax({
-		url: getURLWS() + '?id=YCKOC&tokenUID=' + $('#token').val(),
+		url: getURLWS() + '?id=YCRCD&tokenUID=' + $('#token').val(),
 		method: 'POST',
 		dataType: 'json',
 		data: JSON.stringify(payload),
