@@ -157,7 +157,7 @@ if (!userPortalSession.getTipoUser().equals(YUserPortalSession.FORNITORE)) {
 				        <li class="highlight-menu-items">
 				            <a href="#" class="nav-link text-white pl-2" id="17"
 				               onclick="submitJFun(this)">
-				                Carrello
+				                Conferma Reintegro
 				            </a>
 				        </li>
 				    </ul>

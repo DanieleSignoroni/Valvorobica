@@ -69,6 +69,20 @@ import it.valvorobica.thip.base.portal.YUserPortalSession;
 
 public class YCarrello extends YPortalGenRequestJSON {
 
+	protected boolean gestioneContoDeposito;
+
+	public YCarrello() {
+		setGestioneContoDeposito(false);
+	}
+
+	public boolean isGestioneContoDeposito() {
+		return gestioneContoDeposito;
+	}
+
+	public void setGestioneContoDeposito(boolean gestioneContoDeposito) {
+		this.gestioneContoDeposito = gestioneContoDeposito;
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected Map execute(Map m) {
@@ -99,7 +113,11 @@ public class YCarrello extends YPortalGenRequestJSON {
 				+ " INNER JOIN SOFTRE.Y_SALDI_BASE_V03 SB ON SB.ID_AZIENDA = A.ID_AZIENDA  AND SB.ID_ARTICOLO = A.ID_ARTICOLO ";
 		String where = "WHERE C."+YCarrelloPortaleTM.ID_AZIENDA+" = '"+getUserPortalSession().getIdAzienda()+"'"
 				+ " AND C."+YCarrelloPortaleTM.R_UTENTE_PORTALE+" = '"+getUserPortalSession().getIdUtente()+"' ";
-		where += " AND C."+YCarrelloPortaleTM.GES_CONTO_DEP+" = '"+Column.FALSE_CHAR+"' ";
+		if(isGestioneContoDeposito()) {
+			where += " AND C."+YCarrelloPortaleTM.GES_CONTO_DEP+" = '"+Column.TRUE_CHAR+"' ";
+		}else {
+			where += " AND C."+YCarrelloPortaleTM.GES_CONTO_DEP+" = '"+Column.FALSE_CHAR+"' ";
+		}
 		CachedStatement cs = null;
 		ResultSet rs = null;
 		try {		

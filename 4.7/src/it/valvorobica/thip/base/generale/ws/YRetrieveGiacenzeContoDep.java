@@ -1,5 +1,6 @@
 package it.valvorobica.thip.base.generale.ws;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -102,21 +103,37 @@ public class YRetrieveGiacenzeContoDep extends YPortalGenRequestJSON {
 					e.printStackTrace(Trace.excStream);
 				}
 		}
-		for (int i = 0; i < records.length(); i++) {
+		for (int i = records.length() - 1; i >= 0; i--) {
 			JSONObject record = records.getJSONObject(i);
 			Articolo art;
 			try {
 				art = (Articolo) Articolo.elementWithKey(Articolo.class, KeyHelper.buildObjectKey(new String[] {
 						getUserPortalSession().getIdAzienda(), record.getString("Articolo")
 				}), PersistentObject.NO_LOCK);
-				if(art != null) {
-					record.put("Descrizione", art.getDescrizioneArticoloNLS().getDescrizioneEstesa());
-					//					record.put("descrizione", art.getDescrizioneArticoloNLS().getDescrizione());
-					//					record.put("descrizioneRidotta", art.getDescrizioneArticoloNLS().getDescrizioneRidotta());
 
+				if (art != null) {
+					String descrizione = art.getDescrizioneArticoloNLS().getDescrizioneEstesa();
+					if (descrizione == null)
+						descrizione = art.getDescrizioneArticoloNLS().getDescrizione();
+					record.put("Descrizione", descrizione);
+				} else {
+					records.remove(i);
+					continue;
 				}
+
+				BigDecimal giacenza = record.getBigDecimal("Giacenza");
+				BigDecimal carrello = YCatalogoPortaleDettaglio.getOrdinatoCarrello(getUserPortalSession().getIdUtente(), art.getIdArticolo(), true);
+
+				if (carrello != null && carrello.compareTo(BigDecimal.ZERO) > 0) {
+					giacenza = giacenza.subtract(carrello);
+				}
+
+				if (giacenza.compareTo(BigDecimal.ZERO) <= 0) {
+					records.remove(i);
+				}
+
 			} catch (Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(Trace.excStream);
 			}
 		}
 		result.put("records", records);

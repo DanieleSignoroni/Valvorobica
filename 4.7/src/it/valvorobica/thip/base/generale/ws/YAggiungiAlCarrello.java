@@ -8,11 +8,8 @@ import java.util.Map;
 import com.thera.thermfw.base.Trace;
 import com.thera.thermfw.persist.CachedStatement;
 import com.thera.thermfw.persist.Column;
-import com.thera.thermfw.persist.ConnectionDescriptor;
 import com.thera.thermfw.persist.ConnectionManager;
 import com.thera.thermfw.persist.Factory;
-import com.thera.thermfw.security.Security;
-import com.thera.thermfw.web.SessionEnvironment;
 
 import it.valvorobica.thip.base.portal.YCarrelloPortale;
 import it.valvorobica.thip.base.portal.YCarrelloPortaleTM;
@@ -65,18 +62,8 @@ public class YAggiungiAlCarrello extends YPortalGenRequestJSON {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	protected void addToCart(String idArticolo, String idAzienda, String idUtente, String quantita, String idCliente,
-			Map m) {
-		boolean isopen = false;
-		Object[] info = SessionEnvironment.getDBInfoFromIniFile();
-		String dbName = (String) info[0];
+	protected void addToCart(String idArticolo, String idAzienda, String idUtente, String quantita, String idCliente, Map m) {
 		try {
-			if (!Security.isCurrentDatabaseSetted()) {
-				Security.setCurrentDatabase(dbName, null);
-			}
-			Security.openDefaultConnection();
-			isopen = true;
-			ConnectionDescriptor cd = ConnectionManager.getCurrentConnectionDescriptor();
 			YCarrelloPortale item = (YCarrelloPortale) Factory.createObject(YCarrelloPortale.class);
 			item.setIdAzienda(idAzienda);
 			item.setRUtentePortale(idUtente);
@@ -86,17 +73,13 @@ public class YAggiungiAlCarrello extends YPortalGenRequestJSON {
 			if(iGestioneContoDeposito)
 				item.setGestioneContoDep(true);
 			if (item.save() >= 0) {
-				cd.commit();
+				ConnectionManager.commit();
 			} else {
-				cd.rollback();
+				ConnectionManager.rollback();
 			}
 		} catch (Throwable t) {
 			t.printStackTrace(Trace.excStream);
-		} finally {
-			if (isopen) {
-				Security.closeDefaultConnection();
-			}
-		}
+		} 
 	}
 
 	public int getNumeroItemsCarrelloUtente(String idAzienda, String idUtente) {
